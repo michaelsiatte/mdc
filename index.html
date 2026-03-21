@@ -1,0 +1,2649 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>MON DESTIN DE COMMERCIAL</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gold:#C9A84C;--gold-l:#F0D080;--gold-pale:rgba(201,168,76,.12);--gold-b:rgba(201,168,76,.3);
+  --navy:#080F1A;--nmid:#111E2E;--nlight:#1A2D42;--ncard:#152030;
+  --cream:#F0E6CC;--muted:#7A90A8;--muted2:#4A6070;
+  --green:#1B8A52;--gp:rgba(27,138,82,.14);--gb:rgba(27,138,82,.35);
+  --red:#C0392B;--rp:rgba(192,57,43,.14);--rb:rgba(192,57,43,.35);
+  --r:14px;--rs:9px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100vh}
+body{font-family:'DM Sans',sans-serif;background:var(--navy);color:var(--cream);font-size:15px;line-height:1.5;overflow-x:hidden}
+
+/* COVER */
+#cover{position:relative;min-height:100vh;width:100%;background:var(--navy);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;
+  background-image:radial-gradient(ellipse 60% 40% at 50% 0%,rgba(201,168,76,.18) 0%,transparent 70%)}
+.clogo{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.8rem,10vw,5.5rem);line-height:.95;color:var(--gold);letter-spacing:.05em;margin-bottom:8px;filter:drop-shadow(0 0 40px rgba(201,168,76,.35))}
+.csub{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.4em;color:var(--muted);text-transform:uppercase;margin-bottom:50px}
+.cbtns{display:flex;flex-direction:column;gap:14px;width:100%;max-width:320px}
+.cbtn{padding:18px 28px;border-radius:var(--r);font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:.12em;cursor:pointer;transition:all .25s;border:none;display:flex;align-items:center;justify-content:center;gap:14px}
+.cbtn-c{background:var(--gold);color:var(--navy);box-shadow:0 8px 32px rgba(201,168,76,.35)}
+.cbtn-c:hover{background:var(--gold-l);transform:translateY(-2px)}
+.cbtn-p{background:transparent;color:var(--gold);border:2px solid var(--gold-b)}
+.cbtn-p:hover{border-color:var(--gold);transform:translateY(-2px)}
+.cver{position:absolute;bottom:16px;font-family:'Space Mono',monospace;font-size:.55rem;color:var(--muted2);letter-spacing:.2em}
+
+/* PDG LOGIN */
+#pdgLogin{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:9100;background:rgba(8,15,26,.92);align-items:center;justify-content:center;padding:20px}
+#pdgLogin.open{display:flex}
+.pdgbox{background:var(--nmid);border:1px solid var(--gold-b);border-radius:var(--r);padding:28px;max-width:340px;width:100%;text-align:center}
+
+/* APP */
+#app{display:none;flex-direction:column;min-height:100vh;width:100%}
+
+/* TOPBAR */
+.topbar{background:var(--nmid);border-bottom:1px solid var(--gold-b);height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;gap:8px;position:sticky;top:0;z-index:100}
+.tlogo{font-family:'Bebas Neue',sans-serif;font-size:1.25rem;color:var(--gold);letter-spacing:.06em;cursor:pointer}
+.tcenter{flex:1;display:flex;justify-content:center}
+.wchip{font-family:'Space Mono',monospace;font-size:.68rem;color:var(--gold);background:var(--gold-pale);border:1px solid var(--gold-b);padding:4px 11px;border-radius:20px;cursor:pointer;display:none}
+.tright{display:flex;align-items:center;gap:7px}
+.wbadge{font-size:.62rem;color:#e74c3c;background:rgba(192,57,43,.18);border:1px solid rgba(192,57,43,.35);padding:2px 7px;border-radius:20px;display:none}
+.avbtn{width:34px;height:34px;border-radius:50%;border:2px solid var(--gold);background:var(--nlight);overflow:hidden;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.6rem;color:var(--gold);font-family:'Space Mono',monospace;flex-shrink:0}
+.avbtn img{width:100%;height:100%;object-fit:cover}
+
+/* MAIN */
+.main{flex:1;padding:18px 14px 50px;max-width:680px;margin:0 auto;width:100%}
+
+/* PANELS */
+.panel{display:none;animation:su .35s ease}
+.panel.active{display:block}
+@keyframes su{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* TYPOGRAPHY */
+.eyebrow{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.32em;color:var(--gold);text-transform:uppercase;margin-bottom:4px}
+.heading{font-family:'Bebas Neue',sans-serif;font-size:2.1rem;letter-spacing:.04em;color:var(--cream);line-height:1.05;margin-bottom:18px}
+
+/* PROGRESS BAR */
+.pbar{display:flex;align-items:center;margin-bottom:20px}
+.pd{width:24px;height:24px;border-radius:50%;border:2px solid var(--gold-b);display:flex;align-items:center;justify-content:center;font-size:.6rem;font-family:'Space Mono',monospace;color:var(--muted);flex-shrink:0;transition:all .3s}
+.pd.done{background:var(--green);border-color:var(--green);color:#fff}
+.pd.act{background:var(--gold);border-color:var(--gold);color:var(--navy);font-weight:700}
+.pl{flex:1;height:2px;background:var(--gold-b);min-width:10px}
+.pl.done{background:var(--green)}
+
+/* CARDS */
+.card{background:var(--ncard);border:1px solid var(--gold-b);border-radius:var(--r);padding:18px;margin-bottom:13px}
+.card-hi{background:linear-gradient(135deg,rgba(201,168,76,.1),rgba(201,168,76,.03));border-color:rgba(201,168,76,.5)}
+.card-ok{background:var(--gp);border-color:var(--gb)}
+.card-ko{background:var(--rp);border-color:var(--rb)}
+
+/* FORMS */
+.fr{margin-bottom:13px}
+.fl{display:block;font-size:.62rem;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;margin-bottom:5px}
+input[type=text],input[type=date],input[type=number],input[type=password],textarea,select{
+  width:100%;background:var(--nlight);border:1px solid var(--gold-b);border-radius:var(--rs);
+  padding:10px 13px;color:var(--cream);font-family:'DM Sans',sans-serif;font-size:.9rem;
+  outline:none;transition:border-color .2s;-webkit-appearance:none;appearance:none}
+input:focus,textarea:focus,select:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.1)}
+textarea{resize:vertical;min-height:80px}
+select option{background:var(--nmid)}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 22px;border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-weight:600;font-size:.88rem;cursor:pointer;transition:all .18s;border:none;width:100%}
+.btn-p{background:var(--gold);color:var(--navy)}
+.btn-p:hover:not(:disabled){background:var(--gold-l);transform:translateY(-1px)}
+.btn-p:disabled{opacity:.4;cursor:not-allowed}
+.btn-s{background:transparent;border:1px solid var(--gold-b);color:var(--cream)}
+.btn-s:hover{border-color:var(--gold);color:var(--gold)}
+.btn-danger{background:transparent;border:1px solid var(--rb);color:#e74c3c}
+.btn-ok{background:transparent;border:1px solid var(--gb);color:#2ecc71}
+.btn-sm{padding:7px 14px;font-size:.78rem;width:auto}
+.btn-xs{padding:5px 10px;font-size:.7rem;width:auto}
+.btn-info{background:rgba(26,110,168,.2);border:1px solid rgba(26,110,168,.4);color:#5dade2;width:auto;padding:6px 12px;font-size:.75rem}
+
+/* SELFIE */
+.szone{border:2px dashed var(--gold-b);border-radius:var(--r);padding:22px;text-align:center;cursor:pointer;transition:border-color .2s}
+.szone:hover{border-color:var(--gold)}
+
+/* JOB CARDS */
+.jcard{background:var(--ncard);border:1px solid var(--gold-b);border-radius:var(--r);padding:0;margin-bottom:12px;cursor:pointer;transition:all .22s;overflow:hidden}
+.jcard:hover:not(.dis){border-color:var(--gold);transform:translateY(-2px)}
+.jcard.sel{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.2)}
+.jcard.dis{opacity:.3;cursor:not-allowed;pointer-events:none}
+.jh{display:flex;align-items:center;gap:13px;padding:14px;border-bottom:1px solid var(--gold-b);background:rgba(201,168,76,.05)}
+.ji{font-size:2rem;flex-shrink:0}
+.jb{padding:13px 14px}
+.jmise{background:var(--nlight);border-radius:var(--rs);padding:11px;border-left:3px solid var(--gold);font-size:.78rem;line-height:1.6;margin-top:8px}
+
+/* FILE ZONE */
+.fzone{border:1px dashed var(--gold-b);border-radius:var(--rs);padding:18px;text-align:center;cursor:pointer;color:var(--muted);font-size:.8rem;transition:all .2s}
+.fzone:hover{border-color:var(--gold);color:var(--gold)}
+.fzone.got{border-color:var(--green);color:#2ecc71;border-style:solid}
+
+/* DICE D18 */
+.darea{text-align:center;padding:14px 0}
+.die18{width:90px;height:90px;background:linear-gradient(145deg,var(--nlight),var(--navy));border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:3px solid var(--gold);box-shadow:0 0 24px rgba(201,168,76,.25);margin:0 auto 16px;cursor:default}
+.die18-val{font-family:'Bebas Neue',sans-serif;font-size:2.8rem;line-height:1;color:var(--gold)}
+.die18-label{font-family:'Space Mono',monospace;font-size:.5rem;color:var(--muted);letter-spacing:.2em}
+.die18.roll{animation:dr .7s ease-in-out}
+@keyframes dr{0%,100%{transform:rotate(0)}25%{transform:rotate(-18deg) scale(1.1)}70%{transform:rotate(18deg) scale(.94)}}
+
+/* TASK */
+.tcard{background:var(--nlight);border:1px solid rgba(201,168,76,.4);border-radius:var(--r);padding:20px;margin-top:14px;position:relative}
+.tbadge{position:absolute;top:-12px;left:14px;background:var(--gold);color:var(--navy);font-family:'Bebas Neue',sans-serif;font-size:.8rem;padding:2px 10px;border-radius:4px}
+.ttitle{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--gold-l);margin-bottom:6px}
+.tdesc{font-size:.82rem;line-height:1.65;margin-bottom:10px}
+.tclient{background:rgba(201,168,76,.08);border:1px solid var(--gold-b);border-radius:var(--rs);padding:12px;margin-bottom:10px;font-size:.78rem;line-height:1.6}
+.tref{font-family:'Space Mono',monospace;font-size:.62rem;color:var(--muted);border-top:1px solid var(--gold-b);padding-top:9px}
+
+/* CATALOGUE */
+.cat-section{margin-bottom:16px}
+.cat-title{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--gold);margin-bottom:8px;letter-spacing:.04em}
+.cat-table{width:100%;border-collapse:collapse;font-size:.75rem}
+.cat-table th{background:var(--nlight);color:var(--gold);font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;padding:7px 10px;text-align:left;border-bottom:1px solid var(--gold-b)}
+.cat-table td{padding:7px 10px;border-bottom:1px solid rgba(201,168,76,.1);vertical-align:top}
+.cat-table tr:hover td{background:rgba(201,168,76,.04)}
+.cat-ref{font-family:'Space Mono',monospace;color:var(--muted);font-size:.65rem}
+.cat-price{font-family:'Space Mono',monospace;color:var(--gold);white-space:nowrap}
+
+/* PROFILE */
+.phero{text-align:center;padding:14px 0}
+.srow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:13px 0}
+.sbox{background:var(--nlight);border:1px solid var(--gold-b);border-radius:var(--rs);padding:10px;text-align:center}
+.sv{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:var(--gold)}
+.sl{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.wbg{display:inline-block;background:rgba(192,57,43,.2);border:1px solid rgba(192,57,43,.4);color:#e74c3c;padding:3px 8px;border-radius:4px;font-size:.68rem;font-family:'Space Mono',monospace;margin:2px}
+.fbx{background:rgba(192,57,43,.2);border:1px solid var(--red);color:#ff6b6b;padding:9px 12px;border-radius:8px;font-size:.78rem;text-align:center;margin-top:9px}
+
+/* LEADERBOARD */
+.lrow{display:flex;align-items:center;gap:11px;padding:12px 14px;border-radius:var(--rs);margin-bottom:8px;background:var(--ncard);border:1px solid var(--gold-b)}
+.lrow.me{border-color:var(--gold);background:var(--gold-pale)}
+.lrank{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:var(--muted);width:28px;text-align:center;flex-shrink:0}
+.lrank.g1{color:#FFD700}.lrank.g2{color:#C0C0C0}.lrank.g3{color:#CD7F32}
+
+/* PDG PANEL */
+.tnav{display:flex;gap:3px;background:var(--nlight);border-radius:10px;padding:4px;margin-bottom:14px;flex-wrap:wrap}
+.tbtn{flex:1;padding:7px 4px;border-radius:7px;border:none;background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:.68rem;cursor:pointer;transition:all .2s;font-weight:500;min-width:55px}
+.tbtn.act{background:var(--ncard);color:var(--gold);border:1px solid var(--gold-b)}
+.sc{background:var(--ncard);border:1px solid var(--gold-b);border-radius:var(--rs);padding:13px;margin-bottom:9px}
+.sh{display:flex;align-items:center;gap:9px;margin-bottom:8px}
+.mav{width:36px;height:36px;border-radius:50%;border:2px solid var(--gold);background:var(--nlight);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:.6rem;color:var(--gold);font-family:'Space Mono',monospace;flex-shrink:0}
+.mav img{width:100%;height:100%;object-fit:cover}
+.chip{display:inline-block;padding:2px 8px;border-radius:20px;font-size:.64rem;font-family:'Space Mono',monospace}
+.cp{background:rgba(201,168,76,.15);color:var(--gold)}
+.co{background:rgba(27,138,82,.2);color:#2ecc71}
+.ck{background:rgba(192,57,43,.2);color:#e74c3c}
+.nrow{display:flex;gap:7px;align-items:center;margin-top:8px;flex-wrap:wrap}
+.nrow input[type=number]{width:80px;padding:6px 8px}
+
+/* RECAP TABLE */
+.rtable{width:100%;border-collapse:collapse;font-size:.75rem;margin-top:12px}
+.rtable th{background:var(--nlight);color:var(--gold);font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;padding:9px 10px;text-align:left;border-bottom:1px solid var(--gold-b);white-space:nowrap}
+.rtable td{padding:9px 10px;border-bottom:1px solid rgba(201,168,76,.12);vertical-align:middle}
+.rtable tr:hover td{background:rgba(201,168,76,.04)}
+.rtable .mc{font-family:'Space Mono',monospace;color:var(--gold)}
+
+/* PDG ACTIONS */
+.pactions{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:16px}
+.pa{padding:12px 14px;border-radius:var(--rs);cursor:pointer;transition:all .2s;border:1px solid;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.82rem;display:flex;align-items:center;gap:8px;justify-content:center}
+.pa-save{background:var(--gp);border-color:var(--gb);color:#2ecc71}
+.pa-del{background:var(--rp);border-color:var(--rb);color:#e74c3c}
+.pa-recap{background:rgba(26,110,168,.14);border-color:rgba(26,110,168,.4);color:#5dade2}
+.pa-test{background:var(--gold-pale);border-color:var(--gold-b);color:var(--gold)}
+.pa-cat{background:rgba(155,89,182,.14);border-color:rgba(155,89,182,.4);color:#bb8fce}
+
+/* MODAL */
+.mbg{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:500;background:rgba(8,15,26,.9);align-items:center;justify-content:center;padding:16px}
+.mbg.open{display:flex}
+.modal{background:var(--nmid);border:1px solid var(--gold-b);border-radius:var(--r);padding:24px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto}
+.mtitle{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:var(--gold);margin-bottom:12px}
+
+/* ALERTS */
+.alert{border-radius:var(--rs);padding:11px 13px;margin-bottom:10px;font-size:.8rem;line-height:1.5}
+.ai{background:var(--gold-pale);border:1px solid var(--gold-b);color:var(--cream)}
+.aok{background:var(--gp);border:1px solid var(--gb);color:#2ecc71}
+.ako{background:var(--rp);border:1px solid var(--rb);color:#e74c3c}
+
+/* NOTIF */
+.notif{position:fixed;bottom:16px;right:14px;z-index:9999;background:var(--nmid);border:1px solid var(--gold-b);border-radius:10px;padding:11px 15px;max-width:280px;display:none;animation:ni .3s ease;box-shadow:0 8px 28px rgba(0,0,0,.6)}
+.notif.show{display:block}
+.notif.ok{border-color:rgba(27,138,82,.5)}.notif.ko{border-color:rgba(192,57,43,.5)}
+@keyframes ni{from{transform:translateX(110%);opacity:0}to{transform:translateX(0);opacity:1}}
+.nt{font-weight:600;font-size:.8rem;margin-bottom:2px}.nm{font-size:.7rem;color:var(--muted)}
+
+/* CHART CONTAINER */
+.chart-wrap{background:var(--ncard);border:1px solid var(--gold-b);border-radius:var(--r);padding:16px;margin-bottom:12px}
+.chart-title{font-family:'Bebas Neue',sans-serif;font-size:1rem;color:var(--gold);margin-bottom:10px;letter-spacing:.04em}
+
+/* MISC */
+hr.dv{border:none;border-top:1px solid var(--gold-b);margin:14px 0}
+.tm{color:var(--muted);font-size:.8rem}.tc{text-align:center}
+.mt8{margin-top:8px}.mt12{margin-top:12px}.mt16{margin-top:16px}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid var(--gold-b);border-top-color:var(--gold);border-radius:50%;animation:sp .7s linear infinite;margin-right:5px;vertical-align:middle}
+@keyframes sp{to{transform:rotate(360deg)}}
+.file-link{color:var(--gold-l);font-size:.72rem;text-decoration:none;background:rgba(201,168,76,.12);padding:4px 10px;border-radius:4px;border:1px solid var(--gold-b);display:inline-flex;align-items:center;gap:5px;margin:3px 3px 3px 0}
+.file-link:hover{background:rgba(201,168,76,.22)}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:var(--gold-b);border-radius:2px}
+.2col{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div id="cover">
+  <div class="clogo">MON DESTIN<br>DE COMMERCIAL</div>
+  <div class="csub">MCV Option B · 1re &amp; Terminale · Référentiel 2024</div>
+  <div class="cbtns">
+    <button class="cbtn cbtn-c" onclick="enterAs('student')"><span>💼</span> COMMERCIAL</button>
+    <button class="cbtn cbtn-p" onclick="openPdgLogin()"><span>👑</span> PDG</button>
+  </div>
+  <div class="cver">v4.0 · Créé par Michael SIATTE · Académie de Normandie · 2026</div>
+</div>
+
+<!-- PDG LOGIN -->
+<div id="pdgLogin">
+  <div class="pdgbox">
+    <div style="font-size:2.5rem;margin-bottom:10px">🔐</div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:var(--gold);margin-bottom:6px">Espace PDG</div>
+    <div class="tm" style="margin-bottom:18px;font-size:.82rem">Accès réservé au Professeur Directeur Général</div>
+    <div class="fr"><label class="fl">Code d'accès PDG</label><input type="password" id="pdgPwd" placeholder="••••••••" onkeydown="if(event.key==='Enter')checkPdg()"></div>
+    <div id="pdgErr" class="alert ako" style="display:none"></div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button class="btn btn-p" onclick="checkPdg()">Entrer</button>
+      <button class="btn btn-s" onclick="closePdgLogin()">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODALS -->
+<div class="mbg" id="mCatalogue">
+  <div class="modal" style="max-width:640px">
+    <div class="mtitle">📋 Catalogue — <span id="catPosteTitle"></span></div>
+    <div id="catContent"></div>
+    <button class="btn btn-s mt12" onclick="closeM('mCatalogue')">Fermer</button>
+  </div>
+</div>
+<div class="mbg" id="mCorrige">
+  <div class="modal" style="max-width:640px">
+    <div class="mtitle">📋 Corrigé Type — <span id="corrigeTitre"></span></div>
+    <div id="corigeContent" style="font-size:.82rem;line-height:1.7"></div>
+    <button class="btn btn-s mt12" onclick="closeM('mCorrige')">Fermer</button>
+  </div>
+</div>
+<div class="mbg" id="mDeleteConfirm">
+  <div class="modal">
+    <div class="mtitle">🗑️ Supprimer</div>
+    <div id="delContent"></div>
+    <div style="display:flex;gap:8px;margin-top:14px">
+      <button class="btn btn-danger" id="delConfirmBtn">Supprimer</button>
+      <button class="btn btn-s" onclick="closeM('mDeleteConfirm')">Annuler</button>
+    </div>
+  </div>
+</div>
+<div class="mbg" id="mEleve">
+  <div class="modal" style="max-width:600px">
+    <div class="mtitle" id="mEleveName">Progression</div>
+    <div id="mEleveContent"></div>
+    <button class="btn btn-s mt12" onclick="closeM('mEleve')">Fermer</button>
+  </div>
+</div>
+
+<!-- NOTIF -->
+<div class="notif" id="notif"><div class="nt" id="nT"></div><div class="nm" id="nM"></div></div>
+
+<!-- APP -->
+<div id="app">
+  <div class="topbar">
+    <div class="tlogo" onclick="backToCover()">MDC</div>
+    <div class="tcenter"><div class="wchip" id="wchip" onclick="showP('pClass');renderLdr()">💰 0 €</div></div>
+    <div class="tright">
+      <div class="wbadge" id="wbadge"></div>
+      <div class="avbtn" id="avbtn" onclick="gotoProfile()">?</div>
+    </div>
+  </div>
+  <div class="main">
+
+    <!-- ① IDENT -->
+    <div class="panel active" id="pIdent">
+      <button class="btn btn-s btn-sm" onclick="backToCover()" style="width:auto;margin-bottom:14px;font-size:.75rem">← Accueil</button>
+      <div class="eyebrow">Étape 1 · Identification</div>
+      <div class="heading">Crée ton<br>Profil Commercial</div>
+      <div class="pbar"><div class="pd act">1</div><div class="pl"></div><div class="pd">2</div><div class="pl"></div><div class="pd">3</div><div class="pl"></div><div class="pd">4</div><div class="pl"></div><div class="pd">5</div></div>
+      <div class="card">
+        <div class="2col">
+          <div class="fr"><label class="fl">Prénom</label><input type="text" id="iP" placeholder="Marie"></div>
+          <div class="fr"><label class="fl">Nom</label><input type="text" id="iN" placeholder="DUPONT"></div>
+        </div>
+        <div class="fr"><label class="fl">Date de naissance</label><input type="text" id="iD" placeholder="JJ/MM/AAAA ex: 15/03/2006" maxlength="10" oninput="fmtDate(this)"></div>
+        <div class="fr">
+          <label class="fl">📷 Photo / Selfie</label>
+          <video id="camPrev" style="display:none;width:100%;max-width:240px;border-radius:50%;aspect-ratio:1;object-fit:cover;border:4px solid var(--gold);margin:0 auto 10px;display:none" playsinline autoplay muted></video>
+          <canvas id="camCanvas" style="display:none"></canvas>
+          <div id="szone" class="szone" onclick="el('sInput').click()">
+            <div id="sPrev"><div class="tm">📷 Appuie ici pour importer ou prendre un selfie</div></div>
+          </div>
+          <input type="file" id="sInput" style="display:none" accept="image/*" capture="user" onchange="handleSelfieFile(event)">
+          <div style="display:flex;gap:7px;margin-top:8px">
+            <button class="btn btn-s btn-sm" onclick="startCam()">📷 Caméra</button>
+            <button class="btn btn-s btn-sm" id="camCapBtn" style="display:none" onclick="captureCam()">📸 Prendre</button>
+            <button class="btn btn-s btn-sm" id="camStopBtn" style="display:none" onclick="stopCam()">✕</button>
+          </div>
+        </div>
+        <div class="alert ai" style="font-size:.75rem">💡 <strong>Déjà joué ?</strong> Entre exactement les mêmes prénom, nom et date de naissance pour retrouver ta partie.</div>
+        <button class="btn btn-p mt8" id="btnId" onclick="valIdent()">Valider / Reprendre ma partie →</button>
+      </div>
+    </div>
+
+    <!-- ② POSTE -->
+    <div class="panel" id="pPoste">
+      <button class="btn btn-s btn-sm" onclick="backToCover()" style="width:auto;margin-bottom:14px;font-size:.75rem">← Retour à l'accueil</button>
+      <div class="eyebrow">Étape 2 · Offres d'emploi</div>
+      <div class="heading">Choisis<br>Ton Entreprise</div>
+      <div class="pbar"><div class="pd done">✓</div><div class="pl done"></div><div class="pd act">2</div><div class="pl"></div><div class="pd">3</div><div class="pl"></div><div class="pd">4</div><div class="pl"></div><div class="pd">5</div></div>
+      <p class="tm" style="margin-bottom:14px">Lis attentivement la mise en situation avant de postuler.</p>
+      <div id="jGrid"></div>
+      <button class="btn btn-p" id="btnPoste" style="display:none" onclick="valPoste()">Postuler à cette offre →</button>
+    </div>
+
+    <!-- ③ CV -->
+    <div class="panel" id="pCV">
+      <button class="btn btn-s btn-sm" onclick="backToJobs()" style="width:auto;margin-bottom:14px;font-size:.75rem">← Retour aux offres</button>
+      <div class="eyebrow">Étape 3 · Candidature</div>
+      <div class="heading">Dossier de<br>Candidature</div>
+      <div class="pbar"><div class="pd done">✓</div><div class="pl done"></div><div class="pd done">✓</div><div class="pl done"></div><div class="pd act">3</div><div class="pl"></div><div class="pd">4</div><div class="pl"></div><div class="pd">5</div></div>
+      <div class="card card-hi" id="cvBanner"></div>
+      <div class="card">
+        <div class="fr">
+          <label class="fl">CV (PDF, Word ou image)</label>
+          <div class="fzone" id="cvZone" onclick="el('cvIn').click()">📎 Dépose ton CV ici</div>
+          <input type="file" id="cvIn" style="display:none" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" onchange="hFile('cv',event)">
+          <div id="cvSt" class="tm mt8" style="font-size:.68rem"></div>
+        </div>
+        <div class="fr">
+          <label class="fl">Lettre de motivation</label>
+          <div class="fzone" id="lmZone" onclick="el('lmIn').click()">📝 Dépose ta lettre de motivation</div>
+          <input type="file" id="lmIn" style="display:none" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" onchange="hFile('lm',event)">
+          <div id="lmSt" class="tm mt8" style="font-size:.68rem"></div>
+        </div>
+        <button class="btn btn-p mt8" onclick="valCandidature()">Soumettre ma candidature →</button>
+      </div>
+    </div>
+
+    <!-- ④ ENTRETIEN -->
+    <div class="panel" id="pEnt">
+      <button class="btn btn-s btn-sm" id="btnBackFromEnt" onclick="backFromEnt()" style="width:auto;margin-bottom:14px;font-size:.75rem">← Retour au dossier</button>
+      <div class="eyebrow">Étape 4 · Entretien</div>
+      <div class="heading">Entretien de<br>Recrutement</div>
+      <div class="pbar"><div class="pd done">✓</div><div class="pl done"></div><div class="pd done">✓</div><div class="pl done"></div><div class="pd done">✓</div><div class="pl done"></div><div class="pd act">4</div><div class="pl"></div><div class="pd">5</div></div>
+      <div class="card tc" id="entWait">
+        <div style="font-size:2.5rem;margin-bottom:10px">⏳</div>
+        <div style="font-weight:600;margin-bottom:6px">Candidature soumise</div>
+        <p class="tm" style="font-size:.8rem;line-height:1.6">Présente-toi à l'entretien avec ton PDG.<br>Note ≥ 10/20 = poste obtenu !</p>
+      </div>
+      <div id="entResult" style="display:none"></div>
+      <button class="btn btn-p mt12" id="btnStart" style="display:none" onclick="startGame()">🎉 Prendre mon poste →</button>
+      <button class="btn btn-s mt8" id="btnRetry" style="display:none" onclick="retryPoste()">🔄 Choisir une autre offre</button>
+    </div>
+
+    <!-- ⑤ JEU -->
+    <div class="panel" id="pJeu">
+      <button class="btn btn-s btn-sm" onclick="backToCover()" style="width:auto;margin-bottom:14px;font-size:.75rem">⬅ Accueil</button>
+      <div class="eyebrow">En Poste !</div>
+      <div class="heading">Le Destin du<br>Commercial</div>
+      <div class="pbar"><div class="pd done">✓</div><div class="pl done"></div><div class="pd done">✓</div><div class="pl done"></div><div class="pd done">✓</div><div class="pl done"></div><div class="pd done">✓</div><div class="pl done"></div><div class="pd act">5</div></div>
+      <div class="card card-hi" id="jBanner"></div>
+      <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+        <button class="btn btn-info" onclick="showCatalogue()">📋 Mon catalogue & clients</button>
+        <button class="btn btn-info" onclick="gotoProfile()">👤 Mon profil</button>
+      </div>
+      <div class="card">
+        <div class="darea">
+          <p class="tm" style="font-size:.78rem;margin-bottom:14px">Lance le dé à 18 faces pour découvrir ta mission !</p>
+          <div class="die18" id="dieEl"><div class="die18-val" id="dieVal">?</div><div class="die18-label">D18</div></div>
+          <button class="btn btn-p btn-sm" id="btnRoll" onclick="lancerDe()" style="width:auto;padding:11px 28px;margin:0 auto;display:block">🎲 Lancer le dé</button>
+        </div>
+        <div id="taskZone" style="display:none">
+          <hr class="dv">
+          <div class="tcard" id="taskCard"></div>
+          <div class="fr mt16">
+            <label class="fl">Déposer ton travail finalisé</label>
+            <div class="fzone" id="tZone" onclick="el('tIn').click()">📤 Dépose ton travail ici</div>
+            <input type="file" id="tIn" style="display:none" onchange="hTravail(event)">
+            <div id="tSt" class="tm mt8" style="font-size:.68rem"></div>
+          </div>
+          <div id="mailInfo" class="alert ai" style="display:none;font-size:.74rem">📧 Sera transmis à <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="c8a5a1aba0a9ada4e6bba1a9bcbcad88a9abe5a6a7baa5a9a6aca1ade6aeba">[email&#160;protected]</a></strong></div>
+          <button class="btn btn-p mt8" id="btnSend" style="display:none" onclick="envoyerTravail()">Envoyer au PDG →</button>
+          <div id="sentOk" class="alert aok" style="display:none;margin-top:9px">✅ Travail envoyé ! En attente de la note du PDG.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FICHE PERSONNELLE POST-MISSION -->
+    <div class="panel" id="pFiche">
+      <div class="eyebrow">Mission terminée !</div>
+      <div class="heading" id="ficheHeading">Bien joué !</div>
+      <div class="card card-hi" id="ficheResume" style="text-align:center;padding:20px"></div>
+      <div class="card" id="ficheStats"></div>
+      <div class="chart-wrap"><div class="chart-title">Évolution de tes notes</div><canvas id="chartFiche" height="180"></canvas></div>
+      <div id="ficheHistorique"></div>
+      <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
+        <button class="btn btn-s" style="flex:1" onclick="backToCover()">🏠 Retour à l'accueil</button>
+        <button class="btn btn-p" id="btnNextMission" style="flex:1;opacity:.4;cursor:not-allowed" disabled onclick="nextMission()">🎲 Mission suivante</button>
+      </div>
+      <div id="ficheNoteMsg" class="alert ai" style="margin-top:10px;font-size:.78rem;display:none"></div>
+    </div>
+
+    <!-- PROFIL -->
+    <div class="panel" id="pProf">
+      <div class="eyebrow">Mon Profil</div>
+      <div class="heading" id="pHead">Commercial</div>
+      <div class="card">
+        <div id="pHero" class="phero"></div>
+        <div class="srow"><div class="sbox"><div class="sv" id="pW">0 €</div><div class="sl">Cagnotte</div></div><div class="sbox"><div class="sv" id="pT">0</div><div class="sl">Missions</div></div><div class="sbox"><div class="sv" id="pA">0</div><div class="sl">Avert.</div></div></div>
+        <div id="pWarn"></div><div id="pFired"></div>
+      </div>
+      <div class="eyebrow" style="margin-top:14px">Historique</div>
+      <div id="histList"></div>
+      <button class="btn btn-s mt12" onclick="showP('pJeu')">← Retour au jeu</button>
+    </div>
+
+    <!-- CLASSEMENT -->
+    <div class="panel" id="pClass">
+      <div class="eyebrow">Classement</div>
+      <div class="heading">Les Meilleurs<br>Commerciaux</div>
+      <div id="ldrList"><div class="tm">Chargement…</div></div>
+      <button class="btn btn-s mt12" onclick="showP('pJeu')">← Retour</button>
+    </div>
+
+    <!-- ESPACE PDG -->
+    <div class="panel" id="pPDG">
+      <div class="eyebrow">Espace PDG</div>
+      <div class="heading">Direction<br>Générale</div>
+      <div class="pactions">
+        <div class="pa pa-save" onclick="saveToDrive()">💾 Sauvegarder</div>
+        <div class="pa pa-del" onclick="openDeleteAll()">🗑️ Supprimer</div>
+        <div class="pa pa-recap" onclick="showRecap()">📊 Récapitulatif</div>
+        <div class="pa pa-test" onclick="activerModeTest()">🧪 Mode Test</div>
+        <div class="pa pa-cat" onclick="showCatalogueAll()" style="grid-column:1/-1">📋 Catalogues clients & produits par poste</div>
+        <div class="pa" style="background:rgba(52,152,219,.14);border-color:rgba(52,152,219,.4);color:#5dade2;grid-column:1/-1" onclick="showCatalogueExos()">📚 Catalogue des 18 exercices</div>
+      </div>
+      <div class="tnav">
+        <button class="tbtn act" id="tb1" onclick="profTab('tc1','tb1')">Candidatures</button>
+        <button class="tbtn" id="tb2" onclick="profTab('tc2','tb2')">Entretiens</button>
+        <button class="tbtn" id="tb3" onclick="profTab('tc3','tb3')">Travaux</button>
+        <button class="tbtn" id="tb4" onclick="profTab('tc4','tb4')">Élèves</button>
+      </div>
+      <div id="tc1"><div id="profCand"><div class="tm">Chargement…</div></div></div>
+      <div id="tc2" style="display:none"><div id="profEnt"><div class="tm">Chargement…</div></div></div>
+      <div id="tc3" style="display:none"><div id="profTrav"><div class="tm">Chargement…</div></div></div>
+      <div id="tc4" style="display:none"><div id="profElev"><div class="tm">Chargement…</div></div></div>
+    </div>
+
+    <!-- RÉCAPITULATIF -->
+    <div class="panel" id="pRecap">
+      <div class="eyebrow">PDG · Vue Globale</div>
+      <div class="heading">Récapitulatif<br>de la Promotion</div>
+      <div id="recapStats" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px"></div>
+      <div class="chart-wrap"><div class="chart-title">Classement cagnotte (€)</div><canvas id="chartLdr" height="200"></canvas></div>
+      <div class="chart-wrap"><div class="chart-title">Progression de la classe</div><canvas id="chartClass" height="180"></canvas></div>
+      <div style="overflow-x:auto"><table class="rtable" id="recapTable"><thead><tr><th>#</th><th>Élève</th><th>Poste</th><th>Cagnotte</th><th>Missions</th><th>Moy.</th><th>Avert.</th><th>Statut</th><th>Fiche</th></tr></thead><tbody id="recapBody"></tbody></table></div>
+      <button class="btn btn-p mt12" onclick="exportCSV()">⬇️ Exporter CSV</button>
+      <button class="btn btn-s mt8" onclick="showP('pPDG')">← Retour PDG</button>
+    </div>
+
+    <!-- CATALOGUE EXERCICES PDG -->
+    <div class="panel" id="pCatExos">
+      <div class="eyebrow">PDG · Référentiel complet</div>
+      <div class="heading">Les 18 Travaux<br>du Commercial</div>
+      <div class="card card-hi" style="margin-bottom:16px;font-size:.8rem;line-height:1.7">
+        🎲 <strong>18 missions différentes</strong> déclenchées par le dé à 18 faces. Chaque mission est contextualisée avec le portefeuille client et le catalogue de l'entreprise de l'élève.
+        Chaque exercice dispose d'un <strong>document vierge téléchargeable</strong> pour faciliter le travail.
+      </div>
+      <div id="catExosContent"></div>
+      <button class="btn btn-s mt12" onclick="showP('pPDG')">← Retour PDG</button>
+    </div>
+
+    <!-- CATALOGUE PDG -->
+    <div class="panel" id="pCatAll">
+      <div class="eyebrow">PDG · Catalogues</div>
+      <div class="heading">Tous les<br>Catalogues</div>
+      <div id="catAllContent"></div>
+      <button class="btn btn-s mt12" onclick="showP('pPDG')">← Retour PDG</button>
+    </div>
+
+  </div>
+</div>
+<script>
+/* ============================================================
+   CONFIG SUPABASE
+============================================================ */
+const SB_URL='https://dmfymoxasrrfiweufcdz.supabase.co';
+const SB_KEY='sb_publishable_kjS3HnkAJ3aFK_m8RlxKBg_wsS0S3KL';
+const PDG_CODE='siatte2024';
+const MAIL_PROF='michael.siatte@ac-normandie.fr';
+let sb=null;
+
+function initSB(){
+  if(window.supabase){
+    sb=window.supabase.createClient(SB_URL,SB_KEY);
+  }
+}
+
+/* ============================================================
+   STORAGE — Supabase + localStorage fallback
+============================================================ */
+function lsG(k){try{return JSON.parse(localStorage.getItem(k))||null}catch{return null}}
+function lsS(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
+
+// STUDENTS
+async function getStudents(){
+  if(sb){
+    try{
+      const {data,error}=await sb.from('students').select('*');
+      if(error)throw error;
+      const obj={};
+      (data||[]).forEach(r=>{obj[r.uid]={
+        prenom:r.prenom,nom:r.nom,dob:r.dob,selfie:r.selfie,
+        poste:r.poste,postesEssayes:r.postes_essayes||[],
+        wallet:r.wallet||0,avert:r.avert||0,mauvaises:r.mauvaises||0,
+        licencie:r.licencie||false,travaux:r.travaux||[],
+        cand:r.cand||{},entNote:r.ent_note,enPoste:r.en_poste||false
+      }});
+      return obj;
+    }catch(e){console.error('getStudents',e);}
+  }
+  return lsG('mdc_students')||{};
+}
+
+async function saveStudent(uid,data){
+  const ls_all=lsG('mdc_students')||{};ls_all[uid]=data;lsS('mdc_students',ls_all);
+  if(!sb)return;
+  try{
+    await sb.from('students').upsert({
+      uid,prenom:data.prenom,nom:data.nom,dob:data.dob,
+      selfie:data.selfie||null,poste:data.poste||null,
+      postes_essayes:data.postesEssayes||[],
+      wallet:data.wallet||0,avert:data.avert||0,mauvaises:data.mauvaises||0,
+      licencie:data.licencie||false,travaux:data.travaux||[],
+      cand:data.cand||{},ent_note:data.entNote??null,en_poste:data.enPoste||false,
+      updated_at:new Date().toISOString()
+    },{onConflict:'uid'});
+  }catch(e){console.error('saveStudent',e);}
+}
+
+// CANDIDATURES
+async function getCands(){
+  if(sb){
+    try{
+      const {data,error}=await sb.from('candidatures').select('*');
+      if(error)throw error;
+      const obj={};(data||[]).forEach(r=>{obj[r.uid]={
+        uid:r.uid,prenom:r.prenom,nom:r.nom,selfie:r.selfie,
+        posteId:r.poste_id,posteTitle:r.poste_title,company:r.company,
+        cv:r.cv,cvName:r.cv_name,lm:r.lm,lmName:r.lm_name,
+        status:r.status,at:r.submitted_at
+      }});
+      return obj;
+    }catch(e){console.error('getCands',e);}
+  }
+  return lsG('mdc_cands')||{};
+}
+
+async function saveCand(uid,data){
+  const all=lsG('mdc_cands')||{};all[uid]=data;lsS('mdc_cands',all);
+  if(!sb)return;
+  try{
+    await sb.from('candidatures').upsert({
+      uid,prenom:data.prenom,nom:data.nom,selfie:data.selfie||null,
+      poste_id:data.posteId,poste_title:data.posteTitle,company:data.company,
+      cv:data.cv||null,cv_name:data.cvName||null,
+      lm:data.lm||null,lm_name:data.lmName||null,
+      status:data.status||'pending',submitted_at:new Date().toISOString()
+    },{onConflict:'uid'});
+  }catch(e){console.error('saveCand',e);}
+}
+
+// ENTRETIENS
+async function getEnts(){
+  if(sb){
+    try{
+      const {data,error}=await sb.from('entretiens').select('*');
+      if(error)throw error;
+      const obj={};(data||[]).forEach(r=>{obj[r.uid]=r});return obj;
+    }catch(e){console.error('getEnts',e);}
+  }
+  return lsG('mdc_ents')||{};
+}
+
+async function saveEnt(uid,note){
+  const all=lsG('mdc_ents')||{};all[uid]={uid,note};lsS('mdc_ents',all);
+  if(!sb)return;
+  try{
+    await sb.from('entretiens').upsert({uid,note,noted_at:new Date().toISOString()},{onConflict:'uid'});
+  }catch(e){console.error('saveEnt',e);}
+}
+
+// CORRECTIONS
+async function getCorrs(){
+  if(sb){
+    try{
+      const {data,error}=await sb.from('corrections').select('*');
+      if(error)throw error;
+      const obj={};(data||[]).forEach(r=>{obj[r.id]={
+        key:r.id,uid:r.uid,prenom:r.prenom,nom:r.nom,selfie:r.selfie,
+        posteTitle:r.poste_title,company:r.company,
+        taskTitle:r.task_title,taskRef:r.task_ref,score:r.score,
+        file:r.file_name,fileData:r.file_data||null,
+        status:r.status,note:r.note,date:r.date_str,travailIdx:r.travail_idx||0
+      }});
+      return obj;
+    }catch(e){console.error('getCorrs',e);}
+  }
+  return lsG('mdc_corrs')||{};
+}
+
+async function saveCorr(key,data){
+  const all=lsG('mdc_corrs')||{};all[key]=data;lsS('mdc_corrs',all);
+  if(!sb)return;
+  try{
+    await sb.from('corrections').upsert({
+      id:key,uid:data.uid,prenom:data.prenom,nom:data.nom,selfie:data.selfie||null,
+      poste_title:data.posteTitle,company:data.company,
+      task_title:data.taskTitle,task_ref:data.taskRef,score:data.score||0,
+      file_name:data.file,file_data:data.fileData||null,
+      status:'pending',note:null,date_str:data.date,travail_idx:data.travailIdx||0,
+      sent_at:new Date().toISOString()
+    },{onConflict:'id'});
+  }catch(e){console.error('saveCorr',e);}
+}
+
+async function updateCorr(key,updates){
+  const all=lsG('mdc_corrs')||{};
+  if(all[key])Object.assign(all[key],updates);lsS('mdc_corrs',all);
+  if(!sb)return;
+  try{
+    const row={noted_at:new Date().toISOString()};
+    if(updates.status!==undefined)row.status=updates.status;
+    if(updates.note!==undefined)row.note=updates.note;
+    await sb.from('corrections').update(row).eq('id',key);
+  }catch(e){console.error('updateCorr',e);}
+}
+
+/* ============================================================
+   JOBS — 6 postes détaillés avec clients et catalogue
+============================================================ */
+const JOBS=[
+  {id:'j1',icon:'🤝',title:'Chargé(e) de Clientèle',
+   company:'NORMANDIE SOLUTIONS PRO',
+   address:'12 rue de la Paix, 76000 Rouen (Seine-Maritime)',
+   secteur:'Fournitures de bureau & services B2B',salary:1800,ref:'A1 — Relation client',
+   desc:'Vous gérez un portefeuille de 120 clients PME/PMI en Haute-Normandie pour NSP, leader régional en fournitures de bureau B2B.',
+   mise:"Votre manager M. Lecomte vous remet un portefeuille de 120 clients dont 35 sont « à risque » (aucune commande depuis 6 mois). Mission : relancer les clients inactifs et proposer une offre personnalisée. Remise accordée : 8% max. Objectif mensuel : 45 000 € CA.",
+   clients:[
+     {nom:'CABINET MARTIN & ASSOCIÉS',contact:'Mme Sophie Martin',tel:'02 35 12 34 56',email:'s.martin@cabinet-martin.fr',adresse:'45 rue Victor Hugo, 76100 Rouen',secteur:'Cabinet d\'avocats',ca_an:'12 500 €',statut:'Actif'},
+     {nom:'GARAGE DUBOIS AUTO',contact:'M. Jean-Pierre Dubois',tel:'02 35 67 89 01',email:'jp.dubois@garageauto.fr',adresse:'Zone industrielle, 76230 Bois-Guillaume',secteur:'Automobile',ca_an:'8 200 €',statut:'À risque'},
+     {nom:'ÉCOLE PRIVÉE SAINTE-MARIE',contact:'Mme Claire Petit',tel:'02 35 23 45 67',email:'direction@sainte-marie.fr',adresse:'12 avenue Gambetta, 76000 Rouen',secteur:'Éducation',ca_an:'15 800 €',statut:'Actif'},
+     {nom:'BOULANGERIE LEFEVRE',contact:'M. Thomas Lefevre',tel:'02 35 45 67 89',email:'t.lefevre@boulangerie.fr',adresse:'3 place du Marché, 76300 Sotteville',secteur:'Alimentation',ca_an:'3 400 €',statut:'À risque'},
+   ],
+   catalogue:[
+     {ref:'PAP001',designation:'Ramette papier A4 80g (500 feuilles)',unite:'Ramette',prix_ht:4.50,remise_max:'15%',stock:'Disponible'},
+     {ref:'PAP002',designation:'Ramette papier A4 90g Premium (500 feuilles)',unite:'Ramette',prix_ht:6.20,remise_max:'10%',stock:'Disponible'},
+     {ref:'STY001',designation:'Stylo bille BIC 4 couleurs',unite:'Unité',prix_ht:1.80,remise_max:'20%',stock:'Disponible'},
+     {ref:'CLA001',designation:'Classeur levier A4 dos 80mm',unite:'Unité',prix_ht:3.90,remise_max:'15%',stock:'Disponible'},
+     {ref:'ENC001',designation:'Cartouche encre HP 301 Noir',unite:'Unité',prix_ht:12.50,remise_max:'5%',stock:'Sur commande'},
+     {ref:'BUR001',designation:'Bureau direction L 160x80cm chêne',unite:'Unité',prix_ht:289.00,remise_max:'12%',stock:'Disponible'},
+     {ref:'CHI001',designation:'Chaise ergonomique accoudoirs réglables',unite:'Unité',prix_ht:185.00,remise_max:'10%',stock:'Disponible'},
+     {ref:'TIS001',designation:'Distributeur essuie-mains papier 1 rouleau',unite:'Unité',prix_ht:8.90,remise_max:'20%',stock:'Disponible'},
+   ]},
+  {id:'j2',icon:'🚗',title:'Commercial(e) Terrain',
+   company:'AGRITECH NORMANDIE',
+   address:'ZI des Hauts Grés, 14200 Hérouville-Saint-Clair',
+   secteur:'Équipements agricoles & matériel de précision',salary:2000,ref:'A2 — Négociation terrain',
+   desc:'Vous couvrez 3 départements (14, 50, 61) pour commercialiser des équipements de précision agricole avec un véhicule de fonction.',
+   mise:"Vous prenez en charge un secteur inexploité depuis 4 mois. Vous avez 280 prospects, un catalogue produits incluant le GPS AgriNav X7 (4 200 € HT, marge 28%), et 3 visites/jour. Objectif : 12 nouveaux clients et 85 000 € CA en 3 mois.",
+   clients:[
+     {nom:'GAEC DES TROIS CHÊNES',contact:'M. Paul Leconte',tel:'02 31 45 67 89',email:'gaec3chenes@agriculteur.fr',adresse:'Ferme des Chênes, 14400 Bayeux',secteur:'Polyculture élevage',ca_an:'0 € (prospect)',statut:'Prospect chaud'},
+     {nom:'EARL BONNEVILLE',contact:'M. et Mme Bonneville',tel:'02 33 12 34 56',email:'earl.bonneville@orange.fr',adresse:'Route de la Forêt, 61000 Alençon',secteur:'Céréales',ca_an:'0 € (prospect)',statut:'Prospect froid'},
+     {nom:'COOP NORMANDIE GRAIN',contact:'M. Hervé Duplessis',tel:'02 31 78 90 12',email:'h.duplessis@coop-ng.fr',adresse:'Siège social, 14000 Caen',secteur:'Coopérative',ca_an:'45 000 €',statut:'Client actif'},
+   ],
+   catalogue:[
+     {ref:'GPS001',designation:'GPS précision AgriNav X7 (±2cm)',unite:'Unité',prix_ht:4200.00,remise_max:'8%',stock:'Disponible'},
+     {ref:'GPS002',designation:'Abonnement correction RTK annuel',unite:'Abonnement/an',prix_ht:890.00,remise_max:'5%',stock:'Disponible'},
+     {ref:'SPR001',designation:'Pulvérisateur trainé 2500L autoguidé',unite:'Unité',prix_ht:28500.00,remise_max:'6%',stock:'Sur commande'},
+     {ref:'SON001',designation:'Sonde humidité sol connectée',unite:'Unité',prix_ht:340.00,remise_max:'10%',stock:'Disponible'},
+     {ref:'DRO001',designation:'Drone surveillance parcelles (pack 2h)',unite:'Jour',prix_ht:450.00,remise_max:'15%',stock:'Disponible'},
+     {ref:'LOG001',designation:'Logiciel gestion parcelles AgriMap Pro',unite:'Licence/an',prix_ht:680.00,remise_max:'10%',stock:'Disponible'},
+   ]},
+  {id:'j3',icon:'⚙️',title:'Technico-Commercial(e)',
+   company:'ELECTRO INDUSTRIE CAEN',
+   address:'8 avenue de Cambridge, 14200 Hérouville-Saint-Clair',
+   secteur:'Solutions électriques & automatisation industrielle',salary:2100,ref:'A3 — Développement CA',
+   desc:'EIC distribue des solutions électriques et d\'automatisation pour l\'industrie normande. Clients : directeurs techniques d\'usines.',
+   mise:"Les Aciéries de Colombelles (250 salariés) veulent automatiser une ligne de production. M. Beaumont, directeur technique, vous reçoit. Projet estimé : 180 000 € HT. Préparez une proposition technique complète avec audit, solution, planning 6 semaines, SAV et formation.",
+   clients:[
+     {nom:'ACIÉRIES DE COLOMBELLES',contact:'M. Bruno Beaumont',tel:'02 31 56 78 90',email:'b.beaumont@acieries-colombelles.fr',adresse:'Zone industrielle, 14460 Colombelles',secteur:'Métallurgie',ca_an:'95 000 €',statut:'Grands comptes'},
+     {nom:'NORMANDIE PACKAGING',contact:'Mme Isabelle Renard',tel:'02 31 23 45 67',email:'i.renard@norpack.fr',adresse:'BP 45, 14800 Deauville',secteur:'Emballage',ca_an:'38 000 €',statut:'Actif'},
+     {nom:'CENTRALE LAITIÈRE CALVADOS',contact:'M. Denis Flour',tel:'02 31 89 01 23',email:'d.flour@clc.fr',adresse:'Route de Paris, 14540 Bourguébus',secteur:'Agroalimentaire',ca_an:'62 000 €',statut:'Actif'},
+   ],
+   catalogue:[
+     {ref:'AUT001',designation:'Automate programmable Siemens S7-1500',unite:'Unité',prix_ht:2850.00,remise_max:'8%',stock:'Disponible'},
+     {ref:'CAP001',designation:'Capteur de proximité inductif 12mm',unite:'Unité',prix_ht:45.00,remise_max:'15%',stock:'Disponible'},
+     {ref:'MOT001',designation:'Variateur de fréquence Schneider 7.5kW',unite:'Unité',prix_ht:680.00,remise_max:'10%',stock:'Disponible'},
+     {ref:'TAB001',designation:'Armoire électrique IP65 600x400mm',unite:'Unité',prix_ht:320.00,remise_max:'12%',stock:'Disponible'},
+     {ref:'FOR001',designation:'Formation opérateurs automates (1 jour)',unite:'Jour',prix_ht:890.00,remise_max:'0%',stock:'Sur RDV'},
+     {ref:'MAI001',designation:'Contrat maintenance préventive annuel',unite:'Contrat/an',prix_ht:4500.00,remise_max:'5%',stock:'Disponible'},
+   ]},
+  {id:'j4',icon:'🏪',title:'Responsable Secteur GMS',
+   company:'DISTRIBUTION ATLANTIC OUEST',
+   address:'CC Grand Cap, Route de Paris, 76230 Bois-Guillaume',
+   secteur:'Produits alimentaires régionaux & épicerie fine',salary:1900,ref:'A4 — Animation PDV',
+   desc:'DAO référence des produits normands (fromages, cidres, charcuteries) en grande distribution. Vous gérez 15 points de vente.',
+   mise:"La saison des fêtes approche. 4 hypermarchés Carrefour et Leclerc à animer pour « Terroirs de Normandie ». Budget merchandising : 2 500 €. Objectif : +35% de CA vs N-1 sur 6 semaines. Concevez le plan d'animation, négociez les emplacements, formez les animatrices.",
+   clients:[
+     {nom:'CARREFOUR BOIS-GUILLAUME',contact:'M. Alexis Bernard',tel:'02 35 59 12 34',email:'a.bernard@carrefour.fr',adresse:'CC Grand Cap, 76230 Bois-Guillaume',secteur:'GMS',ca_an:'85 000 €',statut:'Partenaire'},
+     {nom:'LECLERC ROUEN NORD',contact:'Mme Karine Morin',tel:'02 35 74 56 78',email:'k.morin@leclerc-rouennord.fr',adresse:'ZAC de la Mare, 76250 Déville',secteur:'GMS',ca_an:'72 000 €',statut:'Partenaire'},
+     {nom:'INTERMARCHÉ MONTVILLE',contact:'M. Patrick Guillot',tel:'02 35 33 22 11',email:'p.guillot@itm-montville.fr',adresse:'Route de Rouen, 76710 Montville',secteur:'GMS',ca_an:'28 000 €',statut:'Actif'},
+   ],
+   catalogue:[
+     {ref:'FROM001',designation:'Camembert AOP Normandie (250g)',unite:'Pièce',prix_ht:3.20,remise_max:'10%',stock:'Disponible'},
+     {ref:'CID001',designation:'Cidre brut bouché 75cl Domaine Dupont',unite:'Bouteille',prix_ht:3.80,remise_max:'8%',stock:'Disponible'},
+     {ref:'RIL001',designation:'Rillettes de canard bocal 180g',unite:'Bocal',prix_ht:4.50,remise_max:'12%',stock:'Disponible'},
+     {ref:'BOF001',designation:'Beurre demi-sel AOP Isigny 500g',unite:'Plaquette',prix_ht:2.90,remise_max:'5%',stock:'Disponible'},
+     {ref:'CAL001',designation:'Calvados XO 70cl',unite:'Bouteille',prix_ht:28.00,remise_max:'6%',stock:'Sur commande'},
+     {ref:'PLV001',designation:'Stop rayon A4 cartonné (lot 10)',unite:'Lot',prix_ht:12.00,remise_max:'0%',stock:'Disponible'},
+   ]},
+  {id:'j5',icon:'📈',title:'Business Developer',
+   company:'NUMÉRITECH SOLUTIONS',
+   address:'Pôle Innovation Quai, 76600 Le Havre',
+   secteur:'Logiciels de gestion & transformation digitale PME',salary:2200,ref:'A5 — Développement commercial',
+   desc:'Numéritech édite des logiciels de gestion pour PME (ERP, CRM, facturation). Vous conquérez de nouveaux marchés dans les secteurs BTP et transport normands.',
+   mise:"La direction cible le secteur BTP en Normandie (50-200 salariés, 340 cibles). Mission 6 mois : stratégie d'approche, partenariat Fédération BTP Normandie, 2 webinaires démo, 15 nouveaux contrats (valeur moy. 8 500 €/an). Budget prospection : 4 000 €.",
+   clients:[
+     {nom:'BTP GUILLOTEAU CONSTRUCTION',contact:'M. Frédéric Guilloteau',tel:'02 35 41 23 45',email:'f.guilloteau@guilloteau-btp.fr',adresse:'28 rue des Artisans, 76700 Harfleur',secteur:'BTP Gros œuvre',ca_an:'0 € (prospect)',statut:'Prospect chaud'},
+     {nom:'TRANSPORTS RIVIÈRE',contact:'Mme Nathalie Rivière',tel:'02 35 52 34 56',email:'n.riviere@transports-riviere.fr',adresse:'ZI Port 2000, 76600 Le Havre',secteur:'Transport routier',ca_an:'0 € (prospect)',statut:'Prospect tiède'},
+     {nom:'MENUISERIE DELACOUR',contact:'M. Jacques Delacour',tel:'02 35 63 45 67',email:'j.delacour@menuiserie-delacour.fr',adresse:'4 rue des Charpentiers, 76380 Canteleu',secteur:'Menuiserie',ca_an:'8 500 €',statut:'Client actif'},
+   ],
+   catalogue:[
+     {ref:'ERP001',designation:'ERP Numéritech Standard (jusqu\'à 10 postes)',unite:'Licence/an',prix_ht:3200.00,remise_max:'10%',stock:'Disponible'},
+     {ref:'ERP002',designation:'ERP Numéritech Pro (postes illimités)',unite:'Licence/an',prix_ht:7800.00,remise_max:'8%',stock:'Disponible'},
+     {ref:'CRM001',designation:'Module CRM + Devis + Facturation',unite:'Module/an',prix_ht:1200.00,remise_max:'15%',stock:'Disponible'},
+     {ref:'FOR001',designation:'Formation initiale sur site (2 jours)',unite:'Forfait',prix_ht:1600.00,remise_max:'0%',stock:'Sur RDV'},
+     {ref:'MAI001',designation:'Maintenance & support prioritaire annuel',unite:'Contrat/an',prix_ht:890.00,remise_max:'5%',stock:'Disponible'},
+     {ref:'MIG001',designation:'Migration données ancien logiciel',unite:'Forfait',prix_ht:2400.00,remise_max:'0%',stock:'Sur devis'},
+   ]},
+  {id:'j6',icon:'🎯',title:'Account Manager',
+   company:'ASSURANCES NORMANDIE CONSEIL',
+   address:'35 place de la Cathédrale, 76000 Rouen',
+   secteur:'Assurances professionnelles & prévoyance entreprise',salary:2300,ref:'A6 — Gestion grands comptes',
+   desc:'ANC est un cabinet de courtage en assurances professionnelles. Vous gérez 45 grands comptes (CA individuel > 20 000 €/an).',
+   mise:"Le groupe hôtelier Côte de Nacre (12 hôtels, 78 000 €/an d'assurances) est approché par AXA (-15% sur les primes). Renouvellement dans 6 semaines. Préparez un plan de fidélisation : audit des garanties, 3 axes d'amélioration, services à VA, contre-proposition tarifaire argumentée.",
+   clients:[
+     {nom:'HÔTELS CÔTE DE NACRE',contact:'M. Étienne Aubert',tel:'02 31 34 56 78',email:'e.aubert@cote-de-nacre.fr',adresse:'2 Boulevard Maréchal Foch, 14150 Ouistreham',secteur:'Hôtellerie',ca_an:'78 000 €',statut:'Grand compte'},
+     {nom:'CLINIQUE SAINT-MARTIN',contact:'Mme Véronique Saunier',tel:'02 35 78 90 12',email:'v.saunier@clinique-stmartin.fr',adresse:'15 avenue Flaubert, 76000 Rouen',secteur:'Santé',ca_an:'42 000 €',statut:'Grand compte'},
+     {nom:'RÉSIDENCE SENIORS LES ACACIAS',contact:'M. Christophe Lamy',tel:'02 35 89 01 23',email:'c.lamy@acacias-seniors.fr',adresse:'8 rue des Roses, 76130 Mont-Saint-Aignan',secteur:'Services à la personne',ca_an:'31 000 €',statut:'Actif'},
+   ],
+   catalogue:[
+     {ref:'RC001',designation:'RC Professionnelle TPE/PME',unite:'Contrat/an',prix_ht:890.00,remise_max:'12%',stock:'Disponible'},
+     {ref:'MUL001',designation:'Multirisque Professionnelle',unite:'Contrat/an',prix_ht:2400.00,remise_max:'10%',stock:'Disponible'},
+     {ref:'PRE001',designation:'Prévoyance collective (par salarié)',unite:'Contrat/an/salarié',prix_ht:340.00,remise_max:'8%',stock:'Disponible'},
+     {ref:'CYB001',designation:'Assurance Cyber-risques',unite:'Contrat/an',prix_ht:1800.00,remise_max:'5%',stock:'Disponible'},
+     {ref:'AUD001',designation:'Audit complet garanties existantes',unite:'Forfait',prix_ht:650.00,remise_max:'0%',stock:'Sur RDV'},
+   ]}
+];
+
+/* ============================================================
+   TASKS — 18 missions enrichies avec contexte client
+============================================================ */
+function getTask(score,poste){
+  const clients=poste&&poste.clients&&poste.clients.length>0?poste.clients:[];
+  const c=clients.length>0?clients[Math.floor(Math.random()*clients.length)]:null;
+  const cn=c?c.nom:'votre client';
+  const cc=c?c.contact:'votre interlocuteur';
+  const cat=poste&&poste.catalogue&&poste.catalogue.length>0?poste.catalogue:[];
+  const p0=cat.length>0?cat[0]:null;
+  const p1=cat.length>1?cat[1]:p0;
+  const company=poste?poste.company:'votre entreprise';
+  const secteur=poste?poste.secteur:'votre secteur';
+
+  // Tournée : données réelles avec km et vitesse
+  const tourClients=clients.slice(0,4).concat(clients.slice(0,1)); // 5 visites
+  const tourData=tourClients.map((cl,i)=>{
+    const kms=[28,15,42,19,31];const temps=[35,25,50,40,45];
+    return {nom:cl.nom,addr:cl.adresse,km:kms[i]||25,duree:temps[i]||30,statut:cl.statut};
+  });
+  const tourStr=tourData.map((t,i)=>`Client ${i+1} : ${t.nom} (${t.addr}) — ${t.km} km depuis le point précédent, durée visite : ${t.duree} min, statut : ${t.statut}`).join(' | ');
+  const totalKm=tourData.reduce((a,t)=>a+t.km,0);
+
+  const tasks={
+    1:{title:'E-mail professionnel de prospection',
+       desc:'Rédige un e-mail de prospection B2B ciblé. Objet percutant (max 60 car.), accroche personnalisée, proposition de valeur en 3 lignes, bénéfices chiffrés, appel à action précis (RDV 20 min), signature professionnelle complète.',
+       client:c?'Client cible : '+cn+' — '+cc+' ('+c.email+')':null,
+       consigne:'Rédige un e-mail de prospection à destination de '+cn+'. Personnalise le contenu en fonction de leur secteur : '+(c?c.secteur:secteur)+'.',
+       ref:'C1.1 — Communication écrite professionnelle'},
+    2:{title:'Devis commercial complet',
+       desc:'Élabore un devis professionnel. En-tête complet, tableau (réf/désignation/qté/PU HT/remise/total HT), sous-total HT, TVA 20%, TTC, conditions de règlement, délai de validité 30 jours.',
+       client:c?'Client : '+cn+' — Contact : '+cc+' — Adresse : '+c.adresse:null,
+       consigne:p0?'Utilise le catalogue de '+company+' pour créer un devis de minimum 3 lignes pour '+cn+'. Produit principal : "'+p0.designation+'" à '+p0.prix_ht+' € HT. Applique une remise de '+p0.remise_max+' max.':'Établis un devis pour '+cn+'.',
+       ref:'C2.1 — Documents commerciaux'},
+    3:{title:'Bon de commande',
+       desc:'Crée un BC suite à un devis accepté. N° BC, identité client/fournisseur, tableau produits (réf/désignation/qté/PU/total), conditions de livraison (adresse, délai, transporteur), mode de paiement, signatures.',
+       client:c?'Client : '+cn+' — Adresse de livraison : '+c.adresse:null,
+       consigne:'Suite à l\'acceptation de ton devis par '+cn+', établis le bon de commande. Délai de livraison : 8 jours ouvrés. Paiement : 30% acompte, solde à réception.',
+       ref:'C2.2 — Traitement des commandes'},
+    4:{title:'Note de frais professionnelle',
+       desc:'Fiche de frais pour 2 jours. Barème IK 2024 : 0,529 €/km (5CV). Repas midi ≤ 15,25 €, soir ≤ 20 €, repas client ≤ 60 €. Hébergement sur justificatif. Péages réels.',
+       client:c?'Déplacement pour visite chez '+cn+' à '+(c.adresse?c.adresse.split(',').slice(-1)[0].trim():'destination'):null,
+       consigne:'Jour 1 : aller-retour en voiture (120 km), visite chez '+cn+', déjeuner client. Jour 2 : train (billet 45 €), 2 visites, nuit hôtel (85 €). Véhicule 5CV. Complète ta note de frais.',
+       ref:'C3.1 — Gestion des frais professionnels'},
+    5:{title:'Tournée commerciale optimisée',
+       desc:'Organise 5 visites en minimisant les km (méthode des pétales). Vitesse moyenne de déplacement : 70 km/h. Départ 8h00. Calculer temps de trajet, heure d\'arrivée, durée de visite, heure de départ pour chaque client. Pause repas obligatoire 12h-13h.',
+       client:clients.length>0?'Clients à visiter : '+tourStr:null,
+       consigne:'Base de départ : '+company+'. Distance totale brute (sans optimisation) : '+totalKm+' km. Vitesse moyenne : 70 km/h. Optimise l\'ordre des visites pour réduire les km et respecter les créneaux horaires. Calcule le coût IK (0,529 €/km) et les heures de chaque étape.',
+       ref:'C3.2 — Planification de l\'activité'},
+    6:{title:'Analyse KPI Salon professionnel',
+       desc:'Calcule et interprète les indicateurs : taux de transformation contacts→RDV→devis→commandes, coût par contact, CA par contact, ROI (CA ÷ budget). Rédige une synthèse avec recommandations.',
+       client:null,
+       consigne:'Participation au salon de '+secteur+'. Données réelles : Budget stand = 4 500 €. Contacts qualifiés = 87. RDV obtenus = 23 (dont 18 confirmés). Devis envoyés = 8 (valeur totale : 48 500 € HT). Commandes signées = 3 (CA : 18 500 € HT). Calcule TOUS les KPI et propose 3 recommandations concrètes.',
+       ref:'C4.1 — Analyse des performances'},
+    7:{title:'Script d\'appel CROC',
+       desc:'Script complet CROC : Contact (présentation + vérification), Raison (accroche-bénéfice 2 phrases), Objectif (proposition RDV), Conclusion (reformulation + confirmation date/heure). + 3 fiches réflexe objections.',
+       client:c?'Prospect à appeler : '+cn+' — '+cc+' — Tél : '+c.tel:null,
+       consigne:'Prépare ton script CROC pour prospecter '+cn+' ('+secteur+'). Objectif : obtenir un RDV de 20 min. Anticipe ces 3 objections : "Je n\'ai pas le temps", "J\'ai déjà un fournisseur", "Envoyez-moi une doc".',
+       ref:'C1.2 — Prospection téléphonique'},
+    8:{title:'Argumentaire CAP-SONCAS',
+       desc:'Pour chaque profil SONCAS (Sécurité, Orgueil, Nouveauté, Confort, Argent, Sympathie) : 1 Caractéristique produit, 1 Avantage-bénéfice client traduit, 1 Preuve concrète. Format tableau.',
+       client:c?'Produit à argumenter pour '+cn+' (profil : '+c.secteur+')':null,
+       consigne:p0?'Construis ton argumentaire CAP-SONCAS pour "'+p0.designation+'" (prix HT : '+p0.prix_ht+' €). Adapte chaque argument au profil de '+cn+'. La preuve doit être vérifiable (chiffre, témoignage, certification).':null,
+       ref:'C1.3 — Argumentation commerciale'},
+    9:{title:'Guide traitement des objections',
+       desc:'5 objections terrain. Pour chacune : reformulation positive, réponse en 3 temps (écoute active, argument CAP, contre-question), formule de clôture. Format fiches plastifiées terrain.',
+       client:c?'Contexte : RDV avec '+cn+' — '+cc:null,
+       consigne:'Identifie les 5 objections les plus fréquentes chez un client type '+secteur+'. Prépare des réponses structurées pour chacune. Exemples possibles : "C\'est trop cher", "Je dois en parler à ma direction", "Votre concurrent est moins cher", "Je vais réfléchir", "Je n\'en ai pas besoin maintenant".',
+       ref:'C1.4 — Gestion des objections'},
+    10:{title:'Plan de découverte client',
+        desc:'18 questions en 4 phases. Phase 1 — Contexte (5 questions ouvertes). Phase 2 — Organisation (4 questions). Phase 3 — Besoins SONCAS (5 questions). Phase 4 — Contraintes et décision (4 questions). Pour chaque question : type, objectif, écoute attendue.',
+        client:c?'Premier RDV avec : '+cn+' — '+cc:null,
+        consigne:'Prépare ton plan de découverte pour un premier RDV chez '+cn+' (secteur : '+(c?c.secteur:secteur)+'). Durée du RDV : 45 min. CA potentiel estimé : '+(c?c.ca_an:'5 000 € / an')+'. Adapte chaque question à leur activité.',
+        ref:'C1.5 — Découverte des besoins'},
+    11:{title:'Compte-rendu de visite',
+        desc:'CRV structuré : date/lieu/participants, contexte client, besoins SONCAS détectés, proposition et réaction, objections + réponses, accord ou non, prochaine étape avec date, cotation (chaud/tiède/froid).',
+        client:c?'Visite chez '+cn+' — Interlocuteur : '+cc:null,
+        consigne:'Tu viens d\'un RDV chez '+cn+'. Le client a montré de l\'intérêt pour '+(p0?p0.designation:'ton offre')+' mais objecte sur le prix ('+(p0?p0.prix_ht+' € HT':'tarif')+'). Il demande un délai de réflexion de 8 jours. Rédige le CRV complet.',
+        ref:'C2.3 — Reporting commercial'},
+    12:{title:'Proposition commerciale complète',
+        desc:'Propale 4 pages : 1) Page de garde, 2) Synthèse exécutive, 3) Analyse des enjeux client + solution recommandée avec ROI, 4) Planning et conditions.',
+        client:c?'Proposition pour : '+cn+' — '+cc:null,
+        consigne:'Rédige une propale pour '+cn+'. CA actuel : '+(c?c.ca_an:'à évaluer')+'. Statut : '+(c?c.statut:'prospect')+'.'+(p0?' Produit recommandé : "'+p0.designation+'" à '+p0.prix_ht+' € HT. Remise accordée : '+p0.remise_max+'.':''),
+        ref:'C2.4 — Élaboration de propositions'},
+    13:{title:'Tableau de bord commercial',
+        desc:'TDB hebdomadaire avec objectifs donnés. Calcule les écarts, les taux de transformation et la prévision mensuelle. Format tableau + analyse des résultats.',
+        client:null,
+        consigne:'Semaine S3 du trimestre. Objectifs semaine : 80 appels, 40 contacts, 15 RDV, 6 devis (30 000 € HT), 2 commandes (10 000 € HT). Réalisé : 67 appels, 34 contacts, 12 RDV, 8 devis (48 500 € HT), 3 commandes (18 200 € HT). Objectif mensuel CA : 35 000 €. Construis le TDB, calcule les écarts en % et explique les résultats.',
+        ref:'C4.2 — Pilotage de l\'activité'},
+    14:{title:'Fiche produit & argumentaire',
+        desc:'Fiche complète : référence, désignation, description technique, 3 bénéfices clients, comparatif 2 concurrents (prix, qualité, délai), conditions tarifaires, argumentaire de vente en 5 points.',
+        client:c?'Produit à mettre en avant pour '+cn:null,
+        consigne:p1?'Crée la fiche produit commerciale pour "'+p1.designation+'" (réf. '+p1.ref+', prix HT : '+p1.prix_ht+' €, remise max : '+p1.remise_max+'). Le client cible est '+cn+' ('+secteur+'). Identifie 2 concurrents et compare sur 3 critères.':null,
+        ref:'C5.1 — Valorisation de l\'offre'},
+    15:{title:'Veille concurrentielle',
+        desc:'Analyse 3 concurrents : raison sociale, positionnement, offre principale, tarifs estimés, forces/faiblesses. Matrice de positionnement. Avantage concurrentiel de '+company+' en 3 points.',
+        client:null,
+        consigne:'Réalise une veille concurrentielle pour '+company+' dans le secteur "'+secteur+'". Identifie 3 concurrents directs (tu peux en inventer de réalistes). Compare sur 4 critères : prix, qualité, délai, SAV. Conclue sur 3 axes de différenciation.',
+        ref:'C5.2 — Veille et environnement'},
+    16:{title:'Plan d\'action commercial trimestriel',
+        desc:'PAC sur 3 mois avec objectifs fournis. Segmentation ABC, actions par segment, planning Gantt, budget, indicateurs de suivi.',
+        client:null,
+        consigne:'Trimestre T2. Données : Portefeuille actuel = '+(clients.length||3)+' clients actifs. Objectif CA T2 = '+(poste?Math.round(poste.salary*3*2).toLocaleString('fr-FR'):15000)+' €. CA T1 réalisé = '+(poste?Math.round(poste.salary*3*1.8).toLocaleString('fr-FR'):13500)+' € (écart -10%). Budget prospection = 800 €. Construis le PAC en priorisant les clients à risque et la conquête de 2 nouveaux clients.',
+        ref:'C3.3 — Plan d\'action commercial'},
+    17:{title:'Lettre de confirmation de commande',
+        desc:'Document de formalisation de la vente : identification des parties, objet, tableau produits HT/TTC, conditions de paiement (acompte + solde), délai de livraison, garantie, signatures.',
+        client:c?'Vente conclue entre '+company+' et '+cn:null,
+        consigne:'Tu viens de signer une vente avec '+cn+'.'+(p0?' Produit : "'+p0.designation+'" (réf. '+p0.ref+'). Quantité : 2. Prix unitaire HT : '+p0.prix_ht+' €. Remise accordée : '+p0.remise_max+'.':'')+' Paiement : 30% à la commande, solde à la livraison (15 jours). Rédige la lettre de confirmation.',
+        ref:'C2.5 — Formalisation de la vente'},
+    18:{title:'Rapport d\'activité mensuel',
+        desc:'Rapport mensuel : synthèse exécutive, résultats vs objectifs, analyse des écarts, clients gagnés/perdus, plan correctif pour le mois suivant.',
+        client:null,
+        consigne:'Mois de mars. Objectif CA = '+(poste?poste.salary.toLocaleString('fr-FR'):1800)+' €. CA réalisé = '+(poste?Math.round(poste.salary*1.15).toLocaleString('fr-FR'):2100)+' €. Nouvelles commandes = 4. Clients perdus = 1 ('+cn+'). Visites réalisées = 18 sur 20 prévues. Rédige le rapport complet avec plan correctif pour avril.'  ,
+        ref:'C4.3 — Reporting direction'}
+  };
+  return tasks[score]||tasks[1];
+}
+
+/* ============================================================
+   STATE
+============================================================ */
+let S={uid:null,prenom:'',nom:'',dob:'',selfie:null,poste:null,postesEssayes:[],
+       wallet:0,avert:0,mauvaises:0,licencie:false,travaux:[],
+       cand:{cv:null,cvName:null,lm:null,lmName:null,ok:false},
+       entNote:null,enPoste:false,curTask:null,curFile:null,curFileData:null};
+let pdgOK=false,selJob=null,pollT=null,camStream=null,_test=false,_liveCharts={};
+
+/* ============================================================
+   HELPERS
+============================================================ */
+const el=id=>document.getElementById(id);
+const v=id=>el(id)?.value?.trim()||'';
+const money=n=>(n||0).toLocaleString('fr-FR')+' €';
+const uid6=()=>Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,6);
+function fmtDate(inp){
+  let v=inp.value.replace(/\D/g,'');
+  if(v.length>2)v=v.slice(0,2)+'/'+v.slice(2);
+  if(v.length>5)v=v.slice(0,5)+'/'+v.slice(5);
+  inp.value=v.slice(0,10);
+}
+function parseDate(s){
+  // accepts dd/mm/yyyy or yyyy-mm-dd
+  if(!s)return '';
+  if(s.includes('/')){const[d,m,y]=s.split('/');return y&&m&&d?y+'-'+m.padStart(2,'0')+'-'+d.padStart(2,'0'):s;}
+  return s;
+}
+function showP(id){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));el(id)?.classList.add('active');window.scrollTo({top:0,behavior:'smooth'})}
+function openM(id){el(id)?.classList.add('open')}
+function closeM(id){el(id)?.classList.remove('open')}
+function notify(t,m,type=''){
+  const n=el('notif');n.className='notif show'+(type?' '+type:'');
+  el('nT').textContent=t;el('nM').textContent=m;
+  clearTimeout(n._t);n._t=setTimeout(()=>n.className='notif',4500);
+}
+function pb(ids,dones,act){
+  ids.forEach((id,i)=>{const e=el(id);if(!e)return;e.className='pd'+(dones.includes(i+1)?' done':i+1===act?' act':'');e.textContent=dones.includes(i+1)?'✓':i+1;});
+}
+function updateTopbar(){
+  const av=el('avbtn');
+  if(S.selfie){av.innerHTML=`<img src="${S.selfie}">`;}
+  else if(S.prenom){av.textContent=(S.prenom[0]+(S.nom?S.nom[0]:'')).toUpperCase();}
+  const wc=el('wchip');
+  if(S.poste){wc.style.display='block';wc.textContent='💰 '+money(S.wallet);}
+  const wb=el('wbadge');
+  if(S.avert>0){wb.style.display='block';wb.textContent='⚠️ '+S.avert;}else wb.style.display='none';
+}
+function stateFrom(d){
+  if(!d)return;
+  Object.assign(S,{prenom:d.prenom||'',nom:d.nom||'',dob:d.dob||'',selfie:d.selfie||null,
+    poste:d.poste||null,postesEssayes:d.postesEssayes||[],wallet:d.wallet||0,
+    avert:d.avert||0,mauvaises:d.mauvaises||0,licencie:d.licencie||false,
+    travaux:d.travaux||[],cand:d.cand||{cv:null,cvName:null,lm:null,lmName:null,ok:false},
+    entNote:d.entNote??null,enPoste:d.enPoste||false});
+}
+async function persistS(){
+  if(!S.uid)return;
+  await saveStudent(S.uid,{prenom:S.prenom,nom:S.nom,dob:S.dob,selfie:S.selfie,
+    poste:S.poste,postesEssayes:S.postesEssayes,wallet:S.wallet,
+    avert:S.avert,mauvaises:S.mauvaises,licencie:S.licencie,
+    travaux:S.travaux,cand:S.cand,entNote:S.entNote,enPoste:S.enPoste});
+}
+
+/* ============================================================
+   CAMERA
+============================================================ */
+async function startCam(){
+  try{
+    const s=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:false});
+    camStream=s;const v=el('camPrev');v.srcObject=s;v.style.display='block';
+    el('szone').style.display='none';el('camCapBtn').style.display='inline-flex';el('camStopBtn').style.display='inline-flex';
+  }catch(e){notify('Caméra indisponible','Utilise le bouton Importer.','ko');}
+}
+function captureCam(){
+  const v=el('camPrev'),c=el('camCanvas');
+  c.width=v.videoWidth||400;c.height=v.videoHeight||400;
+  const ctx=c.getContext('2d');ctx.save();ctx.translate(c.width,0);ctx.scale(-1,1);ctx.drawImage(v,0,0);ctx.restore();
+  applySelfie(c.toDataURL('image/jpeg',.75));stopCam();
+}
+function stopCam(){
+  if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;}
+  const v=el('camPrev');if(v)v.style.display='none';
+  el('szone').style.display='block';el('camCapBtn').style.display='none';el('camStopBtn').style.display='none';
+}
+function handleSelfieFile(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>applySelfie(ev.target.result);r.readAsDataURL(f);}
+function applySelfie(d){
+  S._selfie=d;
+  el('sPrev').innerHTML=`<img src="${d}" style="width:100px;height:100px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);margin-bottom:8px"><div class="tm" style="font-size:.68rem">✓ Photo enregistrée</div>`;
+}
+
+/* ============================================================
+   FILE UPLOAD (base64)
+============================================================ */
+function hFile(type,e){
+  const f=e.target.files[0];if(!f)return;
+  const zId=type==='cv'?'cvZone':'lmZone',stId=type==='cv'?'cvSt':'lmSt';
+  el(zId).textContent='⏳ Lecture…';
+  const r=new FileReader();
+  r.onload=ev=>{
+    const b64=ev.target.result;
+    if(type==='cv'){S.cand.cv=b64;S.cand.cvName=f.name;}
+    else{S.cand.lm=b64;S.cand.lmName=f.name;}
+    el(zId).textContent='✅ '+f.name;el(zId).classList.add('got');
+    el(stId).textContent='✅ Fichier prêt ('+Math.round(f.size/1024)+' Ko)';
+  };
+  r.readAsDataURL(f);
+}
+function hTravail(e){
+  const f=e.target.files[0];if(!f)return;
+  S.curFile=f.name;S.curFileData=null;
+  el('tZone').textContent='⏳ Lecture…';
+  const r=new FileReader();
+  r.onload=ev=>{
+    S.curFileData=ev.target.result;
+    el('tZone').textContent='✅ '+f.name;el('tZone').classList.add('got');
+    el('tSt').textContent='✅ Fichier prêt ('+Math.round(f.size/1024)+' Ko)';
+    el('mailInfo').style.display='block';el('btnSend').style.display='block';
+  };
+  r.readAsDataURL(f);
+}
+
+/* ============================================================
+   COVER / ROUTING
+============================================================ */
+function enterAs(role){
+  if(role==='student'){
+    _test=false;selJob=null;pdgOK=false;
+    el('cover').style.display='none';
+    const app=el('app');app.style.display='flex';app.style.flexDirection='column';
+    showP('pIdent');
+  }
+}
+function backToCover(){
+  stopCam();
+  el('cover').style.display='flex';el('app').style.display='none';
+  S={uid:null,prenom:'',nom:'',dob:'',selfie:null,poste:null,postesEssayes:[],wallet:0,avert:0,mauvaises:0,licencie:false,travaux:[],cand:{cv:null,cvName:null,lm:null,lmName:null,ok:false},entNote:null,enPoste:false,curTask:null,curFile:null,curFileData:null};
+  _test=false;selJob=null;if(pollT){clearInterval(pollT);pollT=null;}
+}
+function openPdgLogin(){el('pdgLogin').style.display='flex';}
+function closePdgLogin(){el('pdgLogin').style.display='none';el('pdgPwd').value='';el('pdgErr').style.display='none';}
+function checkPdg(){
+  if(v('pdgPwd')===PDG_CODE){
+    pdgOK=true;closePdgLogin();
+    el('cover').style.display='none';
+    const app=el('app');app.style.display='flex';app.style.flexDirection='column';
+    renderProfPanel();showP('pPDG');
+    notify('Bienvenue PDG !','Tableau de bord chargé.','ok');
+  }else{el('pdgErr').style.display='block';el('pdgErr').textContent='Code incorrect.';}
+}
+async function routeAfterLoad(){
+  if(S.licencie){notify('Tu as ete licencie(e)','Recommence depuis le debut.','ko');showP('pIdent');return;}
+  if(S.enPoste){
+    renderJeuBanner();
+    // Toujours afficher la fiche perso a la reconnexion
+    showFichePerso();
+    // Relancer le polling si la derniere mission est en attente
+    const trav=S.travaux||[];
+    const last=trav.length>0?trav[trav.length-1]:null;
+    if(last&&last.status==='pending'){startFichePolling();}
+    return;
+  }
+  if(S.entNote!==null){showEntResult(S.entNote);showP('pEnt');return;}
+  if(S.cand&&S.cand.ok){showP('pEnt');startPolling();return;}
+  if(S.poste){renderCVBanner();showP('pCV');return;}
+  if(S.prenom){renderJobs();showP('pPoste');return;}
+  showP('pIdent');
+}
+
+/* ============================================================
+   ÉTAPE 1 — IDENTIFICATION
+============================================================ */
+async function valIdent(){
+  const prenom=v('iP'),nom=v('iN'),dob=v('iD');
+  if(!prenom||!nom||!dob){notify('Champ manquant','Remplis tous les champs.','ko');return;}
+  const btn=el('btnId');btn.disabled=true;btn.innerHTML='<span class="spin"></span>Vérification…';
+  const dobNorm=parseDate(dob);const uidKey=btoa(unescape(encodeURIComponent((prenom+nom+dobNorm).toLowerCase().replace(/\s/g,'')))).replace(/[^a-zA-Z0-9]/g,'').slice(0,20);
+  S.uid=uidKey;S.prenom=prenom;S.nom=nom;S.dob=dobNorm||dob;
+  const allStudents=await getStudents();
+  const existing=allStudents[uidKey];
+  if(existing){
+    stateFrom(existing);S.uid=uidKey;
+    if(S._selfie)S.selfie=S._selfie;
+    await persistS();updateTopbar();
+    notify('Bienvenue !',`Partie reprise — ${prenom} ${nom} 🎉`,'ok');
+    routeAfterLoad();
+  }else{
+    S.selfie=S._selfie||null;
+    await persistS();updateTopbar();renderJobs();showP('pPoste');
+    notify('Profil créé !',`Bienvenue ${prenom} !`,'ok');
+  }
+  btn.disabled=false;btn.innerHTML='Valider / Reprendre ma partie →';
+}
+
+/* ============================================================
+   ÉTAPE 2 — CHOIX DU POSTE
+============================================================ */
+function renderJobs(){
+  const g=el('jGrid');g.innerHTML='';
+  JOBS.forEach(j=>{
+    const dis=(S.postesEssayes||[]).includes(j.id);
+    const d=document.createElement('div');
+    d.className='jcard'+(dis?' dis':'');d.dataset.id=j.id;
+    d.innerHTML=`<div class="jh"><div class="ji">${j.icon}</div><div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.04em">${j.title}</div>
+      <div style="font-size:.78rem;color:var(--gold);font-weight:600">🏢 ${j.company}</div>
+      <div style="font-size:.7rem;color:var(--muted)">📍 ${j.address}</div>
+      <div style="font-family:'Space Mono',monospace;font-size:.65rem;color:var(--gold-l);margin-top:3px">💶 ${j.salary.toLocaleString('fr-FR')} €/mois · ${j.secteur}</div>
+    </div></div>
+    <div class="jb">
+      <div style="font-size:.78rem;color:var(--cream);margin-bottom:8px">${j.desc}</div>
+      <div class="jmise">${j.mise}</div>
+      <div style="font-family:'Space Mono',monospace;font-size:.6rem;color:var(--muted);margin-top:8px">📚 Référentiel MCV B : ${j.ref}</div>
+    </div>`;
+    if(!dis)d.onclick=()=>selectJob(j.id);
+    g.appendChild(d);
+  });
+}
+function selectJob(id){
+  selJob=id;
+  document.querySelectorAll('.jcard').forEach(c=>c.classList.toggle('sel',c.dataset.id===id));
+  el('btnPoste').style.display='block';el('btnPoste').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+async function valPoste(){
+  if(!selJob)return;
+  S.poste=JOBS.find(j=>j.id===selJob);
+  if(!S.postesEssayes)S.postesEssayes=[];
+  S.postesEssayes.push(selJob);
+  if(_test){
+    S.cand={cv:'data:test',cvName:'CV_TEST.pdf',lm:'data:test',lmName:'LM_TEST.pdf',ok:true};
+    S.entNote=20;S.enPoste=true;S.wallet=S.poste.salary;
+    await persistS();updateTopbar();renderJeuBanner();showP('pJeu');
+    notify('🧪 Mode Test','Poste obtenu automatiquement !','ok');
+  }else{
+    await persistS();renderCVBanner();showP('pCV');
+    notify('Offre sélectionnée',S.poste.title,'ok');
+  }
+}
+
+/* ============================================================
+   ÉTAPE 3 — CV & LM
+============================================================ */
+function renderCVBanner(){
+  if(!S.poste)return;
+  el('cvBanner').innerHTML=`<div class="tm" style="font-size:.64rem;margin-bottom:3px">Poste visé</div>
+    <div style="font-size:1rem;font-weight:600">${S.poste.icon} ${S.poste.title}</div>
+    <div class="tm" style="font-size:.7rem;margin-top:2px">🏢 ${S.poste.company} · 📍 ${S.poste.address}</div>
+    <div style="font-family:'Space Mono',monospace;font-size:.65rem;color:var(--gold);margin-top:3px">${money(S.poste.salary)}/mois · ${S.poste.ref}</div>`;
+}
+async function valCandidature(){
+  if(!S.cand.cv&&!S.cand.lm){notify('Document manquant','Dépose ton CV.','ko');return;}
+  S.cand.ok=true;await persistS();
+  await saveCand(S.uid,{uid:S.uid,prenom:S.prenom,nom:S.nom,selfie:S.selfie||null,
+    posteId:S.poste.id,posteTitle:S.poste.title,company:S.poste.company,
+    cv:S.cand.cv,cvName:S.cand.cvName,lm:S.cand.lm,lmName:S.cand.lmName,status:'pending'});
+  notify('Candidature soumise !','Présente-toi à l\'entretien.','ok');
+  showP('pEnt');startPolling();
+}
+
+/* ============================================================
+   ÉTAPE 4 — ENTRETIEN
+============================================================ */
+function startPolling(){
+  if(pollT)clearInterval(pollT);
+  if(sb&&S.uid){
+    try{
+      const ch=sb.channel('ent_'+S.uid).on('postgres_changes',
+        {event:'*',schema:'public',table:'entretiens',filter:'uid=eq.'+S.uid},
+        async(pl)=>{const n=pl.new?.note;if(n!=null){ch.unsubscribe();S.entNote=n;await persistS();showEntResult(n);}}).subscribe();
+    }catch(e){}
+  }
+  pollT=setInterval(async()=>{
+    const ents=await getEnts();
+    if(ents[S.uid]&&ents[S.uid].note!=null){
+      clearInterval(pollT);S.entNote=ents[S.uid].note;await persistS();showEntResult(S.entNote);
+    }
+  },4000);
+}
+function showEntResult(note){
+  el('entResult').style.display='block';el('entWait').style.display='none';
+  if(note>=10){
+    el('entResult').innerHTML=`<div class="card card-ok tc"><div style="font-size:2.2rem;margin-bottom:8px">🎉</div><div style="font-weight:600;margin-bottom:4px">Entretien réussi — ${note}/20</div><div class="tm" style="font-size:.78rem">Tu es recruté(e) chez <strong>${S.poste?.company}</strong> en tant que <strong>${S.poste?.title}</strong> !</div></div>`;
+    el('btnStart').style.display='block';el('btnRetry').style.display='none';
+  }else{
+    el('entResult').innerHTML=`<div class="card card-ko tc"><div style="font-size:2.2rem;margin-bottom:8px">😕</div><div style="font-weight:600;margin-bottom:4px">Entretien non validé — ${note}/20</div><div class="tm" style="font-size:.78rem">Note insuffisante. Choisis une autre offre.</div></div>`;
+    el('btnRetry').style.display='block';el('btnStart').style.display='none';
+  }
+}
+async function startGame(){
+  S.enPoste=true;S.wallet=S.poste.salary;await persistS();updateTopbar();renderJeuBanner();showP('pJeu');
+  notify('Bienvenue dans l\'équipe !','Lance le dé pour ta première mission !','ok');
+}
+function backToJobs(){
+  // Revenir à la liste des offres sans effacer le poste déjà choisi
+  // Réinitialise seulement le CV/LM si pas encore soumis
+  if(!S.cand||!S.cand.ok){
+    S.cand={cv:null,cvName:null,lm:null,lmName:null,ok:false};
+    // Reset file zones
+    const cz=el('cvZone');if(cz){cz.textContent='📎 Dépose ton CV ici';cz.classList.remove('got');}
+    const lz=el('lmZone');if(lz){lz.textContent='📝 Dépose ta lettre de motivation';lz.classList.remove('got');}
+    const cs=el('cvSt');if(cs)cs.textContent='';
+    const ls=el('lmSt');if(ls)ls.textContent='';
+  }
+  // Deselect current job so student can pick again or confirm
+  selJob=S.poste?S.poste.id:null;
+  renderJobs();
+  // Re-select the previously chosen job visually
+  if(selJob){
+    setTimeout(()=>{
+      const card=document.querySelector('.jcard[data-id="'+selJob+'"]');
+      if(card)card.classList.add('sel');
+      el('btnPoste').style.display='block';
+    },50);
+  }
+  showP('pPoste');
+}
+function backFromEnt(){
+  // Only go back if candidature not yet submitted
+  if(!S.cand||!S.cand.ok){
+    renderCVBanner();showP('pCV');
+  } else {
+    notify('Candidature déjà soumise','Tu ne peux plus revenir en arrière. Attends la note.','ko');
+  }
+}
+function retryPoste(){
+  S.poste=null;S.cand={cv:null,cvName:null,lm:null,lmName:null,ok:false};S.entNote=null;
+  el('btnRetry').style.display='none';el('btnStart').style.display='none';
+  el('entWait').style.display='block';el('entResult').style.display='none';
+  selJob=null;renderJobs();showP('pPoste');
+}
+
+/* ============================================================
+   ÉTAPE 5 — JEU (DÉ D18)
+============================================================ */
+function renderJeuBanner(){
+  if(!S.poste)return;
+  el('jBanner').innerHTML=`<div style="display:flex;align-items:flex-start;gap:12px">
+    <div style="font-size:2rem;flex-shrink:0">${S.poste.icon}</div>
+    <div>
+      <div style="font-weight:700;font-size:.95rem">${S.poste.title}</div>
+      <div style="font-size:.75rem;color:var(--gold)">🏢 ${S.poste.company}</div>
+      <div style="font-size:.7rem;color:var(--muted)">📍 ${S.poste.address}</div>
+      <div style="font-family:'Space Mono',monospace;font-size:.65rem;color:var(--gold-l);margin-top:4px">Salaire : ${money(S.poste.salary)}/mois · Cagnotte : ${money(S.wallet)}</div>
+    </div></div>`;
+}
+function resetDiceUI(){
+  el('dieVal').textContent='?';el('dieEl').className='die18';
+  el('taskZone').style.display='none';el('sentOk').style.display='none';
+  el('btnSend').style.display='none';el('mailInfo').style.display='none';
+  el('tZone').textContent='📤 Dépose ton travail ici';el('tZone').classList.remove('got');
+  el('tSt').textContent='';el('btnRoll').disabled=false;
+  S.curTask=null;S.curFile=null;S.curFileData=null;
+}
+function lancerDe(){
+  if(S.licencie){notify('Tu es licencié(e)','Recommence depuis le début.','ko');return;}
+  const doneScores=new Set((S.travaux||[]).map(t=>t.score));
+  const allScores=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18];
+  const remaining=allScores.filter(s=>!doneScores.has(s));
+  const avoidDone=remaining.length>0;
+  const die=el('dieEl'),dv=el('dieVal');
+  die.classList.add('roll');el('btnRoll').disabled=true;dv.textContent='?';
+  let spin=0;const si=setInterval(()=>{dv.textContent=Math.ceil(Math.random()*18);if(++spin>14)clearInterval(si);},60);
+  setTimeout(()=>{
+    die.classList.remove('roll');
+    let score=Math.ceil(Math.random()*18);
+    if(avoidDone){
+      let t=0;while(doneScores.has(score)&&t++<40)score=Math.ceil(Math.random()*18);
+      if(doneScores.has(score)&&remaining.length>0)score=remaining[Math.floor(Math.random()*remaining.length)];
+    }
+    dv.textContent=score;
+    const task=getTask(score,S.poste);
+    S.curTask={score,task};
+    let clientHtml='';
+    if(task.client){clientHtml=`<div class="tclient"><strong>👤 Client assigné :</strong><br>${task.client}</div>`;}
+    if(task.consigne){clientHtml+=`<div class="tclient" style="border-color:var(--green);background:rgba(27,138,82,.08)"><strong>📝 Consigne spécifique :</strong><br>${task.consigne}</div>`;}
+    el('taskCard').innerHTML=`<div class="tbadge">Mission D18 = ${score}</div>
+      <div class="ttitle">${task.title}</div>
+      <div class="tdesc">${task.desc}</div>
+      ${clientHtml}
+      <div style="margin:12px 0">
+        <button class="btn btn-sm" onclick="downloadDoc(${score})" style="width:auto;background:rgba(201,168,76,.2);color:var(--gold);border:1px solid var(--gold-b);font-size:.82rem;padding:9px 18px">
+          ⬇️ Télécharger le document vierge à remplir
+        </button>
+      </div>
+      <div class="tref">📚 Référentiel : ${task.ref}</div>`;
+    el('taskZone').style.display='block';
+    if(!avoidDone)notify('♻️ Cycle complet !','Tous les exercices réalisés, on recommence !','ok');
+    else notify('🎲 Mission '+score+' !',task.title,'ok');
+  },950);
+}
+async function envoyerTravail(){
+  if(!S.curTask){notify('Aucune mission','Lance le dé d\'abord.','ko');return;}
+  if(!S.curFileData){notify('Fichier manquant','Dépose ton travail.','ko');return;}
+  const entry={score:S.curTask.score,taskTitle:S.curTask.task.title,taskRef:S.curTask.task.ref,
+    file:S.curFile,fileData:S.curFileData,status:'pending',note:null,
+    date:new Date().toLocaleDateString('fr-FR'),at:Date.now()};
+  S.travaux.push(entry);
+  const corrKey=S.uid+'_'+Date.now();
+  await saveCorr(corrKey,{...entry,uid:S.uid,prenom:S.prenom,nom:S.nom,selfie:S.selfie||null,
+    posteTitle:S.poste?.title||'',company:S.poste?.company||'',
+    travailIdx:S.travaux.length-1,emailTo:MAIL_PROF});
+  await persistS();
+  // Ouvrir le client mail
+  const sujet=encodeURIComponent(`[MDC] ${S.prenom} ${S.nom} — Mission D18=${S.curTask.score} : ${S.curTask.task.title}`);
+  const corps=encodeURIComponent(`Bonjour M. Siatte,\n\nVeuillez trouver ci-joint mon travail.\n\nÉlève : ${S.prenom} ${S.nom}\nPoste : ${S.poste?.title||'—'} chez ${S.poste?.company||'—'}\nDate : ${new Date().toLocaleDateString('fr-FR')}\nMission D18 = ${S.curTask.score} : ${S.curTask.task.title}\nFichier joint : ${S.curFile}\n\n⚠️ Merci de joindre le fichier "${S.curFile}" avant envoi.\n\nCordialement,\n${S.prenom} ${S.nom}`);
+  window.open(`mailto:${MAIL_PROF}?subject=${sujet}&body=${corps}`,'_blank');
+  el('sentOk').style.display='block';el('btnSend').style.display='none';
+  notify('Envoyé !',S.curTask.task.title+' transmise.','ok');
+  // Aller vers la fiche personnelle après 2 secondes
+  setTimeout(()=>{ showFichePerso(); }, 2000);
+}
+
+/* ============================================================
+   CATALOGUE (élève)
+============================================================ */
+function showCatalogue(){
+  if(!S.poste){notify('Pas encore en poste','Obtiens un poste d\'abord.','ko');return;}
+  el('catPosteTitle').textContent=S.poste.title+' — '+S.poste.company;
+  renderCatalogueContent(S.poste,el('catContent'));
+  openM('mCatalogue');
+}
+function renderCatalogueContent(poste,container){
+  let h='';
+  // Clients
+  if(poste.clients&&poste.clients.length>0){
+    h+='<div class="cat-section"><div class="cat-title">👥 Portefeuille Clients</div>';
+    h+='<div style="overflow-x:auto"><table class="cat-table"><thead><tr><th>Entreprise</th><th>Contact</th><th>Téléphone</th><th>CA/an</th><th>Statut</th></tr></thead><tbody>';
+    poste.clients.forEach(c=>{
+      const sc=c.statut==='À risque'?'color:#e74c3c;font-weight:600':c.statut==='Prospect chaud'?'color:#f39c12':c.statut==='Grand compte'?'color:var(--gold)':'';
+      h+=`<tr><td><div style="font-weight:600;font-size:.78rem">${c.nom}</div><div class="cat-ref">${c.adresse}</div></td><td><div style="font-size:.75rem">${c.contact}</div><div class="cat-ref">${c.email}</div></td><td class="cat-ref">${c.tel}</td><td class="cat-price">${c.ca_an}</td><td style="font-size:.72rem;${sc}">${c.statut}</td></tr>`;
+    });
+    h+='</tbody></table></div></div>';
+  }
+  // Catalogue produits
+  if(poste.catalogue&&poste.catalogue.length>0){
+    h+='<div class="cat-section" style="margin-top:16px"><div class="cat-title">📦 Catalogue Produits & Tarifs</div>';
+    h+='<div style="overflow-x:auto"><table class="cat-table"><thead><tr><th>Réf.</th><th>Désignation</th><th>Unité</th><th>Prix HT</th><th>Remise max</th><th>Stock</th></tr></thead><tbody>';
+    poste.catalogue.forEach(p=>{
+      h+=`<tr><td class="cat-ref">${p.ref}</td><td style="font-size:.75rem">${p.designation}</td><td class="cat-ref">${p.unite}</td><td class="cat-price">${p.prix_ht.toLocaleString('fr-FR')} €</td><td style="font-size:.72rem;color:#f39c12">${p.remise_max}</td><td style="font-size:.7rem;color:${p.stock==='Disponible'?'#2ecc71':'var(--muted)'}">${p.stock}</td></tr>`;
+    });
+    h+='</tbody></table></div></div>';
+  }
+  container.innerHTML=h||'<div class="tm">Aucun catalogue disponible.</div>';
+}
+
+/* ============================================================
+   PROFIL
+============================================================ */
+function showFichePerso(){
+  // Render personal dashboard after mission sent
+  const name=S.prenom+' '+S.nom;
+  el('ficheHeading').textContent='Bravo '+S.prenom+' !';
+
+  // Resume card
+  const lastMission=S.travaux.length>0?S.travaux[S.travaux.length-1]:null;
+  el('ficheResume').innerHTML=
+    '<div style="font-size:2rem;margin-bottom:8px">✅</div>'
+    +'<div style="font-weight:700;font-size:1rem;margin-bottom:4px">'+(lastMission?lastMission.taskTitle:'Mission envoyée')+'</div>'
+    +'<div class="tm" style="font-size:.8rem;margin-bottom:10px">Travail soumis le '+new Date().toLocaleDateString('fr-FR')+'</div>'
+    +'<div style="font-family:Space Mono,monospace;font-size:.75rem;color:var(--gold)">Cagnotte actuelle : '+money(S.wallet)+'</div>';
+
+  // Stats
+  const travaux=S.travaux||[];
+  const done=travaux.filter(t=>t.note!=null);
+  const avg=done.length?Math.round(done.reduce((a,t)=>a+(t.note||0),0)/done.length*10)/10:'-';
+  const pending=travaux.filter(t=>t.status==='pending').length;
+  el('ficheStats').innerHTML=
+    '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">'
+    +'<div class="sbox"><div class="sv">'+travaux.length+'</div><div class="sl">Missions</div></div>'
+    +'<div class="sbox"><div class="sv">'+avg+'</div><div class="sl">Moy. /20</div></div>'
+    +'<div class="sbox"><div class="sv">'+money(S.wallet)+'</div><div class="sl">Cagnotte</div></div>'
+    +'</div>';
+
+  // Historique
+  el('ficheHistorique').innerHTML=travaux.length?
+    '<div class="eyebrow" style="margin:14px 0 8px">Toutes mes missions</div>'
+    +travaux.map(t=>`
+      <div class="card" style="padding:10px;margin-bottom:7px;display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="font-weight:600;font-size:.82rem">${t.taskTitle}</div>
+          <div class="tm" style="font-size:.62rem">Dé ${t.score} · ${t.date}</div>
+        </div>
+        ${t.status==='pending'?'<span class="chip cp">En attente</span>':t.status==='ok'?`<span class="chip co">${t.note}/20 ✓</span>`:`<span class="chip ck">${t.note}/20 ✗</span>`}
+      </div>`).join('')
+    :'';
+
+  // Chart
+  setTimeout(()=>{
+    const canvas=el('chartFiche');if(!canvas)return;
+    const notedMissions=travaux.filter(t=>t.note!=null);
+    if(notedMissions.length>0){
+      if(_liveCharts.fiche)_liveCharts.fiche.destroy();
+      _liveCharts.fiche=new Chart(canvas,{
+        type:'line',
+        data:{
+          labels:notedMissions.map((_,i)=>'M'+(i+1)),
+          datasets:[{
+            label:'Note /20',data:notedMissions.map(t=>t.note),
+            borderColor:'#C9A84C',backgroundColor:'rgba(201,168,76,.15)',
+            pointBackgroundColor:'#C9A84C',borderWidth:2,tension:.3
+          }]
+        },
+        options:{responsive:true,plugins:{legend:{display:false}},
+          scales:{y:{min:0,max:20,grid:{color:'rgba(201,168,76,.1)'},ticks:{color:'#7A90A8',font:{size:10}}},
+            x:{grid:{display:false},ticks:{color:'#7A90A8',font:{size:10}}}}}
+      });
+      canvas.parentElement.style.display='block';
+    } else {
+      canvas.parentElement.style.display='none';
+    }
+  },100);
+
+  // Button état : grisé si dernière mission en attente de note
+  const btn=el('btnNextMission');
+  const lastPending=travaux.length>0&&travaux[travaux.length-1].status==='pending';
+  if(lastPending){
+    btn.disabled=true;btn.style.opacity='.4';btn.style.cursor='not-allowed';
+    el('ficheNoteMsg').style.display='block';
+    el('ficheNoteMsg').textContent='⏳ Le bouton "Mission suivante" sera disponible une fois que le PDG aura noté ton travail.';
+    // Poll until the mission gets a note
+    startFichePolling();
+  } else {
+    btn.disabled=false;btn.style.opacity='1';btn.style.cursor='pointer';
+    el('ficheNoteMsg').style.display='none';
+  }
+
+  showP('pFiche');
+}
+
+function startFichePolling(){
+  if(pollT)clearInterval(pollT);
+  pollT=setInterval(async()=>{
+    const all=await getStudents();
+    const sd=all[S.uid];if(!sd)return;
+    const travaux=sd.travaux||[];
+    const last=travaux[travaux.length-1];
+    if(last&&last.status!=='pending'){
+      clearInterval(pollT);
+      // Update local state
+      Object.assign(S,{travaux,wallet:sd.wallet||S.wallet,avert:sd.avert||S.avert,
+        mauvaises:sd.mauvaises||S.mauvaises,licencie:sd.licencie||S.licencie});
+      updateTopbar();
+      // Refresh fiche
+      const btn=el('btnNextMission');
+      if(btn){btn.disabled=false;btn.style.opacity='1';btn.style.cursor='pointer';}
+      const msg=el('ficheNoteMsg');
+      if(msg){
+        const note=last.note;
+        const salary=S.poste?S.poste.salary:1800;
+        let bonusMsg='';
+        if(note>=18)bonusMsg=' + Prime 100% !';
+        else if(note>15)bonusMsg=' + Prime 20% !';
+        msg.className='alert '+(note>=10?'aok':'ako');
+        msg.style.display='block';
+        msg.textContent=note>=10
+          ?'🎉 Note reçue : '+note+'/20 — Salaire versé : '+money(S.wallet)+bonusMsg
+          :'😕 Note reçue : '+note+'/20 — Salaire réduit. Travaille encore !';
+      }
+      // Refresh chart
+      showFichePerso();
+      notify(last.note>=10?'Bravo !':'Courage !','Note : '+last.note+'/20',last.note>=10?'ok':'ko');
+    }
+  },4000);
+}
+
+function nextMission(){
+  const btn=el('btnNextMission');
+  if(btn&&btn.disabled)return;
+  resetDiceUI();
+  renderJeuBanner();
+  showP('pJeu');
+}
+
+function gotoProfile(){
+  if(!S.prenom){showP('pIdent');return;}
+  el('pHead').textContent=`${S.prenom} ${S.nom}`;
+  const av=S.selfie?`<img src="${S.selfie}" style="width:80px;height:80px;border-radius:50%;border:3px solid var(--gold);object-fit:cover;margin-bottom:8px">`
+    :`<div style="width:80px;height:80px;border-radius:50%;background:var(--nlight);border:3px solid var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue';font-size:1.8rem;color:var(--gold);margin:0 auto 8px">${(S.prenom[0]+(S.nom?S.nom[0]:'')).toUpperCase()}</div>`;
+  el('pHero').innerHTML=av+`<div style="font-weight:700">${S.prenom} ${S.nom}</div><div class="tm" style="font-size:.78rem">${S.poste?S.poste.title+' · '+S.poste.company:'En recherche'}</div>`;
+  el('pW').textContent=money(S.wallet);el('pT').textContent=S.travaux.length;el('pA').textContent=S.avert;
+  const pw=el('pWarn');pw.innerHTML='';for(let i=0;i<S.avert;i++)pw.innerHTML+='<span class="wbg">⚠️ AVERTISSEMENT</span>';
+  el('pFired').innerHTML=S.licencie?'<div class="fbx">🚨 LICENCIÉ(E) — Tu dois recommencer depuis le début</div>':'';
+  el('histList').innerHTML=S.travaux.length?S.travaux.map(t=>`
+    <div class="card" style="padding:11px;margin-bottom:7px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div><div style="font-weight:600;font-size:.82rem">${t.taskTitle}</div>
+        <div class="tm" style="font-size:.65rem">Dé : ${t.score} · ${t.date}</div></div>
+        ${t.status==='pending'?'<span class="chip cp">En attente</span>':t.status==='ok'?`<span class="chip co">${t.note}/20 ✓</span>`:`<span class="chip ck">${t.note}/20 ✗</span>`}
+      </div>
+    </div>`).join(''):'<div class="tm">Aucune mission réalisée.</div>';
+  showP('pProf');
+}
+
+/* ============================================================
+   CLASSEMENT
+============================================================ */
+async function renderLdr(){
+  el('ldrList').innerHTML='<div class="tm">Chargement…</div>';
+  const all=await getStudents();
+  const list=Object.entries(all).map(([k,v])=>({uid:k,...v})).filter(s=>s.prenom).sort((a,b)=>(b.wallet||0)-(a.wallet||0));
+  const rc=['g1','g2','g3'];
+  el('ldrList').innerHTML=list.length?list.map((s,i)=>`
+    <div class="lrow${s.uid===S.uid?' me':''}">
+      <div class="lrank ${rc[i]||''}">${i+1}</div>
+      <div style="flex:1"><div class="lname" style="font-weight:600;font-size:.88rem">${s.prenom} ${s.nom}</div><div class="tm" style="font-size:.7rem">${s.poste?s.poste.title+' · '+s.poste.company:'En recherche'}</div></div>
+      <div style="font-family:'Space Mono',monospace;font-size:.8rem;color:var(--gold)">${money(s.wallet||0)}</div>
+    </div>`).join(''):'<div class="tm">Aucun élève inscrit.</div>';
+}
+
+/* ============================================================
+   ESPACE PDG
+============================================================ */
+function profTab(pid,bid){
+  ['tc1','tc2','tc3','tc4'].forEach(id=>{const e=el(id);if(e)e.style.display=id===pid?'block':'none';});
+  ['tb1','tb2','tb3','tb4'].forEach(id=>el(id)?.classList.remove('act'));
+  el(bid)?.classList.add('act');
+}
+async function renderProfPanel(){
+  await Promise.all([renderProfCand(),renderProfEnt(),renderProfTrav(),renderProfElev()]);
+}
+
+// CANDIDATURES
+async function renderProfCand(){
+  const all=await getCands();
+  const list=Object.values(all).filter(c=>c.uid);
+  if(!list.length){el('profCand').innerHTML='<div class="tm">Aucune candidature.</div>';return;}
+  el('profCand').innerHTML=list.map(c=>{
+    const av=c.selfie?'<img src="'+c.selfie+'">':(c.prenom||'?')[0]+(c.nom||'?')[0];
+    const cvBtn=c.cv&&c.cv.startsWith('data:')?
+      '<a href="'+c.cv+'" target="_blank" download="'+(c.cvName||'CV')+'" class="file-link">📎 Télécharger CV</a>':'<span class="tm" style="font-size:.68rem">CV non disponible</span>';
+    const lmBtn=c.lm&&c.lm.startsWith('data:')?
+      '<a href="'+c.lm+'" target="_blank" download="'+(c.lmName||'LM')+'" class="file-link">📝 Télécharger LM</a>':'<span class="tm" style="font-size:.68rem">LM non disponible</span>';
+    return '<div class="sc"><div class="sh"><div class="mav">'+av+'</div>'
+      +'<div style="flex:1"><div style="font-weight:600;font-size:.85rem">'+c.prenom+' '+c.nom+'</div>'
+      +'<div class="tm" style="font-size:.65rem">'+(c.posteTitle||'')+' · '+(c.company||'')+'</div></div>'
+      +'<span class="chip '+(c.status==='pending'?'cp':'co')+'">'+(c.status==='pending'?'En attente':'Traité')+'</span></div>'
+      +'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">'+cvBtn+lmBtn+'</div></div>';
+  }).join('');
+}
+
+// ENTRETIENS
+async function renderProfEnt(){
+  const cands=await getCands();
+  const ents=await getEnts();
+  const list=Object.values(cands).filter(c=>c.uid);
+  if(!list.length){el('profEnt').innerHTML='<div class="tm">Aucun entretien à noter.</div>';return;}
+  el('profEnt').innerHTML=list.map(c=>{
+    const note=ents[c.uid]?.note;
+    const av=c.selfie?'<img src="'+c.selfie+'">':(c.prenom||'?')[0]+(c.nom||'?')[0];
+    const noteRow=note==null?
+      '<div class="nrow"><span class="tm" style="font-size:.68rem">Note /20 :</span>'
+      +'<input type="number" min="0" max="20" step="1" id="ne_'+c.uid+'" placeholder="Ex: 14">'
+      +'<button class="btn btn-p btn-xs" data-uid="'+c.uid+'" data-prenom="'+c.prenom+'" data-nom="'+c.nom+'" onclick="noterEntBtn(this)">✓ Valider</button></div>':'';
+    return '<div class="sc"><div class="sh"><div class="mav">'+av+'</div>'
+      +'<div style="flex:1"><div style="font-weight:600;font-size:.85rem">'+c.prenom+' '+c.nom+'</div>'
+      +'<div class="tm" style="font-size:.65rem">'+(c.posteTitle||'')+'</div></div>'
+      +'<span class="chip '+(note!=null?(note>=10?'co':'ck'):'cp')+'">'+(note!=null?note+'/20':'À noter')+'</span></div>'+noteRow+'</div>';
+  }).join('');
+}
+function noterEntBtn(btn){
+  const uid=btn.getAttribute('data-uid');
+  const prenom=btn.getAttribute('data-prenom');
+  const nom=btn.getAttribute('data-nom');
+  const inp=btn.parentElement.querySelector('input[type=number]');
+  const n=parseFloat(inp?inp.value:'');
+  if(isNaN(n)||n<0||n>20){notify('Note invalide','Saisis 0 à 20.','ko');return;}
+  noterEnt(uid,prenom,nom,n);
+}
+async function noterEnt(uid,prenom,nom,n){
+  if(n===undefined){
+    const inp=el('ne_'+uid);
+    n=parseFloat(inp?inp.value:'');
+    if(isNaN(n)||n<0||n>20){notify('Note invalide','','ko');return;}
+  }
+  await saveEnt(uid,n);
+  notify('Note enregistrée',`${prenom} ${nom} : ${n}/20`,'ok');
+  if(uid===S.uid){S.entNote=n;await persistS();showEntResult(n);}
+  renderProfEnt();
+}
+
+// TRAVAUX
+async function renderProfTrav(){
+  const all=await getCorrs();
+  const list=Object.values(all).filter(c=>c.uid).sort((a,b)=>(b.at||0)-(a.at||0));
+  if(!list.length){el('profTrav').innerHTML='<div class="tm">Aucun travail soumis.</div>';return;}
+  el('profTrav').innerHTML=list.map(c=>{
+    const corrKey=c.key||'';
+    const av=c.selfie?'<img src="'+c.selfie+'">':(c.prenom||'?')[0]+(c.nom||'?')[0];
+    const sc=c.status==='pending'?'cp':c.status==='ok'?'co':'ck';
+    const sl=c.status==='pending'?'À corriger':c.note+'/20';
+    const fileBtn=c.fileData&&c.fileData.startsWith('data:')?
+      '<a href="'+c.fileData+'" target="_blank" download="'+(c.file||'travail')+'" class="file-link">📂 Télécharger le travail</a>':
+      '<span class="tm" style="font-size:.68rem">📂 '+(c.file||'—')+'</span>';
+    const scoreNum=c.score||0;
+    const noteRow=c.status==='pending'?
+      '<div class="nrow" style="margin-top:8px">'
+      +'<span class="tm" style="font-size:.68rem">Note /20 :</span>'
+      +'<input type="number" min="0" max="20" step="1" placeholder="Ex: 15" style="width:80px;padding:6px 8px">'
+      +'<button class="btn btn-p btn-xs" data-key="'+corrKey+'" data-uid="'+c.uid+'" data-idx="'+(c.travailIdx||0)+'" onclick="noterTravBtn(this)">✓ Valider</button>'
+      +'<button class="btn btn-xs" style="background:rgba(155,89,182,.2);border:1px solid rgba(155,89,182,.5);color:#bb8fce" onclick="showCorrige('+scoreNum+')">📋 Corrigé type</button>'
+      +'</div>':
+      '<div style="margin-top:6px"><button class="btn btn-xs" style="background:rgba(155,89,182,.2);border:1px solid rgba(155,89,182,.5);color:#bb8fce" onclick="showCorrige('+scoreNum+')">📋 Voir corrigé type</button></div>';
+    return '<div class="sc"><div class="sh"><div class="mav">'+av+'</div>'
+      +'<div style="flex:1">'
+        +'<div style="font-weight:600;font-size:.85rem">'+c.prenom+' '+c.nom+'</div>'
+        +'<div class="tm" style="font-size:.65rem">'+(c.taskTitle||'')+'</div>'
+        +'<div class="tm" style="font-size:.62rem">Dé '+(c.score||'?')+' · '+(c.date||'')+'</div>'
+      +'</div><span class="chip '+sc+'">'+sl+'</span></div>'
+      +'<div style="margin:6px 0">'+fileBtn+'</div>'
+      +noteRow+'</div>';
+  }).join('');
+}
+function noterTravBtn(btn){
+  const key=btn.getAttribute('data-key');
+  const uid=btn.getAttribute('data-uid');
+  const idx=parseInt(btn.getAttribute('data-idx')||'0');
+  const inp=btn.parentElement.querySelector('input[type=number]');
+  const n=parseFloat(inp?inp.value:'');
+  if(isNaN(n)||n<0||n>20){notify('Note invalide','Saisis une note entre 0 et 20.','ko');return;}
+  noterTrav(key,uid,idx,n);
+}
+async function noterTrav(corrKey,studentUid,travailIdx,n){
+  await updateCorr(corrKey,{status:n>=10?'ok':'ko',note:n});
+  const all=await getStudents();const sd=all[studentUid];if(!sd)return;
+  const salary=sd.poste?sd.poste.salary:1800;
+  const travaux=[...(sd.travaux||[])];
+  if(travaux[travailIdx]){travaux[travailIdx].note=n;travaux[travailIdx].status=n>=10?'ok':'ko';}
+  let wallet=sd.wallet||salary,mauvaises=sd.mauvaises||0,avert=sd.avert||0,licencie=sd.licencie||false,msg='';
+  if(n>=10){
+    mauvaises=0;
+    if(n>=18){const p=Math.round(salary);wallet+=salary+p;msg=`${money(salary)} + Prime 100% ${money(p)}`;}
+    else if(n>15){const p=Math.round(salary*.2);wallet+=salary+p;msg=`${money(salary)} + Prime 20% ${money(p)}`;}
+    else{wallet+=salary;msg=`Salaire versé : ${money(salary)}`;}
+  }else{
+    wallet=Math.max(0,wallet-Math.round(salary*.5));mauvaises++;msg='Salaire réduit de 50%';
+    if(mauvaises%2===0){avert++;msg+=` · Avertissement #${avert}`;if(avert>=2){licencie=true;msg+=' · LICENCIEMENT !';}}
+  }
+  await saveStudent(studentUid,{...sd,travaux,wallet,mauvaises,avert,licencie});
+  if(studentUid===S.uid)Object.assign(S,{travaux,wallet,mauvaises,avert,licencie}),updateTopbar(),renderJeuBanner();
+  notify(n>=10?'✓ Mission validée':'✗ Mission refusée',msg,n>=10?'ok':'ko');
+  renderProfTrav();renderProfElev();
+}
+
+// ÉLÈVES
+async function renderProfElev(){
+  const all=await getStudents();
+  const list=Object.entries(all).map(([k,v])=>({uid:k,...v})).filter(s=>s.prenom).sort((a,b)=>(b.wallet||0)-(a.wallet||0));
+  if(!list.length){el('profElev').innerHTML='<div class="tm">Aucun élève.</div>';return;}
+  el('profElev').innerHTML=list.map((s,i)=>{
+    const av=s.selfie&&s.selfie.startsWith('data:')?'<img src="'+s.selfie+'">':(s.prenom||'?')[0]+(s.nom||'?')[0];
+    return '<div class="sc" style="cursor:pointer" onclick="openEleveModal(\''+s.uid+'\')">'
+      +'<div class="sh"><div class="mav">'+av+'</div>'
+      +'<div style="flex:1"><div style="font-weight:600;font-size:.85rem">#'+(i+1)+' '+s.prenom+' '+s.nom+'</div>'
+      +'<div class="tm" style="font-size:.65rem">'+(s.poste?s.poste.title+' · '+s.poste.company:'Sans poste')+'</div></div>'
+      +'<span class="chip co">'+money(s.wallet||0)+'</span></div>'
+      +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;font-size:.72rem;margin-top:6px">'
+        +'<div><span class="tm">Missions</span><br><strong>'+(s.travaux||[]).length+'</strong></div>'
+        +'<div><span class="tm">Avert.</span><br><strong style="color:'+((s.avert||0)>0?'#e74c3c':'inherit')+'">'+(s.avert||0)+'</strong></div>'
+        +'<div><span class="tm">Statut</span><br><strong style="font-size:.65rem">'+(s.licencie?'🚨 Licencié':s.enPoste?'✅ En poste':'🔄 Recrutement')+'</strong></div>'
+      +'</div></div>';
+  }).join('');
+}
+
+/* ============================================================
+   FICHE ÉLÈVE avec diagramme
+============================================================ */
+async function openEleveModal(uid){
+  const all=await getStudents();
+  const s=all[uid];if(!s)return;
+  el('mEleveName').textContent=s.prenom+' '+s.nom;
+  const av=s.selfie&&s.selfie.startsWith('data:')?`<img src="${s.selfie}" style="width:60px;height:60px;border-radius:50%;border:2px solid var(--gold);object-fit:cover;margin-right:12px">`
+    :`<div style="width:60px;height:60px;border-radius:50%;background:var(--nlight);border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue';font-size:1.4rem;color:var(--gold);margin-right:12px;flex-shrink:0">${(s.prenom[0]+(s.nom?s.nom[0]:'')).toUpperCase()}</div>`;
+  const travaux=s.travaux||[];
+  const notes=travaux.filter(t=>t.note!=null).map(t=>t.note);
+  const avg=notes.length?Math.round(notes.reduce((a,b)=>a+b,0)/notes.length*10)/10:0;
+  const h=`<div style="display:flex;align-items:center;margin-bottom:16px">${av}
+    <div>
+      <div style="font-weight:600">${s.prenom} ${s.nom}</div>
+      <div class="tm" style="font-size:.72rem">${s.poste?s.poste.title+' · '+s.poste.company:'Sans poste'}</div>
+      <div class="tm" style="font-size:.72rem">Né(e) le ${s.dob}</div>
+    </div></div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:16px">
+    <div class="sbox"><div class="sv">${money(s.wallet||0)}</div><div class="sl">Cagnotte</div></div>
+    <div class="sbox"><div class="sv">${travaux.length}</div><div class="sl">Missions</div></div>
+    <div class="sbox"><div class="sv">${avg||'—'}</div><div class="sl">Moy. /20</div></div>
+    <div class="sbox"><div class="sv">${s.avert||0}</div><div class="sl">Avert.</div></div>
+  </div>
+  ${(s.avert||0)>0?'<div style="margin-bottom:10px">'+Array.from({length:s.avert}).map(()=>'<span class="wbg">⚠️ AVERTISSEMENT</span>').join('')+'</div>':''}
+  ${s.licencie?'<div class="fbx" style="margin-bottom:12px">🚨 LICENCIÉ(E)</div>':''}
+  ${travaux.length>0?`<div class="chart-wrap"><div class="chart-title">Évolution des notes</div><canvas id="chartEleve" height="160"></canvas></div>`:''}
+  ${travaux.length>0?`<div style="margin-top:12px"><div class="eyebrow" style="margin-bottom:8px">Historique</div>`+travaux.map(t=>`<div class="card" style="padding:9px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center">
+    <div><div style="font-size:.78rem;font-weight:600">${t.taskTitle}</div><div class="tm" style="font-size:.62rem">Dé ${t.score} · ${t.date}</div></div>
+    ${t.status==='pending'?'<span class="chip cp">En attente</span>':t.status==='ok'?`<span class="chip co">${t.note}/20 ✓</span>`:`<span class="chip ck">${t.note}/20 ✗</span>`}
+  </div>`).join('')+'</div>':'<div class="tm">Aucune mission réalisée.</div>'}`;
+  el('mEleveContent').innerHTML=h;
+  openM('mEleve');
+  // Draw chart after DOM update
+  if(travaux.length>0){
+    setTimeout(()=>{
+      const canvas=el('chartEleve');if(!canvas)return;
+      const labels=travaux.map((t,i)=>'M'+(i+1));
+      const data=travaux.map(t=>t.note!=null?t.note:null);
+      if(_liveCharts.eleve){_liveCharts.eleve.destroy();}
+      _liveCharts.eleve=new Chart(canvas,{type:'line',data:{labels,datasets:[{label:'Note /20',data,borderColor:'#C9A84C',backgroundColor:'rgba(201,168,76,.15)',pointBackgroundColor:'#C9A84C',borderWidth:2,tension:.3,spanGaps:true}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{min:0,max:20,grid:{color:'rgba(201,168,76,.1)'},ticks:{color:'#7A90A8',font:{size:10}}},x:{grid:{color:'rgba(201,168,76,.1)'},ticks:{color:'#7A90A8',font:{size:10}}}}}});
+    },100);
+  }
+}
+
+/* ============================================================
+   RÉCAPITULATIF + DIAGRAMMES
+============================================================ */
+async function showRecap(){
+  const all=await getStudents();
+  const list=Object.entries(all).map(([k,v])=>({uid:k,...v})).filter(s=>s.prenom).sort((a,b)=>(b.wallet||0)-(a.wallet||0));
+  // Stats
+  const total=list.length,enPoste=list.filter(s=>s.enPoste).length,licencies=list.filter(s=>s.licencie).length;
+  const totalMissions=list.reduce((a,s)=>a+(s.travaux||[]).length,0);
+  el('recapStats').innerHTML=[
+    ['Élèves',total],['En poste',enPoste],['Licenciés',licencies],['Missions totales',totalMissions]
+  ].map(([l,v])=>`<div class="sbox"><div class="sv" style="font-size:1.3rem">${v}</div><div class="sl">${l}</div></div>`).join('');
+  // Table
+  el('recapBody').innerHTML=list.map((s,i)=>{
+    const travaux=s.travaux||[];const done=travaux.filter(t=>t.note!=null);
+    const avg=done.length?Math.round(done.reduce((a,t)=>a+(t.note||0),0)/done.length*10)/10:'-';
+    const st=s.licencie?'🚨 Licencié':s.avert>=2?'⚠️⚠️':s.avert===1?'⚠️ 1 avert.':s.enPoste?'✅ En poste':'🔄 Recrutement';
+    const av=s.selfie&&s.selfie.startsWith('data:')?`<img src="${s.selfie}" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid var(--gold)">`
+      :`<div style="width:28px;height:28px;border-radius:50%;background:var(--nlight);border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:.58rem;color:var(--gold)">${(s.prenom[0]+(s.nom?s.nom[0]:'')).toUpperCase()}</div>`;
+    return `<tr>
+      <td style="font-weight:600">#${i+1}</td>
+      <td><div style="display:flex;align-items:center;gap:6px">${av}<span>${s.prenom} ${s.nom}</span></div></td>
+      <td style="font-size:.72rem">${s.poste?s.poste.title:'—'}</td>
+      <td class="mc">${money(s.wallet||0)}</td>
+      <td style="text-align:center">${travaux.length}</td>
+      <td style="text-align:center">${avg}</td>
+      <td style="text-align:center;color:${(s.avert||0)>0?'#e74c3c':'inherit'}">${s.avert||0}</td>
+      <td style="font-size:.7rem">${st}</td>
+      <td><button class="btn btn-info" style="font-size:.65rem;padding:3px 8px" onclick="openEleveModal('${s.uid}')">Voir</button></td>
+    </tr>`;
+  }).join('');
+  showP('pRecap');
+  setTimeout(()=>{
+    // Leaderboard chart
+    const cl=el('chartLdr');
+    if(cl&&list.length>0){
+      if(_liveCharts.ldr)_liveCharts.ldr.destroy();
+      _liveCharts.ldr=new Chart(cl,{type:'bar',data:{labels:list.slice(0,10).map(s=>s.prenom+' '+s.nom[0]+'.'),datasets:[{label:'Cagnotte €',data:list.slice(0,10).map(s=>s.wallet||0),backgroundColor:'rgba(201,168,76,.7)',borderColor:'#C9A84C',borderWidth:1}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{grid:{color:'rgba(201,168,76,.1)'},ticks:{color:'#7A90A8',font:{size:10},callback:v=>v.toLocaleString('fr-FR')+'€'}},x:{grid:{display:false},ticks:{color:'#7A90A8',font:{size:10}}}}}});
+    }
+    // Class progress chart
+    const cc=el('chartClass');
+    if(cc&&list.length>0){
+      if(_liveCharts.cls)_liveCharts.cls.destroy();
+      const allNotes=list.flatMap(s=>(s.travaux||[]).filter(t=>t.note!=null).map(t=>t.note));
+      const bins=[0,0,0,0,0];// <8, 8-10, 10-12, 12-15, 15-20
+      allNotes.forEach(n=>{if(n<8)bins[0]++;else if(n<10)bins[1]++;else if(n<12)bins[2]++;else if(n<15)bins[3]++;else bins[4]++;});
+      _liveCharts.cls=new Chart(cc,{type:'doughnut',data:{labels:['< 8','8-10','10-12','12-15','≥ 15'],datasets:[{data:bins,backgroundColor:['#e74c3c','#e67e22','#f39c12','#1abc9c','#2ecc71'],borderWidth:0}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{color:'#7A90A8',font:{size:10}}}}}});
+    }
+  },200);
+}
+
+/* ============================================================
+   CATALOGUE PDG (tous les postes)
+============================================================ */
+function showCatalogueAll(){
+  const c=el('catAllContent');c.innerHTML='';
+  JOBS.forEach(j=>{
+    const sec=document.createElement('div');sec.style.marginBottom='24px';
+    sec.innerHTML=`<div style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:var(--gold);letter-spacing:.04em;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--gold-b)">${j.icon} ${j.title} — ${j.company}</div>`;
+    const sub=document.createElement('div');
+    renderCatalogueContent(j,sub);
+    sec.appendChild(sub);c.appendChild(sec);
+  });
+  showP('pCatAll');
+}
+
+/* ============================================================
+   CATALOGUE DES 18 EXERCICES PDG + DOCUMENTS VIERGES
+============================================================ */
+/* ============================================================
+   CORRIGÉS TYPES PDG
+============================================================ */
+const CORRIGES={
+  1:`<h3>✉️ E-mail professionnel — Corrigé type</h3>
+<p><strong>Objet :</strong> Réduisez vos coûts de fournitures de 15% — RDV 20 min ?</p>
+<p><strong>Bonjour Mme/M. [NOM],</strong></p>
+<p>Spécialisé(e) dans [secteur client], vous faites certainement face à des dépenses importantes en [fournitures/équipements].</p>
+<p>Chez [Entreprise], nous accompagnons déjà [X] sociétés similaires à la vôtre pour réduire leurs coûts de 10 à 20% sans perte de qualité.</p>
+<p>Seriez-vous disponible pour un échange de 20 minutes cette semaine, le [jour] à [heure] ou le [jour] à [heure] ?</p>
+<p>Bien cordialement,<br>[Prénom NOM] — [Titre]<br>[Entreprise] — [Tél] — [Email]</p>
+<p><em>✅ Critères d'évaluation : objet &lt;60 car. accrocheur (2pts), accroche personnalisée (3pts), proposition de valeur chiffrée (3pts), appel à action précis avec créneaux (3pts), signature complète (3pts), ton professionnel (3pts), orthographe (3pts). Total /20</em></p>`,
+
+  2:`<h3>📄 Devis — Corrigé type (structure attendue)</h3>
+<p><strong>Structure obligatoire :</strong></p>
+<ul><li>En-tête : logo, coordonnées vendeur + client, N° devis (DEV-XXXX), date, validité 30 jours</li>
+<li>Tableau : Réf | Désignation | Qté | PU HT | Remise | Total HT — minimum 3 lignes produits</li>
+<li>Totaux : Sous-total HT → TVA 20% → Total TTC</li>
+<li>Conditions : mode et délai de règlement (ex: 30 jours nets), délai de livraison</li>
+<li>Signatures : bon pour accord client + cachet fournisseur</li></ul>
+<p><strong>Erreurs fréquentes :</strong> oublier la TVA, mauvais calcul de remise, absence de N° de devis, pas de délai de validité.</p>
+<p><em>✅ Barème : en-tête complet (3pts), tableau correct avec calculs exacts (6pts), totaux HT/TVA/TTC (3pts), conditions de règlement (3pts), délai validité (2pts), présentation soignée (3pts). Total /20</em></p>`,
+
+  3:`<h3>📦 Bon de commande — Corrigé type</h3>
+<p><strong>Éléments obligatoires :</strong></p>
+<ul><li>N° BC relié au devis (ex : BC-2024-001 / réf. devis DEV-2024-XXX)</li>
+<li>Identité complète des deux parties (acheteur + fournisseur, SIRET)</li>
+<li>Tableau des produits commandés identique au devis signé</li>
+<li>Adresse de livraison (peut différer de l'adresse de facturation)</li>
+<li>Délai de livraison négocié (ex: 8 jours ouvrés)</li>
+<li>Mode de paiement : ex. 30% acompte à la commande, solde à réception</li>
+<li>Signatures des deux parties + date</li></ul>
+<p><em>✅ Barème : concordance avec devis (3pts), identités complètes (3pts), tableau exact (4pts), adresse livraison (2pts), conditions paiement (3pts), délai (2pts), signatures (3pts). Total /20</em></p>`,
+
+  4:`<h3>🧾 Note de frais — Corrigé type</h3>
+<p><strong>Barème IK 2024 véhicule 5CV :</strong> 0,529 €/km jusqu'à 5 000 km/an</p>
+<p><strong>Exemple de calcul :</strong></p>
+<ul><li>Jour 1 : 120 km × 0,529 = 63,48 € IK + repas midi 14,50 € + repas client 55 € = <strong>132,98 €</strong></li>
+<li>Jour 2 : train 45 € + hébergement 85 € + repas midi 13,80 € + repas soir 18,50 € = <strong>162,30 €</strong></li>
+<li><strong>Total à rembourser : 295,28 €</strong></li></ul>
+<p><strong>Points d'attention :</strong> justificatifs obligatoires pour tout, repas client plafonné à 60 €, hébergement sur facture hôtel, péages sur ticket.</p>
+<p><em>✅ Barème : calcul IK correct (4pts), plafonds respectés (4pts), total exact (4pts), justificatifs mentionnés (4pts), présentation (4pts). Total /20</em></p>`,
+
+  5:`<h3>🗺️ Tournée commerciale — Corrigé type</h3>
+<p><strong>Méthode des pétales appliquée :</strong></p>
+<ul><li>Partir du client le plus proche, revenir à la base, puis repartir vers le suivant en spirale</li>
+<li>Vitesse moyenne retenue : <strong>70 km/h</strong> (route nationale/departementale)</li>
+<li>Formule temps de trajet : distance (km) ÷ 70 × 60 = minutes</li></ul>
+<p><strong>Exemple de calcul pour 28 km :</strong> 28 ÷ 70 × 60 = 24 min de trajet</p>
+<p><strong>Ordre optimisé attendu :</strong> partir du client le plus proche dans la direction la plus logique géographiquement, éviter les aller-retours.</p>
+<p><strong>Planning type :</strong></p>
+<ul><li>08h00 — Départ base</li><li>08h24 — Arrivée Client 1 (28 km, 24 min) — visite 35 min</li><li>09h12 — Départ vers Client 2 (15 km, 13 min)</li><li>Et ainsi de suite...</li><li>12h00-13h00 — Pause déjeuner obligatoire</li></ul>
+<p><em>✅ Barème : méthode des pétales justifiée (3pts), calculs temps de trajet corrects avec 70km/h (5pts), horaires cohérents (4pts), pause repas respectée (2pts), coût IK calculé (3pts), tableau complet (3pts). Total /20</em></p>`,
+
+  6:`<h3>📊 KPI Salon — Corrigé type</h3>
+<p><strong>Données :</strong> Budget = 4 500 € | Contacts = 87 | RDV = 23 | Devis = 8 (48 500 €) | Commandes = 3 (18 500 €)</p>
+<p><strong>Calculs attendus :</strong></p>
+<ul><li>Taux contacts→RDV : 23 ÷ 87 × 100 = <strong>26,4%</strong></li>
+<li>Taux RDV→devis : 8 ÷ 23 × 100 = <strong>34,8%</strong></li>
+<li>Taux devis→commandes : 3 ÷ 8 × 100 = <strong>37,5%</strong></li>
+<li>Taux global transformation : 3 ÷ 87 × 100 = <strong>3,4%</strong></li>
+<li>Coût par contact : 4 500 ÷ 87 = <strong>51,72 €</strong></li>
+<li>CA par contact : 18 500 ÷ 87 = <strong>212,6 €</strong></li>
+<li>ROI : 18 500 ÷ 4 500 × 100 = <strong>411%</strong> → chaque euro investi rapporte 4,11 €</li></ul>
+<p><strong>Recommandations type :</strong> améliorer la qualification des contacts, retravailler la prise de RDV, augmenter le budget stand.</p>
+<p><em>✅ Barème : 7 KPI calculés correctement (10pts), formules indiquées (4pts), interprétation (3pts), recommandations pertinentes (3pts). Total /20</em></p>`,
+
+  7:`<h3>📞 Script CROC — Corrigé type</h3>
+<p><strong>C — Contact :</strong> "Bonjour, je suis [Prénom NOM], commercial(e) chez [Entreprise]. Ai-je bien M./Mme [NOM], [fonction] ?"</p>
+<p><strong>R — Raison :</strong> "Je vous appelle car nous accompagnons les entreprises de [secteur] à [bénéfice concret]. Nos clients réduisent en moyenne [X]% de [coût] dès la première année."</p>
+<p><strong>O — Objectif :</strong> "Je souhaiterais vous présenter notre solution en 20 minutes. Seriez-vous disponible jeudi à 14h ou vendredi matin ?"</p>
+<p><strong>C — Conclusion :</strong> "Parfait, je note RDV [jour] à [heure] à [lieu/visio]. Je vous envoie une confirmation par email. Bonne journée M./Mme [NOM] !"</p>
+<p><strong>Fiches objections :</strong></p>
+<ul><li>"Pas le temps" → "Je comprends, c'est exactement pourquoi je propose 20 min. Quel créneau la semaine prochaine ?"</li>
+<li>"Déjà fournisseur" → "Très bien, c'est pour ça que beaucoup de nos clients avaient aussi un fournisseur avant de nous choisir. Qu'est-ce qui pourrait vous faire changer ?"</li>
+<li>"Envoyez une doc" → "Bien sûr, mais pour vous envoyer quelque chose de pertinent, j'ai besoin de 5 minutes pour comprendre votre situation. C'est possible ?"</li></ul>
+<p><em>✅ Barème : structure CROC respectée (8pts), accroche convaincante (3pts), technique d'alternance pour le RDV (2pts), 3 objections traitées (6pts), ton naturel et professionnel (1pt). Total /20</em></p>`,
+
+  8:`<h3>💡 Argumentaire CAP-SONCAS — Corrigé type</h3>
+<p><strong>Structure attendue pour chaque profil (exemple Sécurité) :</strong></p>
+<ul><li><strong>Caractéristique :</strong> "Notre produit est certifié ISO 9001 et bénéficie de 3 ans de garantie."</li>
+<li><strong>Avantage-Bénéfice :</strong> "Vous êtes protégé contre tout défaut et évitez les pannes coûteuses."</li>
+<li><strong>Preuve :</strong> "97% de nos clients renouvellent leur contrat. Voici un avis client : [témoignage]."</li></ul>
+<p><strong>Erreurs fréquentes :</strong> confondre Caractéristique et Avantage (la C décrit le produit, l'A traduit en bénéfice client), preuve non vérifiable, profil SONCAS non adapté au client cible.</p>
+<p><em>✅ Barème : 6 profils SONCAS traités (6pts), distinction C/A/P claire (6pts), bénéfices traduits en langage client (4pts), preuves concrètes et vérifiables (4pts). Total /20</em></p>`,
+
+  9:`<h3>🛡️ Guide objections — Corrigé type</h3>
+<p><strong>Méthode en 4 temps pour chaque objection :</strong></p>
+<ul><li>1. <strong>Écoute active :</strong> laisser finir, hocher la tête, ne pas interrompre</li>
+<li>2. <strong>Reformulation positive :</strong> "Si je comprends bien, votre préoccupation porte sur..."</li>
+<li>3. <strong>Argumentation :</strong> répondre avec un argument CAP adapté au profil</li>
+<li>4. <strong>Contrôle :</strong> "Est-ce que cette réponse répond à votre question ?"</li></ul>
+<p><strong>Exemple — "C'est trop cher" :</strong></p>
+<ul><li>Reformulation : "Si je comprends bien, vous souhaitez être certain(e) que l'investissement est rentable."</li>
+<li>Argumentation : "Nos clients constatent un retour sur investissement moyen de 8 mois. Sur 3 ans, vous économisez [X]€."</li>
+<li>Contrôle : "Ce gain correspond-il à vos attentes ?"</li></ul>
+<p><em>✅ Barème : 5 objections pertinentes et réalistes (5pts), reformulation positive pour chacune (5pts), argument CAP adapté (5pts), question de contrôle (3pts), présentation pratico-terrain (2pts). Total /20</em></p>`,
+
+  10:`<h3>🔍 Plan de découverte — Corrigé type</h3>
+<p><strong>Structure des 4 phases :</strong></p>
+<ul><li><strong>Phase 1 — Contexte (5 questions ouvertes) :</strong> "Pouvez-vous me présenter votre activité ?" / "Comment êtes-vous organisé(e) actuellement pour [sujet] ?"</li>
+<li><strong>Phase 2 — Organisation (4 questions) :</strong> "Qui prend les décisions en matière de [achat] ?" / "Quel est votre processus d'achat ?"</li>
+<li><strong>Phase 3 — Besoins SONCAS (5 questions) :</strong> "Qu'est-ce qui est le plus important pour vous dans ce type de solution ?" / "Qu'est-ce qui vous a déçu dans votre solution actuelle ?"</li>
+<li><strong>Phase 4 — Contraintes (4 questions) :</strong> "Quel est votre budget pour ce projet ?" / "Pour quand en auriez-vous besoin ?"</li></ul>
+<p><strong>Point clé :</strong> maximum 2 questions fermées, privilégier les questions ouvertes (qui/quoi/comment/pourquoi/combien).</p>
+<p><em>✅ Barème : 18 questions réparties en 4 phases (8pts), majorité de questions ouvertes (4pts), adaptation au secteur client (4pts), objectif de chaque question explicité (4pts). Total /20</em></p>`,
+
+  11:`<h3>📝 Compte-rendu de visite — Corrigé type</h3>
+<p><strong>Structure complète attendue :</strong></p>
+<ul><li><strong>En-tête :</strong> date, lieu, participants, durée</li>
+<li><strong>Contexte :</strong> rappel historique client, CA actuel, enjeux identifiés</li>
+<li><strong>Besoins SONCAS détectés :</strong> ex. Sécurité (veut garantie), Argent (sensible au prix)</li>
+<li><strong>Proposition formulée :</strong> quel produit/service proposé, à quel prix, avec quelle remise</li>
+<li><strong>Réaction du client :</strong> intérêt montré, hésitations</li>
+<li><strong>Objection principale :</strong> "prix trop élevé" → réponse apportée (ROI, comparaison)</li>
+<li><strong>Accord obtenu :</strong> délai de réflexion 8 jours → envoi devis le [date]</li>
+<li><strong>Cotation :</strong> TIÈDE (intéressé mais pas décidé)</li>
+<li><strong>Prochaine action :</strong> relance téléphonique le [date+8j] à 10h, par [commercial]</li></ul>
+<p><em>✅ Barème : structure complète (4pts), besoins SONCAS identifiés (4pts), objection + réponse (4pts), cotation justifiée (3pts), prochaine action précise (3pts), style professionnel (2pts). Total /20</em></p>`,
+
+  12:`<h3>📋 Proposition commerciale — Corrigé type</h3>
+<p><strong>Structure des 4 pages :</strong></p>
+<ul><li><strong>Page de garde :</strong> logo entreprise + client, titre, date, commercial référent</li>
+<li><strong>Synthèse exécutive :</strong> 3 points clés en 10 lignes max — problème client + solution + bénéfice principal chiffré</li>
+<li><strong>Analyse + Solution :</strong> comprendre les enjeux du client avant de présenter l'offre, ROI = économies générées / coût de la solution × 100</li>
+<li><strong>Conditions :</strong> tarif HT/TTC, remise accordée, planning (J+X délai), garantie, modalités de paiement</li></ul>
+<p><strong>Point clé :</strong> personnaliser avec le nom du client partout, utiliser "vous" et non "on".</p>
+<p><em>✅ Barème : page de garde professionnelle (2pts), synthèse convaincante (4pts), analyse enjeux client (4pts), ROI calculé (4pts), conditions claires (3pts), personnalisation (3pts). Total /20</em></p>`,
+
+  13:`<h3>📈 Tableau de bord — Corrigé type</h3>
+<p><strong>Données et calculs attendus :</strong></p>
+<ul><li>Taux appels→contacts : 34 ÷ 67 × 100 = <strong>50,7%</strong> (obj. 50%) → <strong>OK</strong></li>
+<li>Taux contacts→RDV : 12 ÷ 34 × 100 = <strong>35,3%</strong> (obj. 37,5%) → <strong>-2,2 pts</strong></li>
+<li>Taux RDV→devis : 8 ÷ 12 × 100 = <strong>66,7%</strong> (obj. 40%) → <strong>+26,7 pts ✅</strong></li>
+<li>Taux devis→commandes : 3 ÷ 8 × 100 = <strong>37,5%</strong> (obj. 33%) → <strong>+4,5 pts ✅</strong></li>
+<li>CA signé semaine : 18 200 € | Objectif mensuel : 35 000 € | Réalisé à ce stade : <strong>52%</strong> de l'objectif</li>
+<li>Panier moyen : 18 200 ÷ 3 = <strong>6 067 €</strong></li></ul>
+<p><strong>Analyse :</strong> Appels insuffisants (67 vs 80 obj.), qualité de conversion RDV excellente. Priorité : augmenter le volume de prospection.</p>
+<p><em>✅ Barème : calculs corrects (8pts), formules indiquées (4pts), graphique (3pts), analyse des écarts pertinente (3pts), plan d'action semaine suivante (2pts). Total /20</em></p>`,
+
+  14:`<h3>📦 Fiche produit — Corrigé type</h3>
+<p><strong>Structure complète attendue :</strong></p>
+<ul><li>Référence, désignation commerciale, description technique en 3 lignes max</li>
+<li>3 bénéfices clients (pas caractéristiques !) : ex. "Vous gagnez 2h par semaine" pas "Il a 3 fonctions"</li>
+<li>Comparatif 2 concurrents sur 3 critères : prix, qualité/performance, délai/SAV</li>
+<li>Prix HT, conditions de remise, disponibilité</li>
+<li>Argumentaire de vente en 5 points structurés (1 par profil SONCAS)</li></ul>
+<p><strong>Erreur fréquente :</strong> confondre caractéristique et bénéfice. Un bénéfice répond à "et donc pour vous ça signifie que..."</p>
+<p><em>✅ Barème : présentation visuelle (2pts), description technique précise (3pts), 3 bénéfices en langage client (4pts), comparatif concurrentiel (4pts), conditions tarifaires (3pts), argumentaire 5 points (4pts). Total /20</em></p>`,
+
+  15:`<h3>🔎 Veille concurrentielle — Corrigé type</h3>
+<p><strong>Structure pour chaque concurrent :</strong></p>
+<ul><li>Raison sociale + CA estimé + positionnement (haut/milieu/bas de gamme)</li>
+<li>Offre principale + tarif estimé (fourchette)</li>
+<li>Forces : 2 points forts documentés</li>
+<li>Faiblesses : 2 points faibles identifiés</li></ul>
+<p><strong>Matrice de positionnement attendue :</strong> axe X = prix (bas→élevé), axe Y = qualité (faible→haute) → placer les 4 acteurs (3 concurrents + notre entreprise)</p>
+<p><strong>3 axes de différenciation :</strong> chaque axe doit être spécifique, mesurable et défendable face au concurrent identifié.</p>
+<p><em>✅ Barème : 3 concurrents analysés (6pts), matrice de positionnement (4pts), forces/faiblesses documentées (4pts), avantage concurrentiel en 3 axes (4pts), recommandations (2pts). Total /20</em></p>`,
+
+  16:`<h3>📅 PAC — Corrigé type</h3>
+<p><strong>Données de référence :</strong> Objectif T2 = CA calculé. CA T1 = -10% → écart à rattraper sur T2.</p>
+<p><strong>Segmentation ABC attendue :</strong></p>
+<ul><li>Segment A (20% clients = 80% CA) : visites mensuelles, priorité absolue, offres personnalisées</li>
+<li>Segment B (développables) : visites bimensuelles, upsell/cross-sell</li>
+<li>Segment C (petits clients) : contact trimestriel, email/téléphone</li></ul>
+<p><strong>Planning Gantt simplifié :</strong> colonnes = 3 mois, lignes = 6 actions minimum (prospection, relances, salons, formations...)</p>
+<p><strong>Budget 800 € réparti :</strong> ex. 400 € prospection (flyers, emailing), 300 € déplacements supplémentaires, 100 € outils.</p>
+<p><em>✅ Barème : diagnostic SWOT (4pts), objectifs SMART (3pts), segmentation ABC (4pts), planning Gantt (4pts), budget détaillé (3pts), indicateurs de suivi (2pts). Total /20</em></p>`,
+
+  17:`<h3>✍️ Lettre de confirmation — Corrigé type</h3>
+<p><strong>Mentions obligatoires :</strong></p>
+<ul><li>Identité complète des deux parties (raison sociale, adresse, SIRET)</li>
+<li>Objet de la commande : désignation exacte, référence, quantité</li>
+<li>Prix unitaire HT, remise, total HT, TVA 20%, total TTC</li>
+<li>Acompte (ex : 30% = XXX €) + solde à la livraison</li>
+<li>Délai de livraison : 15 jours calendaires à compter de la réception de l'acompte</li>
+<li>Garantie : 1 an pièces et main d'œuvre (exemple)</li>
+<li>Signatures manuscrites des deux parties + date + "Bon pour accord"</li></ul>
+<p><strong>Erreur fréquente :</strong> oublier la TVA, ne pas préciser les conditions de l'acompte.</p>
+<p><em>✅ Barème : identités complètes (2pts), tableau produits exact (4pts), totaux HT/TVA/TTC (3pts), conditions paiement (4pts), délai livraison (2pts), garantie (2pts), signatures (3pts). Total /20</em></p>`,
+
+  18:`<h3>📊 Rapport d'activité mensuel — Corrigé type</h3>
+<p><strong>Structure des 4 parties :</strong></p>
+<ul><li><strong>Synthèse exécutive (5 lignes) :</strong> résultats en 3 chiffres clés + fait marquant du mois</li>
+<li><strong>Résultats vs objectifs :</strong> tableau avec colonne Objectif / Réalisé / Écart en % pour chaque KPI</li>
+<li><strong>Analyse :</strong> expliquer les causes des écarts (positifs ET négatifs), client perdu → pourquoi ?</li>
+<li><strong>Plan correctif avril :</strong> 3 actions concrètes avec responsable + date limite</li></ul>
+<p><strong>Calcul écart CA :</strong> (Réalisé - Objectif) ÷ Objectif × 100. Si positif : surperformance. Si négatif : sous-performance.</p>
+<p><strong>Ton attendu :</strong> professionnel, factuel, orienté solutions (ne pas se plaindre, proposer des actions).</p>
+<p><em>✅ Barème : synthèse claire (3pts), tableau KPI complet (5pts), calcul écarts exacts (4pts), analyse des causes pertinente (4pts), plan correctif actionnable (4pts). Total /20</em></p>`
+};
+
+function showCorrige(score){
+  if(!score||score<1||score>18){notify('Corrigé non disponible','','ko');return;}
+  const corrige=CORRIGES[score];
+  if(!corrige){notify('Corrigé non disponible pour ce score.','','ko');return;}
+  el('corrigeTitre').textContent='Mission '+score;
+  el('corigeContent').innerHTML=corrige;
+  openM('mCorrige');
+}
+
+
+function showCatalogueExos(){
+  const colors={1:'#e74c3c',2:'#e67e22',3:'#f39c12',4:'#d4ac0d',5:'#27ae60',
+    6:'#1abc9c',7:'#16a085',8:'#2980b9',9:'#8e44ad',10:'#9b59b6',
+    11:'#c0392b',12:'#e67e22',13:'#27ae60',14:'#2980b9',15:'#8e44ad',
+    16:'#16a085',17:'#e74c3c',18:'#C9A84C'};
+  const proba=Math.round(1/18*100);
+  // Use first job as demo context (same as student sees)
+  const demoPoste=JOBS[0];
+  const list=el('catExosContent');
+  list.innerHTML='';
+
+  for(let score=1;score<=18;score++){
+    const t=getTask(score,demoPoste);
+    const col=colors[score]||'var(--gold)';
+
+    // Build exactly the same HTML as the student task card
+    let clientHtml='';
+    if(t.client){
+      clientHtml+='<div class="tclient"><strong>👤 Client assigné :</strong><br>'+t.client+'</div>';
+    }
+    if(t.consigne){
+      clientHtml+='<div class="tclient" style="border-color:var(--green);background:rgba(27,138,82,.08)"><strong>📝 Consigne spécifique :</strong><br>'+t.consigne+'</div>';
+    }
+
+    // Mission 17 simplified notice
+    const simplif=score===17?'<div style="background:rgba(231,76,60,.1);border:1px solid rgba(231,76,60,.3);border-radius:6px;padding:8px 10px;font-size:.72rem;color:#e74c3c;margin-bottom:9px">📌 Document simplifié : <strong>Lettre de confirmation de commande</strong> — adapté au niveau 1re/Terminale MCV Option B.</div>':'';
+
+    const wrapper=document.createElement('div');
+    wrapper.style.cssText='margin-bottom:16px';
+
+    // Reproduce exact task card layout
+    const card=document.createElement('div');
+    card.className='tcard';
+    card.style.position='relative';
+    card.innerHTML=
+      '<div class="tbadge">Mission D18 = '+score+'</div>'
+      +'<div class="ttitle">'+t.title+'</div>'
+      +'<div class="tdesc">'+t.desc+'</div>'
+      +clientHtml
+      +simplif
+      +'<div style="margin:12px 0">'
+        +'<button class="btn btn-sm" onclick="downloadDoc('+score+')" style="width:auto;background:rgba(201,168,76,.2);color:var(--gold);border:1px solid var(--gold-b);font-size:.82rem;padding:9px 18px">'
+        +'⬇️ Télécharger le document vierge à remplir</button>'
+      +'</div>'
+      +'<div class="tref">📚 Référentiel : '+t.ref+'</div>';
+
+    // Small header above the card with score badge and proba
+    const header=document.createElement('div');
+    header.style.cssText='display:flex;align-items:center;gap:10px;margin-bottom:8px';
+    header.innerHTML=
+      '<div style="background:'+col+';color:#fff;font-family:Bebas Neue,sans-serif;font-size:1.1rem;min-width:36px;height:36px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+score+'</div>'
+      +'<div style="font-family:Space Mono,monospace;font-size:.58rem;color:var(--muted)">🎲 Face '+score+'/18 · '+proba+'% de probabilité</div>';
+
+    wrapper.appendChild(header);
+    wrapper.appendChild(card);
+    list.appendChild(wrapper);
+  }
+  showP('pCatExos');
+}
+
+
+/* ============================================================
+   GÉNÉRATION DE DOCUMENTS VIERGES (HTML → impression / PDF)
+============================================================ */
+function downloadDoc(score){
+  const docs={
+    1: genDocEmail(),
+    2: genDocDevis(),
+    3: genDocBC(),
+    4: genDocFrais(),
+    5: genDocTournee(),
+    6: genDocKPI(),
+    7: genDocCROC(),
+    8: genDocCAP(),
+    9: genDocObjestions(),
+    10: genDocDecouverte(),
+    11: genDocCRV(),
+    12: genDocPropale(),
+    13: genDocTDB(),
+    14: genDocFicheProduit(),
+    15: genDocVeille(),
+    16: genDocPAC(),
+    17: genDocContratSimple(),
+    18: genDocRapport(),
+  };
+  const html=docs[score]||'<p>Document non disponible</p>';
+  const blob=new Blob(['<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>Document MDC</title>'+CSS_DOC+'</head><body>'+html+'</body></html>'],{type:'text/html'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download='MDC_Mission'+score+'_'+getTask(score,null).title.replace(/[^a-zA-Z0-9]/g,'_')+'.html';
+  a.click();URL.revokeObjectURL(url);
+  notify('Document téléchargé !','Ouvre-le dans ton navigateur et imprime-le.','ok');
+}
+
+const CSS_DOC=`<style>
+  body{font-family:Arial,sans-serif;max-width:800px;margin:20px auto;padding:20px;color:#1a1a1a;font-size:13px}
+  h1{font-size:16px;text-align:center;text-transform:uppercase;border-bottom:2px solid #1a1a1a;padding-bottom:8px;margin-bottom:16px}
+  h2{font-size:13px;text-transform:uppercase;margin:14px 0 6px;background:#f0f0f0;padding:4px 8px}
+  .entete{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:16px}
+  .bloc{border:1px solid #ccc;padding:10px;border-radius:4px;min-height:70px}
+  .bloc label{display:block;font-size:10px;text-transform:uppercase;color:#666;margin-bottom:4px;font-weight:bold}
+  .ligne{border-bottom:1px solid #ddd;padding:6px 0;min-height:22px}
+  .ligne label{font-size:10px;color:#666;display:block;margin-bottom:2px}
+  table{width:100%;border-collapse:collapse;margin:10px 0}
+  th{background:#1a1a1a;color:#fff;padding:7px 8px;font-size:11px;text-align:left}
+  td{padding:6px 8px;border:1px solid #ddd;font-size:12px}
+  tr:nth-child(even) td{background:#f9f9f9}
+  .total-row td{background:#f0f0f0;font-weight:bold}
+  .signature{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:30px}
+  .sig-bloc{border-top:1px solid #1a1a1a;padding-top:8px;min-height:60px}
+  .ref{font-size:10px;color:#666;font-style:italic;margin-top:16px;border-top:1px dashed #ccc;padding-top:8px}
+  .field{border-bottom:1px solid #999;min-height:20px;margin-bottom:8px;padding:2px 4px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+  .case{border:1px solid #ccc;padding:8px;border-radius:4px;margin-bottom:8px}
+  @media print{body{margin:0;padding:10px}}
+</style>`;
+
+function genDocEmail(){
+  return`<h1>📧 E-mail Professionnel de Prospection</h1>
+  <div class="grid2" style="margin-bottom:12px">
+    <div class="case"><label>Nom & Prénom du commercial</label><div class="field"></div></div>
+    <div class="case"><label>Entreprise représentée</label><div class="field"></div></div>
+  </div>
+  <div class="case"><label>Prospect ciblé (nom, fonction, entreprise)</label><div class="field"></div></div>
+  <h2>Rédaction de l\'e-mail</h2>
+  <div class="case"><label>Objet (max 60 caractères — accrocheur, personnalisé)</label><div class="field"></div></div>
+  <div class="case"><label>Formule d\'appel (ex : Madame / Monsieur + nom)</label><div class="field"></div></div>
+  <div class="case" style="min-height:60px"><label>Accroche personnalisée (fait marquant sur le prospect)</label><div class="field" style="min-height:40px"></div></div>
+  <div class="case" style="min-height:80px"><label>Proposition de valeur (bénéfice client en 2-3 lignes)</label><div class="field" style="min-height:55px"></div></div>
+  <div class="case" style="min-height:60px"><label>Preuve / chiffre clé</label><div class="field" style="min-height:35px"></div></div>
+  <div class="case"><label>Appel à l\'action (RDV proposé — jour, heure, durée)</label><div class="field"></div></div>
+  <div class="case"><label>Formule de politesse</label><div class="field"></div></div>
+  <div class="case"><label>Signature complète (nom, titre, tél, email, adresse)</label><div class="field" style="min-height:50px"></div></div>
+  <div class="ref">Référentiel MCV B · C1.1 — Communication écrite professionnelle B2B</div>`;
+}
+
+function genDocDevis(){
+  return`<h1>📄 Devis Commercial</h1>
+  <div class="entete">
+    <div class="bloc"><label>Émetteur (votre entreprise)</label>
+      Nom : <div class="field"></div>Adresse : <div class="field"></div>
+      Tél : <div class="field"></div>Email : <div class="field"></div>SIRET : <div class="field"></div>
+    </div>
+    <div class="bloc"><label>Client (destinataire)</label>
+      Nom : <div class="field"></div>Adresse : <div class="field"></div>
+      Contact : <div class="field"></div>Email : <div class="field"></div>
+    </div>
+  </div>
+  <div class="grid3" style="margin-bottom:12px">
+    <div class="case"><label>N° Devis</label><div class="field">DEV-2024-</div></div>
+    <div class="case"><label>Date</label><div class="field"></div></div>
+    <div class="case"><label>Validité</label><div class="field">30 jours</div></div>
+  </div>
+  <table>
+    <thead><tr><th style="width:8%">Réf.</th><th style="width:40%">Désignation</th><th>Qté</th><th>PU HT (€)</th><th>Remise</th><th>Total HT (€)</th></tr></thead>
+    <tbody>
+      ${Array(6).fill('<tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>').join('')}
+      <tr class="total-row"><td colspan="5" style="text-align:right">Sous-total HT</td><td></td></tr>
+      <tr class="total-row"><td colspan="5" style="text-align:right">TVA 20 %</td><td></td></tr>
+      <tr class="total-row"><td colspan="5" style="text-align:right"><strong>Total TTC</strong></td><td><strong></strong></td></tr>
+    </tbody>
+  </table>
+  <div class="grid2">
+    <div class="case"><label>Conditions de règlement</label><div class="field"></div></div>
+    <div class="case"><label>Délai de livraison</label><div class="field"></div></div>
+  </div>
+  <div class="signature">
+    <div class="sig-bloc"><strong>Signature client</strong><br><small>Bon pour accord — Date :</small></div>
+    <div class="sig-bloc"><strong>Signature commercial</strong><br><small>Nom & cachet :</small></div>
+  </div>
+  <div class="ref">Référentiel MCV B · C2.1 — Établissement de documents commerciaux</div>`;
+}
+
+function genDocBC(){
+  return`<h1>📦 Bon de Commande</h1>
+  <div class="entete">
+    <div class="bloc"><label>Fournisseur</label>
+      Nom : <div class="field"></div>Adresse : <div class="field"></div>Tél : <div class="field"></div>
+    </div>
+    <div class="bloc"><label>Client / Acheteur</label>
+      Nom : <div class="field"></div>Adresse facturation : <div class="field"></div>
+      Adresse livraison : <div class="field"></div>
+    </div>
+  </div>
+  <div class="grid3" style="margin-bottom:12px">
+    <div class="case"><label>N° BC</label><div class="field">BC-2024-</div></div>
+    <div class="case"><label>Date commande</label><div class="field"></div></div>
+    <div class="case"><label>Réf. Devis accepté</label><div class="field">DEV-2024-</div></div>
+  </div>
+  <table>
+    <thead><tr><th>Réf.</th><th>Désignation</th><th>Qté commandée</th><th>PU HT (€)</th><th>Total HT (€)</th></tr></thead>
+    <tbody>
+      ${Array(5).fill('<tr><td></td><td></td><td></td><td></td><td></td></tr>').join('')}
+      <tr class="total-row"><td colspan="4" style="text-align:right"><strong>Total TTC</strong></td><td></td></tr>
+    </tbody>
+  </table>
+  <div class="grid2">
+    <div class="case"><label>Mode de paiement</label><div class="field"></div></div>
+    <div class="case"><label>Délai de livraison souhaité</label><div class="field"></div></div>
+  </div>
+  <div class="case"><label>Transporteur / Conditions de livraison (Incoterms)</label><div class="field"></div></div>
+  <div class="signature">
+    <div class="sig-bloc"><strong>Signature client</strong><br><small>Date :</small></div>
+    <div class="sig-bloc"><strong>Signature fournisseur</strong><br><small>Validation :</small></div>
+  </div>
+  <div class="ref">Référentiel MCV B · C2.2 — Traitement des commandes</div>`;
+}
+
+function genDocFrais(){
+  return`<h1>🧾 Note de Frais Professionnelle</h1>
+  <div class="grid2" style="margin-bottom:12px">
+    <div class="case"><label>Nom & Prénom</label><div class="field"></div></div>
+    <div class="case"><label>Poste / Service</label><div class="field"></div></div>
+    <div class="case"><label>Période du déplacement</label><div class="field"></div></div>
+    <div class="case"><label>Motif du déplacement</label><div class="field"></div></div>
+  </div>
+  <h2>Détail des frais — Jour 1</h2>
+  <table>
+    <thead><tr><th>Nature des frais</th><th>Destination / Précision</th><th>Km / Nuit</th><th>Tarif unitaire</th><th>Montant (€)</th><th>Justificatif</th></tr></thead>
+    <tbody>
+      <tr><td>Transport (train / IK)</td><td></td><td></td><td>Barème fiscal en vigueur</td><td></td><td>☐</td></tr>
+      <tr><td>Repas midi</td><td></td><td></td><td>Max 15,25 €</td><td></td><td>☐</td></tr>
+      <tr><td>Repas soir</td><td></td><td></td><td>Max 20 €</td><td></td><td>☐</td></tr>
+      <tr><td>Hébergement</td><td></td><td></td><td></td><td></td><td>☐</td></tr>
+      <tr><td>Péages</td><td></td><td></td><td></td><td></td><td>☐</td></tr>
+    </tbody>
+  </table>
+  <h2>Détail des frais — Jour 2</h2>
+  <table>
+    <thead><tr><th>Nature des frais</th><th>Destination / Précision</th><th>Km / Nuit</th><th>Tarif unitaire</th><th>Montant (€)</th><th>Justificatif</th></tr></thead>
+    <tbody>
+      <tr><td>Transport (train / IK)</td><td></td><td></td><td>Barème fiscal en vigueur</td><td></td><td>☐</td></tr>
+      <tr><td>Repas client</td><td></td><td></td><td>Max 60 €</td><td></td><td>☐</td></tr>
+      <tr><td>Repas soir</td><td></td><td></td><td>Max 20 €</td><td></td><td>☐</td></tr>
+      <tr><td>Hébergement</td><td></td><td></td><td></td><td></td><td>☐</td></tr>
+      <tr><td>Péages</td><td></td><td></td><td></td><td></td><td>☐</td></tr>
+      <tr class="total-row"><td colspan="4" style="text-align:right"><strong>TOTAL À REMBOURSER</strong></td><td><strong></strong></td><td></td></tr>
+    </tbody>
+  </table>
+  <div class="signature">
+    <div class="sig-bloc"><strong>Signature du salarié</strong></div>
+    <div class="sig-bloc"><strong>Visa responsable</strong></div>
+  </div>
+  <div class="ref">Référentiel MCV B · C3.1 — Gestion des frais professionnels<br>⚠️ Barème IK 2024 : jusqu\'à 5 000 km = 0,529 €/km (véhicule 5CV)</div>`;
+}
+
+function genDocTournee(){
+  return`<h1>🗺️ Fiche de Tournée Commerciale</h1>
+  <div class="grid2" style="margin-bottom:12px">
+    <div class="case"><label>Commercial</label><div class="field"></div></div>
+    <div class="case"><label>Date de la tournée</label><div class="field"></div></div>
+    <div class="case"><label>Secteur / Zone</label><div class="field"></div></div>
+    <div class="case"><label>Véhicule / Km départ</label><div class="field"></div></div>
+  </div>
+  <h2>Planning des visites (méthode des pétales)</h2>
+  <div style="background:#fff3cd;border:1px solid #ffc107;padding:8px 10px;border-radius:4px;margin:8px 0;font-size:11px">
+    <strong>Rappel :</strong> Vitesse moyenne = <strong>70 km/h</strong> | Formule : Distance ÷ 70 × 60 = minutes de trajet<br>
+    Exemple : 35 km ÷ 70 × 60 = <strong>30 min</strong> | Coût IK = km × <strong>0,529 €</strong> (barème fiscal 5CV)
+  </div>
+  <table>
+    <thead><tr><th>Ordre</th><th>Client / Prospect</th><th>Adresse</th><th>Km</th><th>Temps trajet<br><small>km÷70×60</small></th><th>Heure arrivée</th><th>Durée visite</th><th>Heure départ</th><th>Objectif</th></tr></thead>
+    <tbody>
+      <tr><td>Départ</td><td colspan="2">Base de départ : </td><td>08:00</td><td>—</td><td>08:00</td><td>0</td><td>—</td></tr>
+      ${Array(5).fill(0).map((_,i)=>`<tr><td>${i+1}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>`).join('')}
+      <tr><td>Retour</td><td colspan="2">Retour base</td><td></td><td>—</td><td></td><td></td><td>—</td></tr>
+      <tr class="total-row"><td colspan="6" style="text-align:right">TOTAUX</td><td></td><td></td></tr>
+    </tbody>
+  </table>
+  <div class="grid3">
+    <div class="case"><label>Km totaux</label><div class="field"></div></div>
+    <div class="case"><label>Coût IK (€)</label><div class="field"></div></div>
+    <div class="case"><label>Coût péages (€)</label><div class="field"></div></div>
+  </div>
+  <div class="case"><label>Justification de l\'ordre choisi (pourquoi cette optimisation ?)</label><div class="field" style="min-height:40px"></div></div>
+  <div class="ref">Référentiel MCV B · C3.2 — Planification et optimisation de l\'activité</div>`;
+}
+
+function genDocKPI(){
+  return`<h1>📊 Analyse KPI — Salon Professionnel</h1>
+  <div class="grid2" style="margin-bottom:12px">
+    <div class="case"><label>Nom du salon</label><div class="field"></div></div>
+    <div class="case"><label>Dates</label><div class="field"></div></div>
+    <div class="case"><label>Commercial</label><div class="field"></div></div>
+    <div class="case"><label>Budget total investi (€)</label><div class="field"></div></div>
+  </div>
+  <h2>Données brutes</h2>
+  <table>
+    <thead><tr><th>Indicateur</th><th>Valeur</th><th>Calcul / Formule</th></tr></thead>
+    <tbody>
+      <tr><td>Contacts qualifiés obtenus</td><td></td><td>—</td></tr>
+      <tr><td>RDV obtenus sur le salon</td><td></td><td>—</td></tr>
+      <tr><td>Devis envoyés post-salon</td><td></td><td>—</td></tr>
+      <tr><td>Commandes signées</td><td></td><td>—</td></tr>
+      <tr><td>CA généré (€)</td><td></td><td>—</td></tr>
+    </tbody>
+  </table>
+  <h2>Calcul des KPI</h2>
+  <table>
+    <thead><tr><th>KPI</th><th>Formule</th><th>Calcul</th><th>Résultat</th><th>Interprétation</th></tr></thead>
+    <tbody>
+      <tr><td>Taux de transformation contacts→RDV</td><td>RDV ÷ contacts × 100</td><td></td><td>%</td><td></td></tr>
+      <tr><td>Taux de transformation RDV→commande</td><td>Cdes ÷ RDV × 100</td><td></td><td>%</td><td></td></tr>
+      <tr><td>Coût par contact</td><td>Budget ÷ contacts</td><td></td><td>€</td><td></td></tr>
+      <tr><td>CA par contact</td><td>CA ÷ contacts</td><td></td><td>€</td><td></td></tr>
+      <tr><td>ROI du salon</td><td>CA ÷ budget × 100</td><td></td><td>%</td><td></td></tr>
+    </tbody>
+  </table>
+  <div class="case" style="min-height:60px"><label>Analyse et recommandations pour la prochaine édition</label><div class="field" style="min-height:50px"></div></div>
+  <div class="ref">Référentiel MCV B · C4.1 — Analyse des performances commerciales</div>`;
+}
+
+function genDocCROC(){
+  return`<h1>📞 Script d\'Appel CROC</h1>
+  <div class="grid2" style="margin-bottom:12px">
+    <div class="case"><label>Commercial</label><div class="field"></div></div>
+    <div class="case"><label>Prospect appelé</label><div class="field"></div></div>
+    <div class="case"><label>Téléphone</label><div class="field"></div></div>
+    <div class="case"><label>Date / Heure</label><div class="field"></div></div>
+  </div>
+  ${['C — CONTACT (Présentation + vérification de l\'interlocuteur)','R — RAISON (Accroche bénéfice client en 2 phrases max)','O — OBJECTIF (Proposition concrète : RDV / envoi doc / démo)','C — CONCLUSION (Reformulation accord + confirmation)'].map((s,i)=>`<div class="case" style="min-height:60px"><label>${s}</label><div class="field" style="min-height:45px"></div></div>`).join('')}
+  <h2>Fiches Réflexe — Traitement des Objections</h2>
+  ${['Objection 1 : "Je n\'ai pas le temps"','Objection 2 : "J\'ai déjà un fournisseur"','Objection 3 : "Envoyez-moi une documentation"'].map(o=>`<div class="case"><label>${o}</label><div><strong>Reformulation :</strong><div class="field"></div><strong>Réponse :</strong><div class="field" style="min-height:30px"></div><strong>Contre-question :</strong><div class="field"></div></div></div>`).join('')}
+  <div class="ref">Référentiel MCV B · C1.2 — Prospection et prise de RDV téléphonique</div>`;
+}
+
+function genDocCAP(){
+  return`<h1>💡 Argumentaire CAP-SONCAS</h1>
+  <div class="grid2" style="margin-bottom:12px">
+    <div class="case"><label>Produit / Service argumenté</label><div class="field"></div></div>
+    <div class="case"><label>Commercial</label><div class="field"></div></div>
+  </div>
+  <table>
+    <thead><tr><th style="width:12%">Profil SONCAS</th><th style="width:30%">Caractéristique (C)</th><th style="width:30%">Avantage-Bénéfice client (A)</th><th style="width:28%">Preuve (P)</th></tr></thead>
+    <tbody>
+      ${[['🔒 SÉCURITÉ','Le client veut être rassuré, éviter les risques'],['👑 ORGUEIL','Le client veut se distinguer, être valorisé'],['✨ NOUVEAUTÉ','Le client est attiré par les innovations'],['😌 CONFORT','Le client cherche la facilité, le bien-être'],['💰 ARGENT','Le client veut faire des économies, avoir un bon ROI'],['🤝 SYMPATHIE','Le client achète à la personne, à l\'image']].map(([s,d])=>`<tr><td><strong>${s}</strong><br><span style="font-size:10px;color:#666">${d}</span></td><td></td><td></td><td></td></tr>`).join('')}
+    </tbody>
+  </table>
+  <div class="ref">Référentiel MCV B · C1.3 — Argumentation commerciale</div>`;
+}
+
+function genDocObjestions(){
+  return`<h1>🛡️ Guide de Traitement des Objections</h1>
+  <div class="grid2" style="margin-bottom:12px">
+    <div class="case"><label>Commercial</label><div class="field"></div></div>
+    <div class="case"><label>Contexte / Produit</label><div class="field"></div></div>
+  </div>
+  ${Array(5).fill(0).map((_,i)=>`
+  <div class="case">
+    <label>Objection ${i+1}</label><div class="field" style="font-weight:bold"></div>
+    <table style="margin:6px 0"><tbody>
+      <tr><td style="width:28%;background:#f0f0f0;font-size:11px;font-weight:bold">1. Écoute active</td><td class="field" style="border:none"></td></tr>
+      <tr><td style="background:#f0f0f0;font-size:11px;font-weight:bold">2. Reformulation positive</td><td class="field" style="border:none"></td></tr>
+      <tr><td style="background:#f0f0f0;font-size:11px;font-weight:bold">3. Argumentation</td><td class="field" style="min-height:30px;border:none"></td></tr>
+      <tr><td style="background:#f0f0f0;font-size:11px;font-weight:bold">4. Contrôle / Question</td><td class="field" style="border:none"></td></tr>
+    </tbody></table>
+  </div>`).join('')}
+  <div class="ref">Référentiel MCV B · C1.4 — Gestion des objections</div>`;
+}
+
+function genDocDecouverte(){
+  return`<h1>🔍 Plan de Découverte Client</h1>
+  <div class="grid2" style="margin-bottom:12px">
+    <div class="case"><label>Commercial</label><div class="field"></div></div>
+    <div class="case"><label>Client / Prospect</label><div class="field"></div></div>
+  </div>
+  <table>
+    <thead><tr><th>Phase</th><th>#</th><th>Question</th><th>Type (O/F/A)</th><th>Objectif</th><th>Écoute attendue</th></tr></thead>
+    <tbody>
+      ${[['Contexte entreprise',5],['Organisation & fonctionnement',4],['Besoins & enjeux SONCAS',5],['Contraintes & décision',4]].flatMap(([phase,n])=>[
+        `<tr style="background:#f0f0f0"><td colspan="6" style="font-weight:bold;font-size:11px;text-transform:uppercase">${phase}</td></tr>`,
+        ...Array(n).fill(0).map((_,i)=>`<tr><td style="font-size:10px;color:#666">${phase.split(' ')[0]}</td><td>${i+1}</td><td></td><td></td><td></td><td></td></tr>`)
+      ]).join('')}
+    </tbody>
+  </table>
+  <div style="font-size:10px;color:#666;margin-top:8px">O = Ouverte · F = Fermée · A = Alternative</div>
+  <div class="ref">Référentiel MCV B · C1.5 — Techniques de découverte des besoins</div>`;
+}
+
+function genDocCRV(){
+  return`<h1>📝 Compte-Rendu de Visite</h1>
+  <div class="grid3" style="margin-bottom:12px">
+    <div class="case"><label>Commercial</label><div class="field"></div></div>
+    <div class="case"><label>Date & Lieu</label><div class="field"></div></div>
+    <div class="case"><label>Durée</label><div class="field"></div></div>
+  </div>
+  <div class="grid2">
+    <div class="case"><label>Client / Entreprise</label><div class="field"></div></div>
+    <div class="case"><label>Interlocuteur(s)</label><div class="field"></div></div>
+  </div>
+  ${[['Contexte et historique client','Rappel des échanges précédents, situation actuelle'],['Besoins SONCAS détectés','Sécurité / Orgueil / Nouveauté / Confort / Argent / Sympathie'],['Proposition formulée','Solution présentée et réaction du client'],['Objections soulevées & réponses apportées',''],['Accord obtenu / Niveau d\'engagement','Chaud ☐  Tiède ☐  Froid ☐'],['Prochaine étape','Action / Responsable / Date limite']].map(([l,hint])=>`<div class="case" style="min-height:55px"><label>${l}</label>${hint?`<span style="font-size:10px;color:#888;display:block;margin-bottom:4px">${hint}</span>`:''}  <div class="field" style="min-height:35px"></div></div>`).join('')}
+  <div class="ref">Référentiel MCV B · C2.3 — Reporting commercial</div>`;
+}
+
+function genDocPropale(){
+  return`<h1>📋 Proposition Commerciale</h1>
+  <div class="grid2" style="margin-bottom:12px">
+    <div class="case"><label>Émetteur</label><div class="field"></div></div>
+    <div class="case"><label>Client destinataire</label><div class="field"></div></div>
+  </div>
+  ${[['1. Synthèse exécutive (1/2 page)','Résumez en 3 points clés pourquoi votre solution est la meilleure réponse aux enjeux du client.'],['2. Analyse de la situation et des enjeux client','Montrez que vous avez compris leur contexte, leurs problèmes et leurs objectifs.'],['3. Solution recommandée','Décrivez votre offre, ses fonctionnalités clés, et son adéquation aux besoins identifiés.'],['4. Bénéfices & Retour sur Investissement','Chiffrez les gains attendus (économies, productivité, temps gagné...).'],['5. Planning de mise en œuvre','Etapes, délais, responsabilités.'],['6. Investissement & Conditions','Tarifs, modalités de paiement, garanties.']].map(([t,h])=>`<div class="case" style="min-height:70px"><label>${t}</label><span style="font-size:10px;color:#888">${h}</span><div class="field" style="min-height:45px"></div></div>`).join('')}
+  <div class="ref">Référentiel MCV B · C2.4 — Élaboration de propositions commerciales</div>`;
+}
+
+function genDocTDB(){
+  return`<h1>📈 Tableau de Bord Commercial</h1>
+  <div class="grid3" style="margin-bottom:12px">
+    <div class="case"><label>Commercial</label><div class="field"></div></div>
+    <div class="case"><label>Semaine N°</label><div class="field"></div></div>
+    <div class="case"><label>Objectif mensuel CA</label><div class="field"></div></div>
+  </div>
+  <h2>Activité de la semaine</h2>
+  <table>
+    <thead><tr><th>Indicateur</th><th>Objectif semaine</th><th>Réalisé</th><th>Écart</th><th>Analyse</th></tr></thead>
+    <tbody>
+      ${['Appels passés','Contacts joints','RDV obtenus','Taux appels→RDV (%)','Devis émis (nb)','Valeur devis (€ HT)','Commandes signées (nb)','CA signé (€ HT)','Nouveaux prospects qualifiés'].map(i=>`<tr><td>${i}</td><td></td><td></td><td></td><td></td></tr>`).join('')}
+    </tbody>
+  </table>
+  <h2>Pipeline commercial (affaires en cours)</h2>
+  <table>
+    <thead><tr><th>Client</th><th>Objet</th><th>Montant HT (€)</th><th>Probabilité (%)</th><th>Échéance</th><th>Prochaine action</th></tr></thead>
+    <tbody>${Array(4).fill('<tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>').join('')}</tbody>
+  </table>
+  <div class="case" style="min-height:50px"><label>Plan d\'action pour la semaine prochaine</label><div class="field" style="min-height:35px"></div></div>
+  <div class="ref">Référentiel MCV B · C4.2 — Pilotage de l\'activité commerciale</div>`;
+}
+
+function genDocFicheProduit(){
+  return`<h1>📦 Fiche Produit</h1>
+  <div class="grid2" style="margin-bottom:12px">
+    <div class="case"><label>Référence produit</label><div class="field"></div></div>
+    <div class="case"><label>Désignation commerciale</label><div class="field"></div></div>
+    <div class="case"><label>Prix de vente HT</label><div class="field"></div></div>
+    <div class="case"><label>Conditions tarifaires</label><div class="field"></div></div>
+  </div>
+  <div class="case" style="min-height:60px"><label>Description technique & caractéristiques principales</label><div class="field" style="min-height:45px"></div></div>
+  <table>
+    <thead><tr><th>Bénéfice client</th><th>Argument de vente</th><th>Preuve</th></tr></thead>
+    <tbody>${Array(3).fill('<tr><td></td><td></td><td></td></tr>').join('')}</tbody>
+  </table>
+  <h2>Comparatif concurrentiel</h2>
+  <table>
+    <thead><tr><th>Critère</th><th>Notre produit</th><th>Concurrent 1</th><th>Concurrent 2</th></tr></thead>
+    <tbody>${Array(3).fill('<tr><td></td><td></td><td></td><td></td></tr>').join('')}</tbody>
+  </table>
+  <div class="grid2">
+    <div class="case"><label>Disponibilité & délais</label><div class="field"></div></div>
+    <div class="case"><label>Conseils de mise en avant</label><div class="field"></div></div>
+  </div>
+  <div class="ref">Référentiel MCV B · C5.1 — Valorisation de l\'offre</div>`;
+}
+
+function genDocVeille(){
+  return`<h1>🔎 Analyse Concurrentielle</h1>
+  <div class="grid2" style="margin-bottom:12px">
+    <div class="case"><label>Notre entreprise</label><div class="field"></div></div>
+    <div class="case"><label>Secteur analysé</label><div class="field"></div></div>
+  </div>
+  ${Array(3).fill(0).map((_,i)=>`
+  <h2>Concurrent ${i+1}</h2>
+  <div class="grid2">
+    <div class="case"><label>Raison sociale</label><div class="field"></div></div>
+    <div class="case"><label>Positionnement marché</label><div class="field"></div></div>
+    <div class="case"><label>Offre principale</label><div class="field"></div></div>
+    <div class="case"><label>Politique tarifaire estimée</label><div class="field"></div></div>
+  </div>
+  <table><thead><tr><th>Points forts</th><th>Points faibles</th></tr></thead><tbody><tr><td style="min-height:50px"></td><td></td></tr></tbody></table>`).join('')}
+  <h2>Notre avantage concurrentiel</h2>
+  <div class="case" style="min-height:60px"><div class="field" style="min-height:50px"></div></div>
+  <div class="ref">Référentiel MCV B · C5.2 — Veille et analyse de l\'environnement</div>`;
+}
+
+function genDocPAC(){
+  return`<h1>📅 Plan d\'Action Commercial — Trimestriel</h1>
+  <div class="grid3" style="margin-bottom:12px">
+    <div class="case"><label>Commercial</label><div class="field"></div></div>
+    <div class="case"><label>Trimestre</label><div class="field"></div></div>
+    <div class="case"><label>Objectif CA (€)</label><div class="field"></div></div>
+  </div>
+  <h2>1. Diagnostic</h2>
+  <div class="grid2">
+    <div class="case" style="min-height:50px"><label>Forces</label><div class="field" style="min-height:35px"></div></div>
+    <div class="case" style="min-height:50px"><label>Faiblesses</label><div class="field" style="min-height:35px"></div></div>
+    <div class="case" style="min-height:50px"><label>Opportunités</label><div class="field" style="min-height:35px"></div></div>
+    <div class="case" style="min-height:50px"><label>Menaces</label><div class="field" style="min-height:35px"></div></div>
+  </div>
+  <h2>2. Segmentation ABC du portefeuille</h2>
+  <table>
+    <thead><tr><th>Segment</th><th>Critères</th><th>Nb clients</th><th>Fréquence contact</th><th>Actions prioritaires</th></tr></thead>
+    <tbody>
+      <tr><td style="background:#2ecc7133;font-weight:bold">A — Stratégiques</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td style="background:#f39c1233;font-weight:bold">B — Développables</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td style="background:#e74c3c33;font-weight:bold">C — À maintenir</td><td></td><td></td><td></td><td></td></tr>
+    </tbody>
+  </table>
+  <h2>3. Planning Gantt simplifié</h2>
+  <table>
+    <thead><tr><th>Action</th><th>Mois 1</th><th>Mois 2</th><th>Mois 3</th><th>KPI</th></tr></thead>
+    <tbody>${Array(6).fill('<tr><td></td><td></td><td></td><td></td><td></td></tr>').join('')}</tbody>
+  </table>
+  <div class="ref">Référentiel MCV B · C3.3 — Plan d\'action commercial</div>`;
+}
+
+// ★ MISSION 17 SIMPLIFIÉE — Lettre de commande + conditions générales
+function genDocContratSimple(){
+  return`<h1>✍️ Lettre de Confirmation de Commande<br><small style="font-size:12px;font-weight:normal">(Mission 17 — Formalisation de la vente)</small></h1>
+  <div class="entete">
+    <div class="bloc"><label>Vendeur / Prestataire</label>
+      Société : <div class="field"></div>
+      Représenté par : <div class="field"></div>
+      Adresse : <div class="field"></div>
+      SIRET : <div class="field"></div>
+    </div>
+    <div class="bloc"><label>Client / Acheteur</label>
+      Société : <div class="field"></div>
+      Représenté par : <div class="field"></div>
+      Adresse : <div class="field"></div>
+      SIRET : <div class="field"></div>
+    </div>
+  </div>
+  <div class="case"><label>Objet de la vente / prestation</label><div class="field"></div></div>
+  <h2>Détail de la commande confirmée</h2>
+  <table>
+    <thead><tr><th>Réf.</th><th>Désignation</th><th>Qté</th><th>PU HT (€)</th><th>Total HT (€)</th></tr></thead>
+    <tbody>
+      ${Array(4).fill('<tr><td></td><td></td><td></td><td></td><td></td></tr>').join('')}
+      <tr class="total-row"><td colspan="4" style="text-align:right">Total HT</td><td></td></tr>
+      <tr class="total-row"><td colspan="4" style="text-align:right">TVA 20%</td><td></td></tr>
+      <tr class="total-row"><td colspan="4" style="text-align:right"><strong>Total TTC</strong></td><td><strong></strong></td></tr>
+    </tbody>
+  </table>
+  <h2>Conditions convenues</h2>
+  <div class="grid2">
+    <div class="case"><label>Date de livraison / exécution</label><div class="field"></div></div>
+    <div class="case"><label>Lieu de livraison</label><div class="field"></div></div>
+    <div class="case"><label>Modalités de paiement</label><div class="field">☐ Virement  ☐ Chèque  ☐ CB  Délai : </div></div>
+    <div class="case"><label>Acompte versé</label><div class="field">%  soit  €</div></div>
+    <div class="case"><label>Garantie</label><div class="field"></div></div>
+    <div class="case"><label>Condition de résiliation</label><div class="field"></div></div>
+  </div>
+  <div class="case"><label>Remarques / Conditions particulières</label><div class="field" style="min-height:35px"></div></div>
+  <div class="signature">
+    <div class="sig-bloc"><strong>Signature Client</strong><br><small>Lu et approuvé — Date :</small></div>
+    <div class="sig-bloc"><strong>Signature Vendeur</strong><br><small>Nom & cachet :</small></div>
+  </div>
+  <div style="font-size:10px;color:#666;margin-top:12px;border:1px solid #ddd;padding:8px;background:#f9f9f9">
+    <strong>⚠️ Note pédagogique :</strong> Ce document est une <em>lettre de confirmation de commande simplifiée</em>, équivalent pratique d\'un contrat commercial pour les ventes courantes. 
+    Pour les contrats complexes (services sur mesure, montants importants), un acte juridique complet avec clause de confidentialité, loi applicable et juridiction compétente serait requis.
+  </div>
+  <div class="ref">Référentiel MCV B · C2.5 — Formalisation de la vente<br>📌 Version adaptée au niveau 1re/Terminale MCV Option B</div>`;
+}
+
+function genDocRapport(){
+  return`<h1>📊 Rapport d\'Activité Mensuel</h1>
+  <div class="grid3" style="margin-bottom:12px">
+    <div class="case"><label>Commercial</label><div class="field"></div></div>
+    <div class="case"><label>Mois / Année</label><div class="field"></div></div>
+    <div class="case"><label>Directeur commercial</label><div class="field"></div></div>
+  </div>
+  <div class="case" style="min-height:60px"><label>Synthèse exécutive (points clés du mois en 3-4 lignes)</label><div class="field" style="min-height:45px"></div></div>
+  <h2>Résultats vs Objectifs</h2>
+  <table>
+    <thead><tr><th>Indicateur</th><th>Objectif</th><th>Réalisé</th><th>%</th><th>vs mois N-1</th></tr></thead>
+    <tbody>
+      ${['CA total (€ HT)','Nb nouvelles commandes','Nb nouveaux clients','Nb visites clients','Nb appels de prospection','Panier moyen (€)'].map(i=>`<tr><td>${i}</td><td></td><td></td><td></td><td></td></tr>`).join('')}
+    </tbody>
+  </table>
+  <div class="grid2">
+    <div class="case" style="min-height:60px"><label>Clients gagnés ce mois</label><div class="field" style="min-height:45px"></div></div>
+    <div class="case" style="min-height:60px"><label>Clients perdus / à risque</label><div class="field" style="min-height:45px"></div></div>
+  </div>
+  <div class="case" style="min-height:60px"><label>Analyse des causes d\'écart (pourquoi les résultats sont-ils différents de l\'objectif ?)</label><div class="field" style="min-height:45px"></div></div>
+  <div class="case" style="min-height:60px"><label>Plan d\'action correctif pour le mois prochain</label><div class="field" style="min-height:45px"></div></div>
+  <div class="ref">Référentiel MCV B · C4.3 — Reporting à la direction</div>`;
+}
+
+
+/* ============================================================
+   PDG ACTIONS
+============================================================ */
+async function saveToDrive(){
+  const d={exportDate:new Date().toISOString(),students:await getStudents(),candidatures:await getCands(),entretiens:await getEnts(),corrections:await getCorrs()};
+  const blob=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');
+  a.href=url;a.download=`MDC_Sauvegarde_${new Date().toLocaleDateString('fr-FR').replace(/\//g,'-')}.json`;
+  a.click();URL.revokeObjectURL(url);
+  notify('Sauvegarde exportée !','Fichier JSON téléchargé.','ok');
+}
+function openDeleteAll(){
+  el('delContent').innerHTML='<div class="alert ako" style="font-size:.78rem">⚠️ Supprimer <strong>TOUS</strong> les élèves et toutes les données ?<br>Cette action est irréversible.</div>';
+  el('delConfirmBtn').textContent='🗑️ Tout supprimer';
+  el('delConfirmBtn').onclick=async()=>{
+    if(sb){
+      try{
+        await sb.from('corrections').delete().neq('id','__none__');
+        await sb.from('entretiens').delete().neq('uid','__none__');
+        await sb.from('candidatures').delete().neq('uid','__none__');
+        await sb.from('students').delete().neq('uid','__none__');
+      }catch(e){console.error(e);}
+    }
+    ['mdc_students','mdc_cands','mdc_ents','mdc_corrs'].forEach(k=>localStorage.removeItem(k));
+    closeM('mDeleteConfirm');renderProfPanel();
+    notify('Données effacées','Tous les élèves supprimés.','ok');
+  };
+  openM('mDeleteConfirm');
+}
+async function exportCSV(){
+  const all=await getStudents();
+  const list=Object.entries(all).map(([k,v])=>({uid:k,...v})).filter(s=>s.prenom).sort((a,b)=>(b.wallet||0)-(a.wallet||0));
+  const header='Rang;Prénom;Nom;DDN;Poste;Entreprise;Cagnotte (€);Missions;Moy. notes;Avertissements;Statut';
+  const rows=list.map((s,i)=>{
+    const t=s.travaux||[];const dn=t.filter(x=>x.note!=null);
+    const avg=dn.length?Math.round(dn.reduce((a,x)=>a+(x.note||0),0)/dn.length*10)/10:0;
+    return`${i+1};${s.prenom};${s.nom};${s.dob};${s.poste?s.poste.title:'—'};${s.poste?s.poste.company:'—'};${s.wallet||0};${t.length};${avg};${s.avert||0};${s.licencie?'Licencié':s.enPoste?'En poste':'Recrutement'}`;
+  });
+  const csv='\uFEFF'+header+'\n'+rows.join('\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');
+  a.href=url;a.download=`MDC_Recap_${new Date().toLocaleDateString('fr-FR').replace(/\//g,'-')}.csv`;
+  a.click();URL.revokeObjectURL(url);
+  notify('CSV exporté !','Ouvrable dans Excel.','ok');
+}
+
+/* ============================================================
+   MODE TEST
+============================================================ */
+function activerModeTest(){
+  _test=true;
+  S.uid='TEST_'+uid6();S.prenom='PDG';S.nom='TEST';S.dob='2000-01-01';S.selfie=null;
+  S.poste=null;S.postesEssayes=[];S.wallet=0;S.avert=0;S.mauvaises=0;S.licencie=false;
+  S.travaux=[];S.cand={cv:null,cvName:null,lm:null,lmName:null,ok:false};S.entNote=null;S.enPoste=false;
+  updateTopbar();renderJobs();showP('pPoste');
+  notify('🧪 Mode Test','Sélectionne un poste — accès direct au jeu.','ok');
+}
+
+/* ============================================================
+   AUTO-REFRESH PDG
+============================================================ */
+setInterval(()=>{
+  if(!pdgOK)return;
+  if(!el('pPDG')||!el('pPDG').classList.contains('active'))return;
+  if(document.activeElement&&document.activeElement.type==='number')return;
+  renderProfPanel();
+},6000);
+
+/* ============================================================
+   INIT
+============================================================ */
+document.addEventListener('DOMContentLoaded',()=>{
+  initSB();
+  const cover=document.getElementById('cover');
+  if(cover){cover.style.display='flex';cover.style.minHeight='100vh';}
+  const app=document.getElementById('app');
+  if(app)app.style.display='none';
+});
+</script>
+</body>
+</html>
