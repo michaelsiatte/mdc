@@ -232,7 +232,7 @@ hr.dv{border:none;border-top:1px solid var(--gold-b);margin:14px 0}
 <!-- COVER -->
 <div id="cover">
   <div class="clogo">MON DESTIN<br>DE COMMERCIAL</div>
-  <div class="csub">MCV Option B · 1re &amp; Terminale · Référentiel 2024</div>
+  <div class="csub">BTS MCV · Option B · Référentiel 2024</div>
   <div class="cbtns">
     <button class="cbtn cbtn-c" onclick="enterAs('student')"><span>💼</span> COMMERCIAL</button>
     <button class="cbtn cbtn-p" onclick="openPdgLogin()"><span>👑</span> PDG</button>
@@ -261,13 +261,6 @@ hr.dv{border:none;border-top:1px solid var(--gold-b);margin:14px 0}
     <div class="mtitle">📋 Catalogue — <span id="catPosteTitle"></span></div>
     <div id="catContent"></div>
     <button class="btn btn-s mt12" onclick="closeM('mCatalogue')">Fermer</button>
-  </div>
-</div>
-<div class="mbg" id="mCorrige">
-  <div class="modal" style="max-width:640px">
-    <div class="mtitle">📋 Corrigé Type — <span id="corrigeTitre"></span></div>
-    <div id="corigeContent" style="font-size:.82rem;line-height:1.7"></div>
-    <button class="btn btn-s mt12" onclick="closeM('mCorrige')">Fermer</button>
   </div>
 </div>
 <div class="mbg" id="mDeleteConfirm">
@@ -305,7 +298,6 @@ hr.dv{border:none;border-top:1px solid var(--gold-b);margin:14px 0}
 
     <!-- ① IDENT -->
     <div class="panel active" id="pIdent">
-      <button class="btn btn-s btn-sm" onclick="backToCover()" style="width:auto;margin-bottom:14px;font-size:.75rem">← Accueil</button>
       <div class="eyebrow">Étape 1 · Identification</div>
       <div class="heading">Crée ton<br>Profil Commercial</div>
       <div class="pbar"><div class="pd act">1</div><div class="pl"></div><div class="pd">2</div><div class="pl"></div><div class="pd">3</div><div class="pl"></div><div class="pd">4</div><div class="pl"></div><div class="pd">5</div></div>
@@ -336,7 +328,6 @@ hr.dv{border:none;border-top:1px solid var(--gold-b);margin:14px 0}
 
     <!-- ② POSTE -->
     <div class="panel" id="pPoste">
-      <button class="btn btn-s btn-sm" onclick="backToCover()" style="width:auto;margin-bottom:14px;font-size:.75rem">← Retour à l'accueil</button>
       <div class="eyebrow">Étape 2 · Offres d'emploi</div>
       <div class="heading">Choisis<br>Ton Entreprise</div>
       <div class="pbar"><div class="pd done">✓</div><div class="pl done"></div><div class="pd act">2</div><div class="pl"></div><div class="pd">3</div><div class="pl"></div><div class="pd">4</div><div class="pl"></div><div class="pd">5</div></div>
@@ -347,7 +338,6 @@ hr.dv{border:none;border-top:1px solid var(--gold-b);margin:14px 0}
 
     <!-- ③ CV -->
     <div class="panel" id="pCV">
-      <button class="btn btn-s btn-sm" onclick="backToJobs()" style="width:auto;margin-bottom:14px;font-size:.75rem">← Retour aux offres</button>
       <div class="eyebrow">Étape 3 · Candidature</div>
       <div class="heading">Dossier de<br>Candidature</div>
       <div class="pbar"><div class="pd done">✓</div><div class="pl done"></div><div class="pd done">✓</div><div class="pl done"></div><div class="pd act">3</div><div class="pl"></div><div class="pd">4</div><div class="pl"></div><div class="pd">5</div></div>
@@ -371,7 +361,6 @@ hr.dv{border:none;border-top:1px solid var(--gold-b);margin:14px 0}
 
     <!-- ④ ENTRETIEN -->
     <div class="panel" id="pEnt">
-      <button class="btn btn-s btn-sm" id="btnBackFromEnt" onclick="backFromEnt()" style="width:auto;margin-bottom:14px;font-size:.75rem">← Retour au dossier</button>
       <div class="eyebrow">Étape 4 · Entretien</div>
       <div class="heading">Entretien de<br>Recrutement</div>
       <div class="pbar"><div class="pd done">✓</div><div class="pl done"></div><div class="pd done">✓</div><div class="pl done"></div><div class="pd done">✓</div><div class="pl done"></div><div class="pd act">4</div><div class="pl"></div><div class="pd">5</div></div>
@@ -387,7 +376,6 @@ hr.dv{border:none;border-top:1px solid var(--gold-b);margin:14px 0}
 
     <!-- ⑤ JEU -->
     <div class="panel" id="pJeu">
-      <button class="btn btn-s btn-sm" onclick="backToCover()" style="width:auto;margin-bottom:14px;font-size:.75rem">⬅ Accueil</button>
       <div class="eyebrow">En Poste !</div>
       <div class="heading">Le Destin du<br>Commercial</div>
       <div class="pbar"><div class="pd done">✓</div><div class="pl done"></div><div class="pd done">✓</div><div class="pl done"></div><div class="pd done">✓</div><div class="pl done"></div><div class="pd done">✓</div><div class="pl done"></div><div class="pd act">5</div></div>
@@ -411,26 +399,11 @@ hr.dv{border:none;border-top:1px solid var(--gold-b);margin:14px 0}
             <input type="file" id="tIn" style="display:none" onchange="hTravail(event)">
             <div id="tSt" class="tm mt8" style="font-size:.68rem"></div>
           </div>
-          <div id="mailInfo" class="alert ai" style="display:none;font-size:.74rem">📧 Sera transmis à <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="c8a5a1aba0a9ada4e6bba1a9bcbcad88a9abe5a6a7baa5a9a6aca1ade6aeba">[email&#160;protected]</a></strong></div>
+          <div id="mailInfo" class="alert ai" style="display:none;font-size:.74rem">📧 Sera transmis à <strong>michael.siatte@ac-normandie.fr</strong></div>
           <button class="btn btn-p mt8" id="btnSend" style="display:none" onclick="envoyerTravail()">Envoyer au PDG →</button>
           <div id="sentOk" class="alert aok" style="display:none;margin-top:9px">✅ Travail envoyé ! En attente de la note du PDG.</div>
         </div>
       </div>
-    </div>
-
-    <!-- FICHE PERSONNELLE POST-MISSION -->
-    <div class="panel" id="pFiche">
-      <div class="eyebrow">Mission terminée !</div>
-      <div class="heading" id="ficheHeading">Bien joué !</div>
-      <div class="card card-hi" id="ficheResume" style="text-align:center;padding:20px"></div>
-      <div class="card" id="ficheStats"></div>
-      <div class="chart-wrap"><div class="chart-title">Évolution de tes notes</div><canvas id="chartFiche" height="180"></canvas></div>
-      <div id="ficheHistorique"></div>
-      <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
-        <button class="btn btn-s" style="flex:1" onclick="backToCover()">🏠 Retour à l'accueil</button>
-        <button class="btn btn-p" id="btnNextMission" style="flex:1;opacity:.4;cursor:not-allowed" disabled onclick="nextMission()">🎲 Mission suivante</button>
-      </div>
-      <div id="ficheNoteMsg" class="alert ai" style="margin-top:10px;font-size:.78rem;display:none"></div>
     </div>
 
     <!-- PROFIL -->
@@ -464,8 +437,7 @@ hr.dv{border:none;border-top:1px solid var(--gold-b);margin:14px 0}
         <div class="pa pa-del" onclick="openDeleteAll()">🗑️ Supprimer</div>
         <div class="pa pa-recap" onclick="showRecap()">📊 Récapitulatif</div>
         <div class="pa pa-test" onclick="activerModeTest()">🧪 Mode Test</div>
-        <div class="pa pa-cat" onclick="showCatalogueAll()" style="grid-column:1/-1">📋 Catalogues clients & produits par poste</div>
-        <div class="pa" style="background:rgba(52,152,219,.14);border-color:rgba(52,152,219,.4);color:#5dade2;grid-column:1/-1" onclick="showCatalogueExos()">📚 Catalogue des 18 exercices</div>
+        <div class="pa pa-cat" onclick="showCatalogueAll()" style="grid-column:1/-1">📋 Voir tous les catalogues</div>
       </div>
       <div class="tnav">
         <button class="tbtn act" id="tb1" onclick="profTab('tc1','tb1')">Candidatures</button>
@@ -489,18 +461,6 @@ hr.dv{border:none;border-top:1px solid var(--gold-b);margin:14px 0}
       <div style="overflow-x:auto"><table class="rtable" id="recapTable"><thead><tr><th>#</th><th>Élève</th><th>Poste</th><th>Cagnotte</th><th>Missions</th><th>Moy.</th><th>Avert.</th><th>Statut</th><th>Fiche</th></tr></thead><tbody id="recapBody"></tbody></table></div>
       <button class="btn btn-p mt12" onclick="exportCSV()">⬇️ Exporter CSV</button>
       <button class="btn btn-s mt8" onclick="showP('pPDG')">← Retour PDG</button>
-    </div>
-
-    <!-- CATALOGUE EXERCICES PDG -->
-    <div class="panel" id="pCatExos">
-      <div class="eyebrow">PDG · Référentiel complet</div>
-      <div class="heading">Les 18 Travaux<br>du Commercial</div>
-      <div class="card card-hi" style="margin-bottom:16px;font-size:.8rem;line-height:1.7">
-        🎲 <strong>18 missions différentes</strong> déclenchées par le dé à 18 faces. Chaque mission est contextualisée avec le portefeuille client et le catalogue de l'entreprise de l'élève.
-        Chaque exercice dispose d'un <strong>document vierge téléchargeable</strong> pour faciliter le travail.
-      </div>
-      <div id="catExosContent"></div>
-      <button class="btn btn-s mt12" onclick="showP('pPDG')">← Retour PDG</button>
     </div>
 
     <!-- CATALOGUE PDG -->
@@ -532,19 +492,11 @@ function initSB(){
 /* ============================================================
    STORAGE — Supabase + localStorage fallback
 ============================================================ */
-// Cache mémoire pour éviter appels Supabase répétés
-let _cache={students:null,cands:null,ents:null,corrs:null,ts:{s:0,c:0,e:0,r:0}};
-const CACHE_TTL=4000; // 4 secondes
-function cacheValid(key){return _cache[key]&&(Date.now()-_cache.ts[key[0]])<CACHE_TTL;}
-function cacheSet(key,val){_cache[key]=val;_cache.ts[key[0]]=Date.now();}
-function cacheInvalidate(){_cache={students:null,cands:null,ents:null,corrs:null,ts:{s:0,c:0,e:0,r:0}};}
-
 function lsG(k){try{return JSON.parse(localStorage.getItem(k))||null}catch{return null}}
 function lsS(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
 
 // STUDENTS
-async function getStudents(force=false){
-  if(!force&&cacheValid('students'))return _cache.students;
+async function getStudents(){
   if(sb){
     try{
       const {data,error}=await sb.from('students').select('*');
@@ -557,7 +509,7 @@ async function getStudents(force=false){
         licencie:r.licencie||false,travaux:r.travaux||[],
         cand:r.cand||{},entNote:r.ent_note,enPoste:r.en_poste||false
       }});
-      cacheSet('students',obj);return obj;
+      return obj;
     }catch(e){console.error('getStudents',e);}
   }
   return lsG('mdc_students')||{};
@@ -565,7 +517,6 @@ async function getStudents(force=false){
 
 async function saveStudent(uid,data){
   const ls_all=lsG('mdc_students')||{};ls_all[uid]=data;lsS('mdc_students',ls_all);
-  _cache.students=null; // invalide le cache
   if(!sb)return;
   try{
     await sb.from('students').upsert({
@@ -581,8 +532,7 @@ async function saveStudent(uid,data){
 }
 
 // CANDIDATURES
-async function getCands(force=false){
-  if(!force&&cacheValid('cands'))return _cache.cands;
+async function getCands(){
   if(sb){
     try{
       const {data,error}=await sb.from('candidatures').select('*');
@@ -593,14 +543,13 @@ async function getCands(force=false){
         cv:r.cv,cvName:r.cv_name,lm:r.lm,lmName:r.lm_name,
         status:r.status,at:r.submitted_at
       }});
-      cacheSet('cands',obj);return obj;
+      return obj;
     }catch(e){console.error('getCands',e);}
   }
   return lsG('mdc_cands')||{};
 }
 
 async function saveCand(uid,data){
-  _cache.cands=null;
   const all=lsG('mdc_cands')||{};all[uid]=data;lsS('mdc_cands',all);
   if(!sb)return;
   try{
@@ -635,8 +584,7 @@ async function saveEnt(uid,note){
 }
 
 // CORRECTIONS
-async function getCorrs(force=false){
-  if(!force&&cacheValid('corrs'))return _cache.corrs;
+async function getCorrs(){
   if(sb){
     try{
       const {data,error}=await sb.from('corrections').select('*');
@@ -648,14 +596,13 @@ async function getCorrs(force=false){
         file:r.file_name,fileData:r.file_data||null,
         status:r.status,note:r.note,date:r.date_str,travailIdx:r.travail_idx||0
       }});
-      cacheSet('corrs',obj);return obj;
+      return obj;
     }catch(e){console.error('getCorrs',e);}
   }
   return lsG('mdc_corrs')||{};
 }
 
 async function saveCorr(key,data){
-  _cache.corrs=null;
   const all=lsG('mdc_corrs')||{};all[key]=data;lsS('mdc_corrs',all);
   if(!sb)return;
   try{
@@ -671,7 +618,6 @@ async function saveCorr(key,data){
 }
 
 async function updateCorr(key,updates){
-  _cache.corrs=null;
   const all=lsG('mdc_corrs')||{};
   if(all[key])Object.assign(all[key],updates);lsS('mdc_corrs',all);
   if(!sb)return;
@@ -809,115 +755,99 @@ const JOBS=[
    TASKS — 18 missions enrichies avec contexte client
 ============================================================ */
 function getTask(score,poste){
-  const clients=poste&&poste.clients&&poste.clients.length>0?poste.clients:[];
-  const c=clients.length>0?clients[Math.floor(Math.random()*clients.length)]:null;
+  const c=poste&&poste.clients&&poste.clients.length>0?poste.clients[Math.floor(Math.random()*poste.clients.length)]:null;
   const cn=c?c.nom:'votre client';
   const cc=c?c.contact:'votre interlocuteur';
-  const cat=poste&&poste.catalogue&&poste.catalogue.length>0?poste.catalogue:[];
-  const p0=cat.length>0?cat[0]:null;
-  const p1=cat.length>1?cat[1]:p0;
-  const company=poste?poste.company:'votre entreprise';
-  const secteur=poste?poste.secteur:'votre secteur';
-
-  // Tournée : données réelles avec km et vitesse
-  const tourClients=clients.slice(0,4).concat(clients.slice(0,1)); // 5 visites
-  const tourData=tourClients.map((cl,i)=>{
-    const kms=[28,15,42,19,31];const temps=[35,25,50,40,45];
-    return {nom:cl.nom,addr:cl.adresse,km:kms[i]||25,duree:temps[i]||30,statut:cl.statut};
-  });
-  const tourStr=tourData.map((t,i)=>`Client ${i+1} : ${t.nom} (${t.addr}) — ${t.km} km depuis le point précédent, durée visite : ${t.duree} min, statut : ${t.statut}`).join(' | ');
-  const totalKm=tourData.reduce((a,t)=>a+t.km,0);
-
   const tasks={
     1:{title:'E-mail professionnel de prospection',
-       desc:'Rédige un e-mail de prospection B2B ciblé. Objet percutant (max 60 car.), accroche personnalisée, proposition de valeur en 3 lignes, bénéfices chiffrés, appel à action précis (RDV 20 min), signature professionnelle complète.',
-       client:c?'Client cible : '+cn+' — '+cc+' ('+c.email+')':null,
-       consigne:'Rédige un e-mail de prospection à destination de '+cn+'. Personnalise le contenu en fonction de leur secteur : '+(c?c.secteur:secteur)+'.',
-       ref:'C1.1 — Communication écrite professionnelle'},
+       desc:'Rédige un e-mail de prospection B2B ciblé. Objet percutant (max 60 car.), accroche personnalisée, proposition de valeur en 3 lignes, bénéfices chiffrés, appel à l\'action précis (RDV 20 min), signature professionnelle complète.',
+       client:c?`Client cible : ${cn} — ${cc} (${c.email})`:null,
+       consigne:`Rédige un e-mail de prospection à destination de ${cn}. Personnalise le contenu en fonction de leur secteur : ${c?c.secteur:'votre secteur'}.`,
+       ref:'C1.1 — Communication écrite professionnelle B2B'},
     2:{title:'Devis commercial complet',
-       desc:'Élabore un devis professionnel. En-tête complet, tableau (réf/désignation/qté/PU HT/remise/total HT), sous-total HT, TVA 20%, TTC, conditions de règlement, délai de validité 30 jours.',
-       client:c?'Client : '+cn+' — Contact : '+cc+' — Adresse : '+c.adresse:null,
-       consigne:p0?'Utilise le catalogue de '+company+' pour créer un devis de minimum 3 lignes pour '+cn+'. Produit principal : "'+p0.designation+'" à '+p0.prix_ht+' € HT. Applique une remise de '+p0.remise_max+' max.':'Établis un devis pour '+cn+'.',
+       desc:'Élabore un devis professionnel pour une vente identifiée. En-tête complet, tableau des prestations (réf/désignation/qté/PU HT/remise/total HT), sous-total HT, TVA 20%, TTC, conditions de règlement, délai de validité.',
+       client:c?`Client : ${cn} — Contact : ${cc} — Adresse : ${c.adresse}`:null,
+       consigne:poste&&poste.catalogue?`Utilise le catalogue de ${poste.company} pour créer un devis de minimum 3 lignes pour ${cn}. Applique une remise commerciale cohérente.`:null,
        ref:'C2.1 — Documents commerciaux'},
     3:{title:'Bon de commande',
-       desc:'Crée un BC suite à un devis accepté. N° BC, identité client/fournisseur, tableau produits (réf/désignation/qté/PU/total), conditions de livraison (adresse, délai, transporteur), mode de paiement, signatures.',
-       client:c?'Client : '+cn+' — Adresse de livraison : '+c.adresse:null,
-       consigne:'Suite à l\'acceptation de ton devis par '+cn+', établis le bon de commande. Délai de livraison : 8 jours ouvrés. Paiement : 30% acompte, solde à réception.',
+       desc:'Crée un BC suite à l\'acceptation d\'un devis. Numéro BC, identité client/fournisseur complète, tableau produits (réf, désignation, qté, PU, total), conditions de livraison (adresse, délai, transporteur), mode de paiement, signatures.',
+       client:c?`Client : ${cn} — Adresse de livraison : ${c.adresse}`:null,
+       consigne:`Suite à l\'acceptation de ton devis par ${cn}, établis le bon de commande correspondant.`,
        ref:'C2.2 — Traitement des commandes'},
     4:{title:'Note de frais professionnelle',
-       desc:'Fiche de frais pour 2 jours. Barème IK 2024 : 0,529 €/km (5CV). Repas midi ≤ 15,25 €, soir ≤ 20 €, repas client ≤ 60 €. Hébergement sur justificatif. Péages réels.',
-       client:c?'Déplacement pour visite chez '+cn+' à '+(c.adresse?c.adresse.split(',').slice(-1)[0].trim():'destination'):null,
-       consigne:'Jour 1 : aller-retour en voiture (120 km), visite chez '+cn+', déjeuner client. Jour 2 : train (billet 45 €), 2 visites, nuit hôtel (85 €). Véhicule 5CV. Complète ta note de frais.',
+       desc:'Fiche de frais pour 2 jours de déplacement. Transport (SNCF ou IK au barème fiscal), hébergement (hôtel 3★, justificatif), repas (midi ≤15,25€, soir ≤20€), repas client (≤60€), péages. Calcul total et transmission comptabilité.',
+       client:c?`Déplacement pour visite chez ${cn} à ${c.adresse?c.adresse.split(',')[1]||'destination':'destination'}`:null,
+       consigne:`Tu as effectué 2 jours de déplacement pour visiter ${cn}. Complète ta note de frais avec tous les justificatifs.`,
        ref:'C3.1 — Gestion des frais professionnels'},
     5:{title:'Tournée commerciale optimisée',
-       desc:'Organise 5 visites en minimisant les km (méthode des pétales). Vitesse moyenne de déplacement : 70 km/h. Départ 8h00. Calculer temps de trajet, heure d\'arrivée, durée de visite, heure de départ pour chaque client. Pause repas obligatoire 12h-13h.',
-       client:clients.length>0?'Clients à visiter : '+tourStr:null,
-       consigne:'Base de départ : '+company+'. Distance totale brute (sans optimisation) : '+totalKm+' km. Vitesse moyenne : 70 km/h. Optimise l\'ordre des visites pour réduire les km et respecter les créneaux horaires. Calcule le coût IK (0,529 €/km) et les heures de chaque étape.',
+       desc:'Organise une tournée de 5 visites clients. Méthode des pétales pour minimiser les km. Itinéraire avec horaires (départ 8h), durée de chaque visite (30-60 min), pause repas, km totaux, coût (IK + péages), objectif de chaque visite.',
+       client:poste&&poste.clients?`Clients à visiter : ${poste.clients.map(c=>c.nom).join(', ')}`:null,
+       consigne:`Organise une tournée optimisée pour visiter l\'ensemble de tes clients sur ton secteur. Justifie l\'ordre choisi.`,
        ref:'C3.2 — Planification de l\'activité'},
     6:{title:'Analyse KPI Salon professionnel',
-       desc:'Calcule et interprète les indicateurs : taux de transformation contacts→RDV→devis→commandes, coût par contact, CA par contact, ROI (CA ÷ budget). Rédige une synthèse avec recommandations.',
+       desc:'Suite à un salon : contacts qualifiés, RDV obtenus, taux de transformation (contacts→RDV→devis→commandes), coût par contact (budget ÷ contacts), CA généré, ROI. Note de synthèse avec recommandations pour l\'édition suivante.',
        client:null,
-       consigne:'Participation au salon de '+secteur+'. Données réelles : Budget stand = 4 500 €. Contacts qualifiés = 87. RDV obtenus = 23 (dont 18 confirmés). Devis envoyés = 8 (valeur totale : 48 500 € HT). Commandes signées = 3 (CA : 18 500 € HT). Calcule TOUS les KPI et propose 3 recommandations concrètes.',
+       consigne:`Tu as participé au salon professionnel de ton secteur. Budget stand : 4 500 €. Tu as obtenu 87 contacts, 23 RDV, 8 devis envoyés, 3 commandes signées (CA : 18 500 €). Calcule et analyse les KPI.`,
        ref:'C4.1 — Analyse des performances'},
     7:{title:'Script d\'appel CROC',
-       desc:'Script complet CROC : Contact (présentation + vérification), Raison (accroche-bénéfice 2 phrases), Objectif (proposition RDV), Conclusion (reformulation + confirmation date/heure). + 3 fiches réflexe objections.',
-       client:c?'Prospect à appeler : '+cn+' — '+cc+' — Tél : '+c.tel:null,
-       consigne:'Prépare ton script CROC pour prospecter '+cn+' ('+secteur+'). Objectif : obtenir un RDV de 20 min. Anticipe ces 3 objections : "Je n\'ai pas le temps", "J\'ai déjà un fournisseur", "Envoyez-moi une doc".',
+       desc:'Script complet de prospection téléphonique. Structure CROC : Contact (présentation, vérification interlocuteur), Raison (accroche-bénéfice en 2 phrases), Objectif (proposition RDV/démo), Conclusion (reformulation, confirmation). + 3 fiches-réflexe objections.',
+       client:c?`Prospect à appeler : ${cn} — ${cc} — Tél : ${c.tel}`:null,
+       consigne:`Prépare ton script d\'appel CROC pour prospecter ${cn}. Anticipe les 3 objections les plus probables de ce type de client.`,
        ref:'C1.2 — Prospection téléphonique'},
     8:{title:'Argumentaire CAP-SONCAS',
-       desc:'Pour chaque profil SONCAS (Sécurité, Orgueil, Nouveauté, Confort, Argent, Sympathie) : 1 Caractéristique produit, 1 Avantage-bénéfice client traduit, 1 Preuve concrète. Format tableau.',
-       client:c?'Produit à argumenter pour '+cn+' (profil : '+c.secteur+')':null,
-       consigne:p0?'Construis ton argumentaire CAP-SONCAS pour "'+p0.designation+'" (prix HT : '+p0.prix_ht+' €). Adapte chaque argument au profil de '+cn+'. La preuve doit être vérifiable (chiffre, témoignage, certification).':null,
+       desc:'Argumentaire structuré CAP × SONCAS. Pour chaque profil (Sécurité, Orgueil, Nouveauté, Confort, Argent, Sympathie) : 1 Caractéristique, 1 Avantage-bénéfice client, 1 Preuve. Format tableau synthétique prêt RDV.',
+       client:c?`Produit/service à argumenter pour ${cn} (profil : ${c.secteur})`:null,
+       consigne:poste&&poste.catalogue&&poste.catalogue.length>0?`Construis ton argumentaire CAP-SONCAS pour le produit "${poste.catalogue[0].designation}" de ${poste.company}. Adapte-le au profil de ${cn}.`:null,
        ref:'C1.3 — Argumentation commerciale'},
     9:{title:'Guide traitement des objections',
-       desc:'5 objections terrain. Pour chacune : reformulation positive, réponse en 3 temps (écoute active, argument CAP, contre-question), formule de clôture. Format fiches plastifiées terrain.',
-       client:c?'Contexte : RDV avec '+cn+' — '+cc:null,
-       consigne:'Identifie les 5 objections les plus fréquentes chez un client type '+secteur+'. Prépare des réponses structurées pour chacune. Exemples possibles : "C\'est trop cher", "Je dois en parler à ma direction", "Votre concurrent est moins cher", "Je vais réfléchir", "Je n\'en ai pas besoin maintenant".',
+       desc:'Les 5 objections les plus fréquentes dans ton secteur. Pour chacune : reformulation positive, réponse en 3 temps (écoute, argument, contre-question), formule de clôture. Format fiches pratiques terrain.',
+       client:c?`Contexte : RDV avec ${cn} — ${cc}`:null,
+       consigne:`Identifie les 5 objections que pourrait formuler ${cn} face à ta proposition. Prépare tes réponses structurées.`,
        ref:'C1.4 — Gestion des objections'},
     10:{title:'Plan de découverte client',
-        desc:'18 questions en 4 phases. Phase 1 — Contexte (5 questions ouvertes). Phase 2 — Organisation (4 questions). Phase 3 — Besoins SONCAS (5 questions). Phase 4 — Contraintes et décision (4 questions). Pour chaque question : type, objectif, écoute attendue.',
-        client:c?'Premier RDV avec : '+cn+' — '+cc:null,
-        consigne:'Prépare ton plan de découverte pour un premier RDV chez '+cn+' (secteur : '+(c?c.secteur:secteur)+'). Durée du RDV : 45 min. CA potentiel estimé : '+(c?c.ca_an:'5 000 € / an')+'. Adapte chaque question à leur activité.',
+        desc:'18 questions organisées en 4 phases : Contexte (5 questions), Organisation (4), Besoins SONCAS (5), Contraintes/décision (4). Pour chaque question : type, objectif, écoute attendue.',
+        client:c?`Premier RDV avec : ${cn} — ${cc}`:null,
+        consigne:`Prépare ton plan de découverte pour ton premier entretien avec ${cn} (secteur : ${c?c.secteur:'ton secteur'}). Adapte tes questions à leur activité.`,
         ref:'C1.5 — Découverte des besoins'},
     11:{title:'Compte-rendu de visite',
-        desc:'CRV structuré : date/lieu/participants, contexte client, besoins SONCAS détectés, proposition et réaction, objections + réponses, accord ou non, prochaine étape avec date, cotation (chaud/tiède/froid).',
-        client:c?'Visite chez '+cn+' — Interlocuteur : '+cc:null,
-        consigne:'Tu viens d\'un RDV chez '+cn+'. Le client a montré de l\'intérêt pour '+(p0?p0.designation:'ton offre')+' mais objecte sur le prix ('+(p0?p0.prix_ht+' € HT':'tarif')+'). Il demande un délai de réflexion de 8 jours. Rédige le CRV complet.',
+        desc:'CRV structuré : date/lieu/participants, contexte et historique client, besoins SONCAS détectés, proposition formulée et réaction, objections soulevées + réponses, accord obtenu (ou non), prochaine étape précise avec date, cotation (chaud/tiède/froid).',
+        client:c?`Visite chez ${cn} — Interlocuteur : ${cc}`:null,
+        consigne:`Tu viens de réaliser un RDV chez ${cn}. Rédige ton compte-rendu de visite complet. Le client a montré de l'intérêt pour ${poste&&poste.catalogue&&poste.catalogue.length>0?poste.catalogue[0].designation:'ton offre'} mais a exprimé une objection sur le prix.`,
         ref:'C2.3 — Reporting commercial'},
     12:{title:'Proposition commerciale complète',
-        desc:'Propale 4 pages : 1) Page de garde, 2) Synthèse exécutive, 3) Analyse des enjeux client + solution recommandée avec ROI, 4) Planning et conditions.',
-        client:c?'Proposition pour : '+cn+' — '+cc:null,
-        consigne:'Rédige une propale pour '+cn+'. CA actuel : '+(c?c.ca_an:'à évaluer')+'. Statut : '+(c?c.statut:'prospect')+'.'+(p0?' Produit recommandé : "'+p0.designation+'" à '+p0.prix_ht+' € HT. Remise accordée : '+p0.remise_max+'.':''),
+        desc:'Propale 4-6 pages : page de garde pro, synthèse exécutive (1 page), analyse enjeux client, solution recommandée avec ROI, planning de mise en œuvre, investissement et conditions, modalités contractuelles.',
+        client:c?`Proposition pour : ${cn} — ${cc}`:null,
+        consigne:`Rédige une proposition commerciale complète pour ${cn}. CA annuel actuel : ${c?c.ca_an:'à définir'}. Ils attendent une solution sur mesure.`,
         ref:'C2.4 — Élaboration de propositions'},
     13:{title:'Tableau de bord commercial',
-        desc:'TDB hebdomadaire avec objectifs donnés. Calcule les écarts, les taux de transformation et la prévision mensuelle. Format tableau + analyse des résultats.',
+        desc:'TDB hebdomadaire : appels/contacts, RDV obtenus, taux transformation, devis émis (nb + valeur HT), commandes signées (nb + valeur), CA réalisé vs objectif (%), pipeline commercial (valeur totale affaires en cours), prévision du mois. Tableau + graphique comparatif.',
         client:null,
-        consigne:'Semaine S3 du trimestre. Objectifs semaine : 80 appels, 40 contacts, 15 RDV, 6 devis (30 000 € HT), 2 commandes (10 000 € HT). Réalisé : 67 appels, 34 contacts, 12 RDV, 8 devis (48 500 € HT), 3 commandes (18 200 € HT). Objectif mensuel CA : 35 000 €. Construis le TDB, calcule les écarts en % et explique les résultats.',
+        consigne:`Tu es en S3 de ton trimestre. Appels : 67, contacts joints : 34, RDV obtenus : 12, devis : 8 (valeur : 48 500 €), commandes : 3 (valeur : 18 200 €). Objectif mensuel CA : 35 000 €. Construis ton TDB et analyse les écarts.`,
         ref:'C4.2 — Pilotage de l\'activité'},
     14:{title:'Fiche produit & argumentaire',
-        desc:'Fiche complète : référence, désignation, description technique, 3 bénéfices clients, comparatif 2 concurrents (prix, qualité, délai), conditions tarifaires, argumentaire de vente en 5 points.',
-        client:c?'Produit à mettre en avant pour '+cn:null,
-        consigne:p1?'Crée la fiche produit commerciale pour "'+p1.designation+'" (réf. '+p1.ref+', prix HT : '+p1.prix_ht+' €, remise max : '+p1.remise_max+'). Le client cible est '+cn+' ('+secteur+'). Identifie 2 concurrents et compare sur 3 critères.':null,
+        desc:'Fiche produit complète : photo/description, référence et code article, 3 bénéfices clients, comparatif concurrence (3 critères), prix et conditions, disponibilité, argumentaire de vente 5 points, conseils de mise en avant.',
+        client:c?`Produit à mettre en avant pour ${cn}`:null,
+        consigne:poste&&poste.catalogue&&poste.catalogue.length>1?`Crée une fiche produit commerciale pour "${poste.catalogue[1].designation}" (réf. ${poste.catalogue[1].ref}). Prix HT : ${poste.catalogue[1].prix_ht} €.`:null,
         ref:'C5.1 — Valorisation de l\'offre'},
     15:{title:'Veille concurrentielle',
-        desc:'Analyse 3 concurrents : raison sociale, positionnement, offre principale, tarifs estimés, forces/faiblesses. Matrice de positionnement. Avantage concurrentiel de '+company+' en 3 points.',
+        desc:'Analyse 3 concurrents directs : raison sociale, positionnement, offre clé, politique tarifaire estimée, forces/faiblesses, stratégie commerciale. Matrice de positionnement. Ton avantage concurrentiel en 3 points. Recommandations.',
         client:null,
-        consigne:'Réalise une veille concurrentielle pour '+company+' dans le secteur "'+secteur+'". Identifie 3 concurrents directs (tu peux en inventer de réalistes). Compare sur 4 critères : prix, qualité, délai, SAV. Conclue sur 3 axes de différenciation.',
+        consigne:`Réalise une veille concurrentielle pour ${poste?poste.company:'ton entreprise'} dans le secteur "${poste?poste.secteur:'ton secteur'}". Identifie 3 concurrents et analyse leur positionnement.`,
         ref:'C5.2 — Veille et environnement'},
     16:{title:'Plan d\'action commercial trimestriel',
-        desc:'PAC sur 3 mois avec objectifs fournis. Segmentation ABC, actions par segment, planning Gantt, budget, indicateurs de suivi.',
+        desc:'PAC 3 mois : diagnostic (clients, secteur, concurrence), objectifs SMART, segmentation ABC du portefeuille, actions par segment (prospection/fidélisation/développement), ressources et budget, planning Gantt, indicateurs de suivi et fréquence reporting.',
         client:null,
-        consigne:'Trimestre T2. Données : Portefeuille actuel = '+(clients.length||3)+' clients actifs. Objectif CA T2 = '+(poste?Math.round(poste.salary*3*2).toLocaleString('fr-FR'):15000)+' €. CA T1 réalisé = '+(poste?Math.round(poste.salary*3*1.8).toLocaleString('fr-FR'):13500)+' € (écart -10%). Budget prospection = 800 €. Construis le PAC en priorisant les clients à risque et la conquête de 2 nouveaux clients.',
+        consigne:`Objectif T2 : ${poste?Math.round(poste.salary*3*2).toLocaleString('fr-FR'):15000} € de CA. Construis ton PAC détaillé pour atteindre cet objectif sur 3 mois.`,
         ref:'C3.3 — Plan d\'action commercial'},
-    17:{title:'Lettre de confirmation de commande',
-        desc:'Document de formalisation de la vente : identification des parties, objet, tableau produits HT/TTC, conditions de paiement (acompte + solde), délai de livraison, garantie, signatures.',
-        client:c?'Vente conclue entre '+company+' et '+cn:null,
-        consigne:'Tu viens de signer une vente avec '+cn+'.'+(p0?' Produit : "'+p0.designation+'" (réf. '+p0.ref+'). Quantité : 2. Prix unitaire HT : '+p0.prix_ht+' €. Remise accordée : '+p0.remise_max+'.':'')+' Paiement : 30% à la commande, solde à la livraison (15 jours). Rédige la lettre de confirmation.',
+    17:{title:'Contrat commercial',
+        desc:'Contrat de vente/prestation complet : identification des parties, objet précis, description des prestations/livrables, prix HT/TTC et conditions de paiement (acompte, échéancier, pénalités), délais et conditions de livraison/exécution, garanties, durée, résiliation, confidentialité, loi applicable.',
+        client:c?`Contrat entre ${poste?poste.company:'votre société'} et ${cn}`:null,
+        consigne:`Tu as conclu une vente avec ${cn} pour ${poste&&poste.catalogue&&poste.catalogue.length>0?poste.catalogue[0].designation:'ton produit phare'} (${poste&&poste.catalogue&&poste.catalogue.length>0?poste.catalogue[0].prix_ht+' € HT':'montant à définir'}). Rédige le contrat commercial.`,
         ref:'C2.5 — Formalisation de la vente'},
     18:{title:'Rapport d\'activité mensuel',
-        desc:'Rapport mensuel : synthèse exécutive, résultats vs objectifs, analyse des écarts, clients gagnés/perdus, plan correctif pour le mois suivant.',
+        desc:'Rapport mensuel complet : résumé exécutif (1/2 page), analyse des résultats (CA, visites, nouveaux clients), comparaison N-1 et objectifs, clients gagnés/perdus, analyse des causes d\'écart, plan d\'action correctif pour le mois suivant, annexes (tableaux, graphiques).',
         client:null,
-        consigne:'Mois de mars. Objectif CA = '+(poste?poste.salary.toLocaleString('fr-FR'):1800)+' €. CA réalisé = '+(poste?Math.round(poste.salary*1.15).toLocaleString('fr-FR'):2100)+' €. Nouvelles commandes = 4. Clients perdus = 1 ('+cn+'). Visites réalisées = 18 sur 20 prévues. Rédige le rapport complet avec plan correctif pour avril.'  ,
+        consigne:`Rédige ton rapport d\'activité mensuel pour ${poste?poste.company:'ton entreprise'}. Tu as réalisé ${poste?Math.round(poste.salary*1.15).toLocaleString('fr-FR'):'votre CA'} € de CA ce mois. Analyse tes résultats et propose un plan correctif.`,
         ref:'C4.3 — Reporting direction'}
   };
   return tasks[score]||tasks[1];
@@ -940,15 +870,14 @@ const v=id=>el(id)?.value?.trim()||'';
 const money=n=>(n||0).toLocaleString('fr-FR')+' €';
 const uid6=()=>Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,6);
 function fmtDate(inp){
-  let v=inp.value.replace(/\D/g,'');
+  let v=inp.value.replace(/[^0-9]/g,'');
   if(v.length>2)v=v.slice(0,2)+'/'+v.slice(2);
   if(v.length>5)v=v.slice(0,5)+'/'+v.slice(5);
   inp.value=v.slice(0,10);
 }
 function parseDate(s){
-  // accepts dd/mm/yyyy or yyyy-mm-dd
   if(!s)return '';
-  if(s.includes('/')){const[d,m,y]=s.split('/');return y&&m&&d?y+'-'+m.padStart(2,'0')+'-'+d.padStart(2,'0'):s;}
+  if(s.includes('/')){const p=s.split('/');if(p.length===3)return p[2]+'-'+p[1].padStart(2,'0')+'-'+p[0].padStart(2,'0');}
   return s;
 }
 function showP(id){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));el(id)?.classList.add('active');window.scrollTo({top:0})}
@@ -981,10 +910,12 @@ function stateFrom(d){
 }
 async function persistS(){
   if(!S.uid)return;
-  await saveStudent(S.uid,{prenom:S.prenom,nom:S.nom,dob:S.dob,selfie:S.selfie,
+  const data={prenom:S.prenom,nom:S.nom,dob:S.dob,selfie:S.selfie,
     poste:S.poste,postesEssayes:S.postesEssayes,wallet:S.wallet,
     avert:S.avert,mauvaises:S.mauvaises,licencie:S.licencie,
-    travaux:S.travaux,cand:S.cand,entNote:S.entNote,enPoste:S.enPoste});
+    travaux:S.travaux,cand:S.cand,entNote:S.entNote,enPoste:S.enPoste};
+  const ls=lsG('mdc_students')||{};ls[S.uid]=data;lsS('mdc_students',ls);
+  saveStudent(S.uid,data).catch(e=>console.warn('persistS bg:',e));
 }
 
 /* ============================================================
@@ -1074,17 +1005,8 @@ function checkPdg(){
   }else{el('pdgErr').style.display='block';el('pdgErr').textContent='Code incorrect.';}
 }
 async function routeAfterLoad(){
-  if(S.licencie){notify('Tu as ete licencie(e)','Recommence depuis le debut.','ko');showP('pIdent');return;}
-  if(S.enPoste){
-    renderJeuBanner();
-    // Toujours afficher la fiche perso a la reconnexion
-    showFichePerso();
-    // Relancer le polling si la derniere mission est en attente
-    const trav=S.travaux||[];
-    const last=trav.length>0?trav[trav.length-1]:null;
-    if(last&&last.status==='pending'){startFichePolling();}
-    return;
-  }
+  if(S.licencie){notify('Tu as été licencié(e)','Recommence depuis le début.','ko');showP('pIdent');return;}
+  if(S.enPoste){renderJeuBanner();showP('pJeu');return;}
   if(S.entNote!==null){showEntResult(S.entNote);showP('pEnt');return;}
   if(S.cand&&S.cand.ok){showP('pEnt');startPolling();return;}
   if(S.poste){renderCVBanner();showP('pCV');return;}
@@ -1098,23 +1020,52 @@ async function routeAfterLoad(){
 async function valIdent(){
   const prenom=v('iP'),nom=v('iN'),dob=v('iD');
   if(!prenom||!nom||!dob){notify('Champ manquant','Remplis tous les champs.','ko');return;}
-  const btn=el('btnId');btn.disabled=true;btn.innerHTML='<span class="spin"></span>Vérification…';
-  const dobNorm=parseDate(dob);const uidKey=btoa(unescape(encodeURIComponent((prenom+nom+dobNorm).toLowerCase().replace(/\s/g,'')))).replace(/[^a-zA-Z0-9]/g,'').slice(0,20);
-  S.uid=uidKey;S.prenom=prenom;S.nom=nom;S.dob=dobNorm||dob;
-  const allStudents=await getStudents();
-  const existing=allStudents[uidKey];
-  if(existing){
-    stateFrom(existing);S.uid=uidKey;
-    if(S._selfie)S.selfie=S._selfie;
-    await persistS();updateTopbar();
-    notify('Bienvenue !',`Partie reprise — ${prenom} ${nom} 🎉`,'ok');
-    routeAfterLoad();
-  }else{
-    S.selfie=S._selfie||null;
-    await persistS();updateTopbar();renderJobs();showP('pPoste');
-    notify('Profil créé !',`Bienvenue ${prenom} !`,'ok');
+  const btn=el('btnId');
+  btn.disabled=true;
+  btn.innerHTML='<span class="spin"></span>Vérification…';
+  const safetyTimer=setTimeout(()=>{
+    btn.disabled=false;btn.innerHTML='Valider / Reprendre ma partie →';
+    notify('Connexion lente','Vérifie ta connexion et réessaie.','ko');
+  },10000);
+  try{
+    const dobNorm=parseDate(dob);
+    const uidKey=btoa(unescape(encodeURIComponent((prenom+nom+dobNorm).toLowerCase().replace(/\s/g,'')))).replace(/[^a-zA-Z0-9]/g,'').slice(0,20);
+    S.uid=uidKey;S.prenom=prenom;S.nom=nom;S.dob=dobNorm||dob;
+    let allStudents={};
+    try{
+      const raceResult=await Promise.race([
+        getStudents(true),
+        new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),5000))
+      ]);
+      allStudents=raceResult;
+    }catch(e){
+      console.warn('Supabase lent, fallback localStorage');
+      allStudents=lsG('mdc_students')||{};
+    }
+    const existing=allStudents[uidKey];
+    if(existing){
+      stateFrom(existing);S.uid=uidKey;
+      if(S._selfie)S.selfie=S._selfie;
+      persistS().catch(e=>console.warn('persistS:',e));
+      updateTopbar();
+      clearTimeout(safetyTimer);
+      btn.disabled=false;btn.innerHTML='Valider / Reprendre ma partie →';
+      notify('Bienvenue !','Partie reprise — '+prenom+' '+nom+' !','ok');
+      routeAfterLoad();
+    }else{
+      S.selfie=S._selfie||null;
+      persistS().catch(e=>console.warn('persistS:',e));
+      updateTopbar();renderJobs();showP('pPoste');
+      clearTimeout(safetyTimer);
+      btn.disabled=false;btn.innerHTML='Valider / Reprendre ma partie →';
+      notify('Profil créé !','Bienvenue '+prenom+' !','ok');
+    }
+  }catch(err){
+    console.error('valIdent error',err);
+    clearTimeout(safetyTimer);
+    btn.disabled=false;btn.innerHTML='Valider / Reprendre ma partie →';
+    notify('Erreur','Problème de connexion. Réessaie.','ko');
   }
-  btn.disabled=false;btn.innerHTML='Valider / Reprendre ma partie →';
 }
 
 /* ============================================================
@@ -1215,38 +1166,6 @@ async function startGame(){
   S.enPoste=true;S.wallet=S.poste.salary;await persistS();updateTopbar();renderJeuBanner();showP('pJeu');
   notify('Bienvenue dans l\'équipe !','Lance le dé pour ta première mission !','ok');
 }
-function backToJobs(){
-  // Revenir à la liste des offres sans effacer le poste déjà choisi
-  // Réinitialise seulement le CV/LM si pas encore soumis
-  if(!S.cand||!S.cand.ok){
-    S.cand={cv:null,cvName:null,lm:null,lmName:null,ok:false};
-    // Reset file zones
-    const cz=el('cvZone');if(cz){cz.textContent='📎 Dépose ton CV ici';cz.classList.remove('got');}
-    const lz=el('lmZone');if(lz){lz.textContent='📝 Dépose ta lettre de motivation';lz.classList.remove('got');}
-    const cs=el('cvSt');if(cs)cs.textContent='';
-    const ls=el('lmSt');if(ls)ls.textContent='';
-  }
-  // Deselect current job so student can pick again or confirm
-  selJob=S.poste?S.poste.id:null;
-  renderJobs();
-  // Re-select the previously chosen job visually
-  if(selJob){
-    setTimeout(()=>{
-      const card=document.querySelector('.jcard[data-id="'+selJob+'"]');
-      if(card)card.classList.add('sel');
-      el('btnPoste').style.display='block';
-    },50);
-  }
-  showP('pPoste');
-}
-function backFromEnt(){
-  // Only go back if candidature not yet submitted
-  if(!S.cand||!S.cand.ok){
-    renderCVBanner();showP('pCV');
-  } else {
-    notify('Candidature déjà soumise','Tu ne peux plus revenir en arrière. Attends la note.','ko');
-  }
-}
 function retryPoste(){
   S.poste=null;S.cand={cv:null,cvName:null,lm:null,lmName:null,ok:false};S.entNote=null;
   el('btnRetry').style.display='none';el('btnStart').style.display='none';
@@ -1302,11 +1221,6 @@ function lancerDe(){
       <div class="ttitle">${task.title}</div>
       <div class="tdesc">${task.desc}</div>
       ${clientHtml}
-      <div style="margin:12px 0">
-        <button class="btn btn-sm" onclick="downloadDoc(${score})" style="width:auto;background:rgba(201,168,76,.2);color:var(--gold);border:1px solid var(--gold-b);font-size:.82rem;padding:9px 18px">
-          ⬇️ Télécharger le document vierge à remplir
-        </button>
-      </div>
       <div class="tref">📚 Référentiel : ${task.ref}</div>`;
     el('taskZone').style.display='block';
     if(!avoidDone)notify('♻️ Cycle complet !','Tous les exercices réalisés, on recommence !','ok');
@@ -1329,10 +1243,10 @@ async function envoyerTravail(){
   const sujet=encodeURIComponent(`[MDC] ${S.prenom} ${S.nom} — Mission D18=${S.curTask.score} : ${S.curTask.task.title}`);
   const corps=encodeURIComponent(`Bonjour M. Siatte,\n\nVeuillez trouver ci-joint mon travail.\n\nÉlève : ${S.prenom} ${S.nom}\nPoste : ${S.poste?.title||'—'} chez ${S.poste?.company||'—'}\nDate : ${new Date().toLocaleDateString('fr-FR')}\nMission D18 = ${S.curTask.score} : ${S.curTask.task.title}\nFichier joint : ${S.curFile}\n\n⚠️ Merci de joindre le fichier "${S.curFile}" avant envoi.\n\nCordialement,\n${S.prenom} ${S.nom}`);
   window.open(`mailto:${MAIL_PROF}?subject=${sujet}&body=${corps}`,'_blank');
+  el('sentOk').innerHTML=`✅ Travail enregistré ! Client mail ouvert — attache le fichier "${S.curFile}" et envoie.<br><span style="font-size:.68rem;color:var(--muted)">En attente de la note du PDG.</span>`;
   el('sentOk').style.display='block';el('btnSend').style.display='none';
-  notify('Envoyé !',S.curTask.task.title+' transmise.','ok');
-  // Aller vers la fiche personnelle après 2 secondes
-  setTimeout(()=>{ showFichePerso(); }, 2000);
+  notify('Envoyé !',`"${S.curTask.task.title}" transmise.`,'ok');
+  setTimeout(()=>{resetDiceUI();renderJeuBanner();},8000);
 }
 
 /* ============================================================
@@ -1371,131 +1285,6 @@ function renderCatalogueContent(poste,container){
 /* ============================================================
    PROFIL
 ============================================================ */
-function showFichePerso(){
-  // Render personal dashboard after mission sent
-  const name=S.prenom+' '+S.nom;
-  el('ficheHeading').textContent='Bravo '+S.prenom+' !';
-
-  // Resume card
-  const lastMission=S.travaux.length>0?S.travaux[S.travaux.length-1]:null;
-  el('ficheResume').innerHTML=
-    '<div style="font-size:2rem;margin-bottom:8px">✅</div>'
-    +'<div style="font-weight:700;font-size:1rem;margin-bottom:4px">'+(lastMission?lastMission.taskTitle:'Mission envoyée')+'</div>'
-    +'<div class="tm" style="font-size:.8rem;margin-bottom:10px">Travail soumis le '+new Date().toLocaleDateString('fr-FR')+'</div>'
-    +'<div style="font-family:Space Mono,monospace;font-size:.75rem;color:var(--gold)">Cagnotte actuelle : '+money(S.wallet)+'</div>';
-
-  // Stats
-  const travaux=S.travaux||[];
-  const done=travaux.filter(t=>t.note!=null);
-  const avg=done.length?Math.round(done.reduce((a,t)=>a+(t.note||0),0)/done.length*10)/10:'-';
-  const pending=travaux.filter(t=>t.status==='pending').length;
-  el('ficheStats').innerHTML=
-    '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">'
-    +'<div class="sbox"><div class="sv">'+travaux.length+'</div><div class="sl">Missions</div></div>'
-    +'<div class="sbox"><div class="sv">'+avg+'</div><div class="sl">Moy. /20</div></div>'
-    +'<div class="sbox"><div class="sv">'+money(S.wallet)+'</div><div class="sl">Cagnotte</div></div>'
-    +'</div>';
-
-  // Historique
-  el('ficheHistorique').innerHTML=travaux.length?
-    '<div class="eyebrow" style="margin:14px 0 8px">Toutes mes missions</div>'
-    +travaux.map(t=>`
-      <div class="card" style="padding:10px;margin-bottom:7px;display:flex;justify-content:space-between;align-items:center">
-        <div>
-          <div style="font-weight:600;font-size:.82rem">${t.taskTitle}</div>
-          <div class="tm" style="font-size:.62rem">Dé ${t.score} · ${t.date}</div>
-        </div>
-        ${t.status==='pending'?'<span class="chip cp">En attente</span>':t.status==='ok'?`<span class="chip co">${t.note}/20 ✓</span>`:`<span class="chip ck">${t.note}/20 ✗</span>`}
-      </div>`).join('')
-    :'';
-
-  // Chart
-  setTimeout(()=>{
-    const canvas=el('chartFiche');if(!canvas)return;
-    const notedMissions=travaux.filter(t=>t.note!=null);
-    if(notedMissions.length>0){
-      if(_liveCharts.fiche)_liveCharts.fiche.destroy();
-      _liveCharts.fiche=new Chart(canvas,{
-        type:'line',
-        data:{
-          labels:notedMissions.map((_,i)=>'M'+(i+1)),
-          datasets:[{
-            label:'Note /20',data:notedMissions.map(t=>t.note),
-            borderColor:'#C9A84C',backgroundColor:'rgba(201,168,76,.15)',
-            pointBackgroundColor:'#C9A84C',borderWidth:2,tension:.3
-          }]
-        },
-        options:{responsive:true,plugins:{legend:{display:false}},
-          scales:{y:{min:0,max:20,grid:{color:'rgba(201,168,76,.1)'},ticks:{color:'#7A90A8',font:{size:10}}},
-            x:{grid:{display:false},ticks:{color:'#7A90A8',font:{size:10}}}}}
-      });
-      canvas.parentElement.style.display='block';
-    } else {
-      canvas.parentElement.style.display='none';
-    }
-  },100);
-
-  // Button état : grisé si dernière mission en attente de note
-  const btn=el('btnNextMission');
-  const lastPending=travaux.length>0&&travaux[travaux.length-1].status==='pending';
-  if(lastPending){
-    btn.disabled=true;btn.style.opacity='.4';btn.style.cursor='not-allowed';
-    el('ficheNoteMsg').style.display='block';
-    el('ficheNoteMsg').textContent='⏳ Le bouton "Mission suivante" sera disponible une fois que le PDG aura noté ton travail.';
-    // Poll until the mission gets a note
-    startFichePolling();
-  } else {
-    btn.disabled=false;btn.style.opacity='1';btn.style.cursor='pointer';
-    el('ficheNoteMsg').style.display='none';
-  }
-
-  showP('pFiche');
-}
-
-function startFichePolling(){
-  if(pollT)clearInterval(pollT);
-  pollT=setInterval(async()=>{
-    const all=await getStudents();
-    const sd=all[S.uid];if(!sd)return;
-    const travaux=sd.travaux||[];
-    const last=travaux[travaux.length-1];
-    if(last&&last.status!=='pending'){
-      clearInterval(pollT);
-      // Update local state
-      Object.assign(S,{travaux,wallet:sd.wallet||S.wallet,avert:sd.avert||S.avert,
-        mauvaises:sd.mauvaises||S.mauvaises,licencie:sd.licencie||S.licencie});
-      updateTopbar();
-      // Refresh fiche
-      const btn=el('btnNextMission');
-      if(btn){btn.disabled=false;btn.style.opacity='1';btn.style.cursor='pointer';}
-      const msg=el('ficheNoteMsg');
-      if(msg){
-        const note=last.note;
-        const salary=S.poste?S.poste.salary:1800;
-        let bonusMsg='';
-        if(note>=18)bonusMsg=' + Prime 100% !';
-        else if(note>15)bonusMsg=' + Prime 20% !';
-        msg.className='alert '+(note>=10?'aok':'ako');
-        msg.style.display='block';
-        msg.textContent=note>=10
-          ?'🎉 Note reçue : '+note+'/20 — Salaire versé : '+money(S.wallet)+bonusMsg
-          :'😕 Note reçue : '+note+'/20 — Salaire réduit. Travaille encore !';
-      }
-      // Refresh chart
-      showFichePerso();
-      notify(last.note>=10?'Bravo !':'Courage !','Note : '+last.note+'/20',last.note>=10?'ok':'ko');
-    }
-  },4000);
-}
-
-function nextMission(){
-  const btn=el('btnNextMission');
-  if(btn&&btn.disabled)return;
-  resetDiceUI();
-  renderJeuBanner();
-  showP('pJeu');
-}
-
 function gotoProfile(){
   if(!S.prenom){showP('pIdent');return;}
   el('pHead').textContent=`${S.prenom} ${S.nom}`;
@@ -1539,11 +1328,6 @@ function profTab(pid,bid){
   ['tc1','tc2','tc3','tc4'].forEach(id=>{const e=el(id);if(e)e.style.display=id===pid?'block':'none';});
   ['tb1','tb2','tb3','tb4'].forEach(id=>el(id)?.classList.remove('act'));
   el(bid)?.classList.add('act');
-  // Refresh uniquement l'onglet actif au clic (pas tout le panel)
-  if(pid==='tc1')renderProfCand();
-  else if(pid==='tc2')renderProfEnt();
-  else if(pid==='tc3')renderProfTrav();
-  else if(pid==='tc4')renderProfElev();
 }
 async function renderProfPanel(){
   await Promise.all([renderProfCand(),renderProfEnt(),renderProfTrav(),renderProfElev()]);
@@ -1621,15 +1405,12 @@ async function renderProfTrav(){
     const fileBtn=c.fileData&&c.fileData.startsWith('data:')?
       '<a href="'+c.fileData+'" target="_blank" download="'+(c.file||'travail')+'" class="file-link">📂 Télécharger le travail</a>':
       '<span class="tm" style="font-size:.68rem">📂 '+(c.file||'—')+'</span>';
-    const scoreNum=c.score||0;
     const noteRow=c.status==='pending'?
       '<div class="nrow" style="margin-top:8px">'
       +'<span class="tm" style="font-size:.68rem">Note /20 :</span>'
       +'<input type="number" min="0" max="20" step="1" placeholder="Ex: 15" style="width:80px;padding:6px 8px">'
       +'<button class="btn btn-p btn-xs" data-key="'+corrKey+'" data-uid="'+c.uid+'" data-idx="'+(c.travailIdx||0)+'" onclick="noterTravBtn(this)">✓ Valider</button>'
-      +'<button class="btn btn-xs" style="background:rgba(155,89,182,.2);border:1px solid rgba(155,89,182,.5);color:#bb8fce" onclick="showCorrige('+scoreNum+')">📋 Corrigé type</button>'
-      +'</div>':
-      '<div style="margin-top:6px"><button class="btn btn-xs" style="background:rgba(155,89,182,.2);border:1px solid rgba(155,89,182,.5);color:#bb8fce" onclick="showCorrige('+scoreNum+')">📋 Voir corrigé type</button></div>';
+      +'</div>':'';
     return '<div class="sc"><div class="sh"><div class="mav">'+av+'</div>'
       +'<div style="flex:1">'
         +'<div style="font-weight:600;font-size:.85rem">'+c.prenom+' '+c.nom+'</div>'
@@ -1803,789 +1584,6 @@ function showCatalogueAll(){
 }
 
 /* ============================================================
-   CATALOGUE DES 18 EXERCICES PDG + DOCUMENTS VIERGES
-============================================================ */
-/* ============================================================
-   CORRIGÉS TYPES PDG
-============================================================ */
-const CORRIGES={
-  1:`<h3>✉️ E-mail professionnel — Corrigé type</h3>
-<p><strong>Objet :</strong> Réduisez vos coûts de fournitures de 15% — RDV 20 min ?</p>
-<p><strong>Bonjour Mme/M. [NOM],</strong></p>
-<p>Spécialisé(e) dans [secteur client], vous faites certainement face à des dépenses importantes en [fournitures/équipements].</p>
-<p>Chez [Entreprise], nous accompagnons déjà [X] sociétés similaires à la vôtre pour réduire leurs coûts de 10 à 20% sans perte de qualité.</p>
-<p>Seriez-vous disponible pour un échange de 20 minutes cette semaine, le [jour] à [heure] ou le [jour] à [heure] ?</p>
-<p>Bien cordialement,<br>[Prénom NOM] — [Titre]<br>[Entreprise] — [Tél] — [Email]</p>
-<p><em>✅ Critères d'évaluation : objet &lt;60 car. accrocheur (2pts), accroche personnalisée (3pts), proposition de valeur chiffrée (3pts), appel à action précis avec créneaux (3pts), signature complète (3pts), ton professionnel (3pts), orthographe (3pts). Total /20</em></p>`,
-
-  2:`<h3>📄 Devis — Corrigé type (structure attendue)</h3>
-<p><strong>Structure obligatoire :</strong></p>
-<ul><li>En-tête : logo, coordonnées vendeur + client, N° devis (DEV-XXXX), date, validité 30 jours</li>
-<li>Tableau : Réf | Désignation | Qté | PU HT | Remise | Total HT — minimum 3 lignes produits</li>
-<li>Totaux : Sous-total HT → TVA 20% → Total TTC</li>
-<li>Conditions : mode et délai de règlement (ex: 30 jours nets), délai de livraison</li>
-<li>Signatures : bon pour accord client + cachet fournisseur</li></ul>
-<p><strong>Erreurs fréquentes :</strong> oublier la TVA, mauvais calcul de remise, absence de N° de devis, pas de délai de validité.</p>
-<p><em>✅ Barème : en-tête complet (3pts), tableau correct avec calculs exacts (6pts), totaux HT/TVA/TTC (3pts), conditions de règlement (3pts), délai validité (2pts), présentation soignée (3pts). Total /20</em></p>`,
-
-  3:`<h3>📦 Bon de commande — Corrigé type</h3>
-<p><strong>Éléments obligatoires :</strong></p>
-<ul><li>N° BC relié au devis (ex : BC-2024-001 / réf. devis DEV-2024-XXX)</li>
-<li>Identité complète des deux parties (acheteur + fournisseur, SIRET)</li>
-<li>Tableau des produits commandés identique au devis signé</li>
-<li>Adresse de livraison (peut différer de l'adresse de facturation)</li>
-<li>Délai de livraison négocié (ex: 8 jours ouvrés)</li>
-<li>Mode de paiement : ex. 30% acompte à la commande, solde à réception</li>
-<li>Signatures des deux parties + date</li></ul>
-<p><em>✅ Barème : concordance avec devis (3pts), identités complètes (3pts), tableau exact (4pts), adresse livraison (2pts), conditions paiement (3pts), délai (2pts), signatures (3pts). Total /20</em></p>`,
-
-  4:`<h3>🧾 Note de frais — Corrigé type</h3>
-<p><strong>Barème IK 2024 véhicule 5CV :</strong> 0,529 €/km jusqu'à 5 000 km/an</p>
-<p><strong>Exemple de calcul :</strong></p>
-<ul><li>Jour 1 : 120 km × 0,529 = 63,48 € IK + repas midi 14,50 € + repas client 55 € = <strong>132,98 €</strong></li>
-<li>Jour 2 : train 45 € + hébergement 85 € + repas midi 13,80 € + repas soir 18,50 € = <strong>162,30 €</strong></li>
-<li><strong>Total à rembourser : 295,28 €</strong></li></ul>
-<p><strong>Points d'attention :</strong> justificatifs obligatoires pour tout, repas client plafonné à 60 €, hébergement sur facture hôtel, péages sur ticket.</p>
-<p><em>✅ Barème : calcul IK correct (4pts), plafonds respectés (4pts), total exact (4pts), justificatifs mentionnés (4pts), présentation (4pts). Total /20</em></p>`,
-
-  5:`<h3>🗺️ Tournée commerciale — Corrigé type</h3>
-<p><strong>Méthode des pétales appliquée :</strong></p>
-<ul><li>Partir du client le plus proche, revenir à la base, puis repartir vers le suivant en spirale</li>
-<li>Vitesse moyenne retenue : <strong>70 km/h</strong> (route nationale/departementale)</li>
-<li>Formule temps de trajet : distance (km) ÷ 70 × 60 = minutes</li></ul>
-<p><strong>Exemple de calcul pour 28 km :</strong> 28 ÷ 70 × 60 = 24 min de trajet</p>
-<p><strong>Ordre optimisé attendu :</strong> partir du client le plus proche dans la direction la plus logique géographiquement, éviter les aller-retours.</p>
-<p><strong>Planning type :</strong></p>
-<ul><li>08h00 — Départ base</li><li>08h24 — Arrivée Client 1 (28 km, 24 min) — visite 35 min</li><li>09h12 — Départ vers Client 2 (15 km, 13 min)</li><li>Et ainsi de suite...</li><li>12h00-13h00 — Pause déjeuner obligatoire</li></ul>
-<p><em>✅ Barème : méthode des pétales justifiée (3pts), calculs temps de trajet corrects avec 70km/h (5pts), horaires cohérents (4pts), pause repas respectée (2pts), coût IK calculé (3pts), tableau complet (3pts). Total /20</em></p>`,
-
-  6:`<h3>📊 KPI Salon — Corrigé type</h3>
-<p><strong>Données :</strong> Budget = 4 500 € | Contacts = 87 | RDV = 23 | Devis = 8 (48 500 €) | Commandes = 3 (18 500 €)</p>
-<p><strong>Calculs attendus :</strong></p>
-<ul><li>Taux contacts→RDV : 23 ÷ 87 × 100 = <strong>26,4%</strong></li>
-<li>Taux RDV→devis : 8 ÷ 23 × 100 = <strong>34,8%</strong></li>
-<li>Taux devis→commandes : 3 ÷ 8 × 100 = <strong>37,5%</strong></li>
-<li>Taux global transformation : 3 ÷ 87 × 100 = <strong>3,4%</strong></li>
-<li>Coût par contact : 4 500 ÷ 87 = <strong>51,72 €</strong></li>
-<li>CA par contact : 18 500 ÷ 87 = <strong>212,6 €</strong></li>
-<li>ROI : 18 500 ÷ 4 500 × 100 = <strong>411%</strong> → chaque euro investi rapporte 4,11 €</li></ul>
-<p><strong>Recommandations type :</strong> améliorer la qualification des contacts, retravailler la prise de RDV, augmenter le budget stand.</p>
-<p><em>✅ Barème : 7 KPI calculés correctement (10pts), formules indiquées (4pts), interprétation (3pts), recommandations pertinentes (3pts). Total /20</em></p>`,
-
-  7:`<h3>📞 Script CROC — Corrigé type</h3>
-<p><strong>C — Contact :</strong> "Bonjour, je suis [Prénom NOM], commercial(e) chez [Entreprise]. Ai-je bien M./Mme [NOM], [fonction] ?"</p>
-<p><strong>R — Raison :</strong> "Je vous appelle car nous accompagnons les entreprises de [secteur] à [bénéfice concret]. Nos clients réduisent en moyenne [X]% de [coût] dès la première année."</p>
-<p><strong>O — Objectif :</strong> "Je souhaiterais vous présenter notre solution en 20 minutes. Seriez-vous disponible jeudi à 14h ou vendredi matin ?"</p>
-<p><strong>C — Conclusion :</strong> "Parfait, je note RDV [jour] à [heure] à [lieu/visio]. Je vous envoie une confirmation par email. Bonne journée M./Mme [NOM] !"</p>
-<p><strong>Fiches objections :</strong></p>
-<ul><li>"Pas le temps" → "Je comprends, c'est exactement pourquoi je propose 20 min. Quel créneau la semaine prochaine ?"</li>
-<li>"Déjà fournisseur" → "Très bien, c'est pour ça que beaucoup de nos clients avaient aussi un fournisseur avant de nous choisir. Qu'est-ce qui pourrait vous faire changer ?"</li>
-<li>"Envoyez une doc" → "Bien sûr, mais pour vous envoyer quelque chose de pertinent, j'ai besoin de 5 minutes pour comprendre votre situation. C'est possible ?"</li></ul>
-<p><em>✅ Barème : structure CROC respectée (8pts), accroche convaincante (3pts), technique d'alternance pour le RDV (2pts), 3 objections traitées (6pts), ton naturel et professionnel (1pt). Total /20</em></p>`,
-
-  8:`<h3>💡 Argumentaire CAP-SONCAS — Corrigé type</h3>
-<p><strong>Structure attendue pour chaque profil (exemple Sécurité) :</strong></p>
-<ul><li><strong>Caractéristique :</strong> "Notre produit est certifié ISO 9001 et bénéficie de 3 ans de garantie."</li>
-<li><strong>Avantage-Bénéfice :</strong> "Vous êtes protégé contre tout défaut et évitez les pannes coûteuses."</li>
-<li><strong>Preuve :</strong> "97% de nos clients renouvellent leur contrat. Voici un avis client : [témoignage]."</li></ul>
-<p><strong>Erreurs fréquentes :</strong> confondre Caractéristique et Avantage (la C décrit le produit, l'A traduit en bénéfice client), preuve non vérifiable, profil SONCAS non adapté au client cible.</p>
-<p><em>✅ Barème : 6 profils SONCAS traités (6pts), distinction C/A/P claire (6pts), bénéfices traduits en langage client (4pts), preuves concrètes et vérifiables (4pts). Total /20</em></p>`,
-
-  9:`<h3>🛡️ Guide objections — Corrigé type</h3>
-<p><strong>Méthode en 4 temps pour chaque objection :</strong></p>
-<ul><li>1. <strong>Écoute active :</strong> laisser finir, hocher la tête, ne pas interrompre</li>
-<li>2. <strong>Reformulation positive :</strong> "Si je comprends bien, votre préoccupation porte sur..."</li>
-<li>3. <strong>Argumentation :</strong> répondre avec un argument CAP adapté au profil</li>
-<li>4. <strong>Contrôle :</strong> "Est-ce que cette réponse répond à votre question ?"</li></ul>
-<p><strong>Exemple — "C'est trop cher" :</strong></p>
-<ul><li>Reformulation : "Si je comprends bien, vous souhaitez être certain(e) que l'investissement est rentable."</li>
-<li>Argumentation : "Nos clients constatent un retour sur investissement moyen de 8 mois. Sur 3 ans, vous économisez [X]€."</li>
-<li>Contrôle : "Ce gain correspond-il à vos attentes ?"</li></ul>
-<p><em>✅ Barème : 5 objections pertinentes et réalistes (5pts), reformulation positive pour chacune (5pts), argument CAP adapté (5pts), question de contrôle (3pts), présentation pratico-terrain (2pts). Total /20</em></p>`,
-
-  10:`<h3>🔍 Plan de découverte — Corrigé type</h3>
-<p><strong>Structure des 4 phases :</strong></p>
-<ul><li><strong>Phase 1 — Contexte (5 questions ouvertes) :</strong> "Pouvez-vous me présenter votre activité ?" / "Comment êtes-vous organisé(e) actuellement pour [sujet] ?"</li>
-<li><strong>Phase 2 — Organisation (4 questions) :</strong> "Qui prend les décisions en matière de [achat] ?" / "Quel est votre processus d'achat ?"</li>
-<li><strong>Phase 3 — Besoins SONCAS (5 questions) :</strong> "Qu'est-ce qui est le plus important pour vous dans ce type de solution ?" / "Qu'est-ce qui vous a déçu dans votre solution actuelle ?"</li>
-<li><strong>Phase 4 — Contraintes (4 questions) :</strong> "Quel est votre budget pour ce projet ?" / "Pour quand en auriez-vous besoin ?"</li></ul>
-<p><strong>Point clé :</strong> maximum 2 questions fermées, privilégier les questions ouvertes (qui/quoi/comment/pourquoi/combien).</p>
-<p><em>✅ Barème : 18 questions réparties en 4 phases (8pts), majorité de questions ouvertes (4pts), adaptation au secteur client (4pts), objectif de chaque question explicité (4pts). Total /20</em></p>`,
-
-  11:`<h3>📝 Compte-rendu de visite — Corrigé type</h3>
-<p><strong>Structure complète attendue :</strong></p>
-<ul><li><strong>En-tête :</strong> date, lieu, participants, durée</li>
-<li><strong>Contexte :</strong> rappel historique client, CA actuel, enjeux identifiés</li>
-<li><strong>Besoins SONCAS détectés :</strong> ex. Sécurité (veut garantie), Argent (sensible au prix)</li>
-<li><strong>Proposition formulée :</strong> quel produit/service proposé, à quel prix, avec quelle remise</li>
-<li><strong>Réaction du client :</strong> intérêt montré, hésitations</li>
-<li><strong>Objection principale :</strong> "prix trop élevé" → réponse apportée (ROI, comparaison)</li>
-<li><strong>Accord obtenu :</strong> délai de réflexion 8 jours → envoi devis le [date]</li>
-<li><strong>Cotation :</strong> TIÈDE (intéressé mais pas décidé)</li>
-<li><strong>Prochaine action :</strong> relance téléphonique le [date+8j] à 10h, par [commercial]</li></ul>
-<p><em>✅ Barème : structure complète (4pts), besoins SONCAS identifiés (4pts), objection + réponse (4pts), cotation justifiée (3pts), prochaine action précise (3pts), style professionnel (2pts). Total /20</em></p>`,
-
-  12:`<h3>📋 Proposition commerciale — Corrigé type</h3>
-<p><strong>Structure des 4 pages :</strong></p>
-<ul><li><strong>Page de garde :</strong> logo entreprise + client, titre, date, commercial référent</li>
-<li><strong>Synthèse exécutive :</strong> 3 points clés en 10 lignes max — problème client + solution + bénéfice principal chiffré</li>
-<li><strong>Analyse + Solution :</strong> comprendre les enjeux du client avant de présenter l'offre, ROI = économies générées / coût de la solution × 100</li>
-<li><strong>Conditions :</strong> tarif HT/TTC, remise accordée, planning (J+X délai), garantie, modalités de paiement</li></ul>
-<p><strong>Point clé :</strong> personnaliser avec le nom du client partout, utiliser "vous" et non "on".</p>
-<p><em>✅ Barème : page de garde professionnelle (2pts), synthèse convaincante (4pts), analyse enjeux client (4pts), ROI calculé (4pts), conditions claires (3pts), personnalisation (3pts). Total /20</em></p>`,
-
-  13:`<h3>📈 Tableau de bord — Corrigé type</h3>
-<p><strong>Données et calculs attendus :</strong></p>
-<ul><li>Taux appels→contacts : 34 ÷ 67 × 100 = <strong>50,7%</strong> (obj. 50%) → <strong>OK</strong></li>
-<li>Taux contacts→RDV : 12 ÷ 34 × 100 = <strong>35,3%</strong> (obj. 37,5%) → <strong>-2,2 pts</strong></li>
-<li>Taux RDV→devis : 8 ÷ 12 × 100 = <strong>66,7%</strong> (obj. 40%) → <strong>+26,7 pts ✅</strong></li>
-<li>Taux devis→commandes : 3 ÷ 8 × 100 = <strong>37,5%</strong> (obj. 33%) → <strong>+4,5 pts ✅</strong></li>
-<li>CA signé semaine : 18 200 € | Objectif mensuel : 35 000 € | Réalisé à ce stade : <strong>52%</strong> de l'objectif</li>
-<li>Panier moyen : 18 200 ÷ 3 = <strong>6 067 €</strong></li></ul>
-<p><strong>Analyse :</strong> Appels insuffisants (67 vs 80 obj.), qualité de conversion RDV excellente. Priorité : augmenter le volume de prospection.</p>
-<p><em>✅ Barème : calculs corrects (8pts), formules indiquées (4pts), graphique (3pts), analyse des écarts pertinente (3pts), plan d'action semaine suivante (2pts). Total /20</em></p>`,
-
-  14:`<h3>📦 Fiche produit — Corrigé type</h3>
-<p><strong>Structure complète attendue :</strong></p>
-<ul><li>Référence, désignation commerciale, description technique en 3 lignes max</li>
-<li>3 bénéfices clients (pas caractéristiques !) : ex. "Vous gagnez 2h par semaine" pas "Il a 3 fonctions"</li>
-<li>Comparatif 2 concurrents sur 3 critères : prix, qualité/performance, délai/SAV</li>
-<li>Prix HT, conditions de remise, disponibilité</li>
-<li>Argumentaire de vente en 5 points structurés (1 par profil SONCAS)</li></ul>
-<p><strong>Erreur fréquente :</strong> confondre caractéristique et bénéfice. Un bénéfice répond à "et donc pour vous ça signifie que..."</p>
-<p><em>✅ Barème : présentation visuelle (2pts), description technique précise (3pts), 3 bénéfices en langage client (4pts), comparatif concurrentiel (4pts), conditions tarifaires (3pts), argumentaire 5 points (4pts). Total /20</em></p>`,
-
-  15:`<h3>🔎 Veille concurrentielle — Corrigé type</h3>
-<p><strong>Structure pour chaque concurrent :</strong></p>
-<ul><li>Raison sociale + CA estimé + positionnement (haut/milieu/bas de gamme)</li>
-<li>Offre principale + tarif estimé (fourchette)</li>
-<li>Forces : 2 points forts documentés</li>
-<li>Faiblesses : 2 points faibles identifiés</li></ul>
-<p><strong>Matrice de positionnement attendue :</strong> axe X = prix (bas→élevé), axe Y = qualité (faible→haute) → placer les 4 acteurs (3 concurrents + notre entreprise)</p>
-<p><strong>3 axes de différenciation :</strong> chaque axe doit être spécifique, mesurable et défendable face au concurrent identifié.</p>
-<p><em>✅ Barème : 3 concurrents analysés (6pts), matrice de positionnement (4pts), forces/faiblesses documentées (4pts), avantage concurrentiel en 3 axes (4pts), recommandations (2pts). Total /20</em></p>`,
-
-  16:`<h3>📅 PAC — Corrigé type</h3>
-<p><strong>Données de référence :</strong> Objectif T2 = CA calculé. CA T1 = -10% → écart à rattraper sur T2.</p>
-<p><strong>Segmentation ABC attendue :</strong></p>
-<ul><li>Segment A (20% clients = 80% CA) : visites mensuelles, priorité absolue, offres personnalisées</li>
-<li>Segment B (développables) : visites bimensuelles, upsell/cross-sell</li>
-<li>Segment C (petits clients) : contact trimestriel, email/téléphone</li></ul>
-<p><strong>Planning Gantt simplifié :</strong> colonnes = 3 mois, lignes = 6 actions minimum (prospection, relances, salons, formations...)</p>
-<p><strong>Budget 800 € réparti :</strong> ex. 400 € prospection (flyers, emailing), 300 € déplacements supplémentaires, 100 € outils.</p>
-<p><em>✅ Barème : diagnostic SWOT (4pts), objectifs SMART (3pts), segmentation ABC (4pts), planning Gantt (4pts), budget détaillé (3pts), indicateurs de suivi (2pts). Total /20</em></p>`,
-
-  17:`<h3>✍️ Lettre de confirmation — Corrigé type</h3>
-<p><strong>Mentions obligatoires :</strong></p>
-<ul><li>Identité complète des deux parties (raison sociale, adresse, SIRET)</li>
-<li>Objet de la commande : désignation exacte, référence, quantité</li>
-<li>Prix unitaire HT, remise, total HT, TVA 20%, total TTC</li>
-<li>Acompte (ex : 30% = XXX €) + solde à la livraison</li>
-<li>Délai de livraison : 15 jours calendaires à compter de la réception de l'acompte</li>
-<li>Garantie : 1 an pièces et main d'œuvre (exemple)</li>
-<li>Signatures manuscrites des deux parties + date + "Bon pour accord"</li></ul>
-<p><strong>Erreur fréquente :</strong> oublier la TVA, ne pas préciser les conditions de l'acompte.</p>
-<p><em>✅ Barème : identités complètes (2pts), tableau produits exact (4pts), totaux HT/TVA/TTC (3pts), conditions paiement (4pts), délai livraison (2pts), garantie (2pts), signatures (3pts). Total /20</em></p>`,
-
-  18:`<h3>📊 Rapport d'activité mensuel — Corrigé type</h3>
-<p><strong>Structure des 4 parties :</strong></p>
-<ul><li><strong>Synthèse exécutive (5 lignes) :</strong> résultats en 3 chiffres clés + fait marquant du mois</li>
-<li><strong>Résultats vs objectifs :</strong> tableau avec colonne Objectif / Réalisé / Écart en % pour chaque KPI</li>
-<li><strong>Analyse :</strong> expliquer les causes des écarts (positifs ET négatifs), client perdu → pourquoi ?</li>
-<li><strong>Plan correctif avril :</strong> 3 actions concrètes avec responsable + date limite</li></ul>
-<p><strong>Calcul écart CA :</strong> (Réalisé - Objectif) ÷ Objectif × 100. Si positif : surperformance. Si négatif : sous-performance.</p>
-<p><strong>Ton attendu :</strong> professionnel, factuel, orienté solutions (ne pas se plaindre, proposer des actions).</p>
-<p><em>✅ Barème : synthèse claire (3pts), tableau KPI complet (5pts), calcul écarts exacts (4pts), analyse des causes pertinente (4pts), plan correctif actionnable (4pts). Total /20</em></p>`
-};
-
-function showCorrige(score){
-  if(!score||score<1||score>18){notify('Corrigé non disponible','','ko');return;}
-  const corrige=CORRIGES[score];
-  if(!corrige){notify('Corrigé non disponible pour ce score.','','ko');return;}
-  el('corrigeTitre').textContent='Mission '+score;
-  el('corigeContent').innerHTML=corrige;
-  openM('mCorrige');
-}
-
-
-function showCatalogueExos(){
-  const colors={1:'#e74c3c',2:'#e67e22',3:'#f39c12',4:'#d4ac0d',5:'#27ae60',
-    6:'#1abc9c',7:'#16a085',8:'#2980b9',9:'#8e44ad',10:'#9b59b6',
-    11:'#c0392b',12:'#e67e22',13:'#27ae60',14:'#2980b9',15:'#8e44ad',
-    16:'#16a085',17:'#e74c3c',18:'#C9A84C'};
-  const proba=Math.round(1/18*100);
-  // Use first job as demo context (same as student sees)
-  const demoPoste=JOBS[0];
-  const list=el('catExosContent');
-  list.innerHTML='';
-
-  for(let score=1;score<=18;score++){
-    const t=getTask(score,demoPoste);
-    const col=colors[score]||'var(--gold)';
-
-    // Build exactly the same HTML as the student task card
-    let clientHtml='';
-    if(t.client){
-      clientHtml+='<div class="tclient"><strong>👤 Client assigné :</strong><br>'+t.client+'</div>';
-    }
-    if(t.consigne){
-      clientHtml+='<div class="tclient" style="border-color:var(--green);background:rgba(27,138,82,.08)"><strong>📝 Consigne spécifique :</strong><br>'+t.consigne+'</div>';
-    }
-
-    // Mission 17 simplified notice
-    const simplif=score===17?'<div style="background:rgba(231,76,60,.1);border:1px solid rgba(231,76,60,.3);border-radius:6px;padding:8px 10px;font-size:.72rem;color:#e74c3c;margin-bottom:9px">📌 Document simplifié : <strong>Lettre de confirmation de commande</strong> — adapté au niveau 1re/Terminale MCV Option B.</div>':'';
-
-    const wrapper=document.createElement('div');
-    wrapper.style.cssText='margin-bottom:16px';
-
-    // Reproduce exact task card layout
-    const card=document.createElement('div');
-    card.className='tcard';
-    card.style.position='relative';
-    card.innerHTML=
-      '<div class="tbadge">Mission D18 = '+score+'</div>'
-      +'<div class="ttitle">'+t.title+'</div>'
-      +'<div class="tdesc">'+t.desc+'</div>'
-      +clientHtml
-      +simplif
-      +'<div style="margin:12px 0">'
-        +'<button class="btn btn-sm" onclick="downloadDoc('+score+')" style="width:auto;background:rgba(201,168,76,.2);color:var(--gold);border:1px solid var(--gold-b);font-size:.82rem;padding:9px 18px">'
-        +'⬇️ Télécharger le document vierge à remplir</button>'
-      +'</div>'
-      +'<div class="tref">📚 Référentiel : '+t.ref+'</div>';
-
-    // Small header above the card with score badge and proba
-    const header=document.createElement('div');
-    header.style.cssText='display:flex;align-items:center;gap:10px;margin-bottom:8px';
-    header.innerHTML=
-      '<div style="background:'+col+';color:#fff;font-family:Bebas Neue,sans-serif;font-size:1.1rem;min-width:36px;height:36px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+score+'</div>'
-      +'<div style="font-family:Space Mono,monospace;font-size:.58rem;color:var(--muted)">🎲 Face '+score+'/18 · '+proba+'% de probabilité</div>';
-
-    wrapper.appendChild(header);
-    wrapper.appendChild(card);
-    list.appendChild(wrapper);
-  }
-  showP('pCatExos');
-}
-
-
-/* ============================================================
-   GÉNÉRATION DE DOCUMENTS VIERGES (HTML → impression / PDF)
-============================================================ */
-function downloadDoc(score){
-  const docs={
-    1: genDocEmail(),
-    2: genDocDevis(),
-    3: genDocBC(),
-    4: genDocFrais(),
-    5: genDocTournee(),
-    6: genDocKPI(),
-    7: genDocCROC(),
-    8: genDocCAP(),
-    9: genDocObjestions(),
-    10: genDocDecouverte(),
-    11: genDocCRV(),
-    12: genDocPropale(),
-    13: genDocTDB(),
-    14: genDocFicheProduit(),
-    15: genDocVeille(),
-    16: genDocPAC(),
-    17: genDocContratSimple(),
-    18: genDocRapport(),
-  };
-  const html=docs[score]||'<p>Document non disponible</p>';
-  const blob=new Blob(['<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>Document MDC</title>'+CSS_DOC+'</head><body>'+html+'</body></html>'],{type:'text/html'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url;a.download='MDC_Mission'+score+'_'+getTask(score,null).title.replace(/[^a-zA-Z0-9]/g,'_')+'.html';
-  a.click();URL.revokeObjectURL(url);
-  notify('Document téléchargé !','Ouvre-le dans ton navigateur et imprime-le.','ok');
-}
-
-const CSS_DOC=`<style>
-  body{font-family:Arial,sans-serif;max-width:800px;margin:20px auto;padding:20px;color:#1a1a1a;font-size:13px}
-  h1{font-size:16px;text-align:center;text-transform:uppercase;border-bottom:2px solid #1a1a1a;padding-bottom:8px;margin-bottom:16px}
-  h2{font-size:13px;text-transform:uppercase;margin:14px 0 6px;background:#f0f0f0;padding:4px 8px}
-  .entete{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:16px}
-  .bloc{border:1px solid #ccc;padding:10px;border-radius:4px;min-height:70px}
-  .bloc label{display:block;font-size:10px;text-transform:uppercase;color:#666;margin-bottom:4px;font-weight:bold}
-  .ligne{border-bottom:1px solid #ddd;padding:6px 0;min-height:22px}
-  .ligne label{font-size:10px;color:#666;display:block;margin-bottom:2px}
-  table{width:100%;border-collapse:collapse;margin:10px 0}
-  th{background:#1a1a1a;color:#fff;padding:7px 8px;font-size:11px;text-align:left}
-  td{padding:6px 8px;border:1px solid #ddd;font-size:12px}
-  tr:nth-child(even) td{background:#f9f9f9}
-  .total-row td{background:#f0f0f0;font-weight:bold}
-  .signature{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:30px}
-  .sig-bloc{border-top:1px solid #1a1a1a;padding-top:8px;min-height:60px}
-  .ref{font-size:10px;color:#666;font-style:italic;margin-top:16px;border-top:1px dashed #ccc;padding-top:8px}
-  .field{border-bottom:1px solid #999;min-height:20px;margin-bottom:8px;padding:2px 4px}
-  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
-  .case{border:1px solid #ccc;padding:8px;border-radius:4px;margin-bottom:8px}
-  @media print{body{margin:0;padding:10px}}
-</style>`;
-
-function genDocEmail(){
-  return`<h1>📧 E-mail Professionnel de Prospection</h1>
-  <div class="grid2" style="margin-bottom:12px">
-    <div class="case"><label>Nom & Prénom du commercial</label><div class="field"></div></div>
-    <div class="case"><label>Entreprise représentée</label><div class="field"></div></div>
-  </div>
-  <div class="case"><label>Prospect ciblé (nom, fonction, entreprise)</label><div class="field"></div></div>
-  <h2>Rédaction de l\'e-mail</h2>
-  <div class="case"><label>Objet (max 60 caractères — accrocheur, personnalisé)</label><div class="field"></div></div>
-  <div class="case"><label>Formule d\'appel (ex : Madame / Monsieur + nom)</label><div class="field"></div></div>
-  <div class="case" style="min-height:60px"><label>Accroche personnalisée (fait marquant sur le prospect)</label><div class="field" style="min-height:40px"></div></div>
-  <div class="case" style="min-height:80px"><label>Proposition de valeur (bénéfice client en 2-3 lignes)</label><div class="field" style="min-height:55px"></div></div>
-  <div class="case" style="min-height:60px"><label>Preuve / chiffre clé</label><div class="field" style="min-height:35px"></div></div>
-  <div class="case"><label>Appel à l\'action (RDV proposé — jour, heure, durée)</label><div class="field"></div></div>
-  <div class="case"><label>Formule de politesse</label><div class="field"></div></div>
-  <div class="case"><label>Signature complète (nom, titre, tél, email, adresse)</label><div class="field" style="min-height:50px"></div></div>
-  <div class="ref">Référentiel MCV B · C1.1 — Communication écrite professionnelle B2B</div>`;
-}
-
-function genDocDevis(){
-  return`<h1>📄 Devis Commercial</h1>
-  <div class="entete">
-    <div class="bloc"><label>Émetteur (votre entreprise)</label>
-      Nom : <div class="field"></div>Adresse : <div class="field"></div>
-      Tél : <div class="field"></div>Email : <div class="field"></div>SIRET : <div class="field"></div>
-    </div>
-    <div class="bloc"><label>Client (destinataire)</label>
-      Nom : <div class="field"></div>Adresse : <div class="field"></div>
-      Contact : <div class="field"></div>Email : <div class="field"></div>
-    </div>
-  </div>
-  <div class="grid3" style="margin-bottom:12px">
-    <div class="case"><label>N° Devis</label><div class="field">DEV-2024-</div></div>
-    <div class="case"><label>Date</label><div class="field"></div></div>
-    <div class="case"><label>Validité</label><div class="field">30 jours</div></div>
-  </div>
-  <table>
-    <thead><tr><th style="width:8%">Réf.</th><th style="width:40%">Désignation</th><th>Qté</th><th>PU HT (€)</th><th>Remise</th><th>Total HT (€)</th></tr></thead>
-    <tbody>
-      ${Array(6).fill('<tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>').join('')}
-      <tr class="total-row"><td colspan="5" style="text-align:right">Sous-total HT</td><td></td></tr>
-      <tr class="total-row"><td colspan="5" style="text-align:right">TVA 20 %</td><td></td></tr>
-      <tr class="total-row"><td colspan="5" style="text-align:right"><strong>Total TTC</strong></td><td><strong></strong></td></tr>
-    </tbody>
-  </table>
-  <div class="grid2">
-    <div class="case"><label>Conditions de règlement</label><div class="field"></div></div>
-    <div class="case"><label>Délai de livraison</label><div class="field"></div></div>
-  </div>
-  <div class="signature">
-    <div class="sig-bloc"><strong>Signature client</strong><br><small>Bon pour accord — Date :</small></div>
-    <div class="sig-bloc"><strong>Signature commercial</strong><br><small>Nom & cachet :</small></div>
-  </div>
-  <div class="ref">Référentiel MCV B · C2.1 — Établissement de documents commerciaux</div>`;
-}
-
-function genDocBC(){
-  return`<h1>📦 Bon de Commande</h1>
-  <div class="entete">
-    <div class="bloc"><label>Fournisseur</label>
-      Nom : <div class="field"></div>Adresse : <div class="field"></div>Tél : <div class="field"></div>
-    </div>
-    <div class="bloc"><label>Client / Acheteur</label>
-      Nom : <div class="field"></div>Adresse facturation : <div class="field"></div>
-      Adresse livraison : <div class="field"></div>
-    </div>
-  </div>
-  <div class="grid3" style="margin-bottom:12px">
-    <div class="case"><label>N° BC</label><div class="field">BC-2024-</div></div>
-    <div class="case"><label>Date commande</label><div class="field"></div></div>
-    <div class="case"><label>Réf. Devis accepté</label><div class="field">DEV-2024-</div></div>
-  </div>
-  <table>
-    <thead><tr><th>Réf.</th><th>Désignation</th><th>Qté commandée</th><th>PU HT (€)</th><th>Total HT (€)</th></tr></thead>
-    <tbody>
-      ${Array(5).fill('<tr><td></td><td></td><td></td><td></td><td></td></tr>').join('')}
-      <tr class="total-row"><td colspan="4" style="text-align:right"><strong>Total TTC</strong></td><td></td></tr>
-    </tbody>
-  </table>
-  <div class="grid2">
-    <div class="case"><label>Mode de paiement</label><div class="field"></div></div>
-    <div class="case"><label>Délai de livraison souhaité</label><div class="field"></div></div>
-  </div>
-  <div class="case"><label>Transporteur / Conditions de livraison (Incoterms)</label><div class="field"></div></div>
-  <div class="signature">
-    <div class="sig-bloc"><strong>Signature client</strong><br><small>Date :</small></div>
-    <div class="sig-bloc"><strong>Signature fournisseur</strong><br><small>Validation :</small></div>
-  </div>
-  <div class="ref">Référentiel MCV B · C2.2 — Traitement des commandes</div>`;
-}
-
-function genDocFrais(){
-  return`<h1>🧾 Note de Frais Professionnelle</h1>
-  <div class="grid2" style="margin-bottom:12px">
-    <div class="case"><label>Nom & Prénom</label><div class="field"></div></div>
-    <div class="case"><label>Poste / Service</label><div class="field"></div></div>
-    <div class="case"><label>Période du déplacement</label><div class="field"></div></div>
-    <div class="case"><label>Motif du déplacement</label><div class="field"></div></div>
-  </div>
-  <h2>Détail des frais — Jour 1</h2>
-  <table>
-    <thead><tr><th>Nature des frais</th><th>Destination / Précision</th><th>Km / Nuit</th><th>Tarif unitaire</th><th>Montant (€)</th><th>Justificatif</th></tr></thead>
-    <tbody>
-      <tr><td>Transport (train / IK)</td><td></td><td></td><td>Barème fiscal en vigueur</td><td></td><td>☐</td></tr>
-      <tr><td>Repas midi</td><td></td><td></td><td>Max 15,25 €</td><td></td><td>☐</td></tr>
-      <tr><td>Repas soir</td><td></td><td></td><td>Max 20 €</td><td></td><td>☐</td></tr>
-      <tr><td>Hébergement</td><td></td><td></td><td></td><td></td><td>☐</td></tr>
-      <tr><td>Péages</td><td></td><td></td><td></td><td></td><td>☐</td></tr>
-    </tbody>
-  </table>
-  <h2>Détail des frais — Jour 2</h2>
-  <table>
-    <thead><tr><th>Nature des frais</th><th>Destination / Précision</th><th>Km / Nuit</th><th>Tarif unitaire</th><th>Montant (€)</th><th>Justificatif</th></tr></thead>
-    <tbody>
-      <tr><td>Transport (train / IK)</td><td></td><td></td><td>Barème fiscal en vigueur</td><td></td><td>☐</td></tr>
-      <tr><td>Repas client</td><td></td><td></td><td>Max 60 €</td><td></td><td>☐</td></tr>
-      <tr><td>Repas soir</td><td></td><td></td><td>Max 20 €</td><td></td><td>☐</td></tr>
-      <tr><td>Hébergement</td><td></td><td></td><td></td><td></td><td>☐</td></tr>
-      <tr><td>Péages</td><td></td><td></td><td></td><td></td><td>☐</td></tr>
-      <tr class="total-row"><td colspan="4" style="text-align:right"><strong>TOTAL À REMBOURSER</strong></td><td><strong></strong></td><td></td></tr>
-    </tbody>
-  </table>
-  <div class="signature">
-    <div class="sig-bloc"><strong>Signature du salarié</strong></div>
-    <div class="sig-bloc"><strong>Visa responsable</strong></div>
-  </div>
-  <div class="ref">Référentiel MCV B · C3.1 — Gestion des frais professionnels<br>⚠️ Barème IK 2024 : jusqu\'à 5 000 km = 0,529 €/km (véhicule 5CV)</div>`;
-}
-
-function genDocTournee(){
-  return`<h1>🗺️ Fiche de Tournée Commerciale</h1>
-  <div class="grid2" style="margin-bottom:12px">
-    <div class="case"><label>Commercial</label><div class="field"></div></div>
-    <div class="case"><label>Date de la tournée</label><div class="field"></div></div>
-    <div class="case"><label>Secteur / Zone</label><div class="field"></div></div>
-    <div class="case"><label>Véhicule / Km départ</label><div class="field"></div></div>
-  </div>
-  <h2>Planning des visites (méthode des pétales)</h2>
-  <div style="background:#fff3cd;border:1px solid #ffc107;padding:8px 10px;border-radius:4px;margin:8px 0;font-size:11px">
-    <strong>Rappel :</strong> Vitesse moyenne = <strong>70 km/h</strong> | Formule : Distance ÷ 70 × 60 = minutes de trajet<br>
-    Exemple : 35 km ÷ 70 × 60 = <strong>30 min</strong> | Coût IK = km × <strong>0,529 €</strong> (barème fiscal 5CV)
-  </div>
-  <table>
-    <thead><tr><th>Ordre</th><th>Client / Prospect</th><th>Adresse</th><th>Km</th><th>Temps trajet<br><small>km÷70×60</small></th><th>Heure arrivée</th><th>Durée visite</th><th>Heure départ</th><th>Objectif</th></tr></thead>
-    <tbody>
-      <tr><td>Départ</td><td colspan="2">Base de départ : </td><td>08:00</td><td>—</td><td>08:00</td><td>0</td><td>—</td></tr>
-      ${Array(5).fill(0).map((_,i)=>`<tr><td>${i+1}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>`).join('')}
-      <tr><td>Retour</td><td colspan="2">Retour base</td><td></td><td>—</td><td></td><td></td><td>—</td></tr>
-      <tr class="total-row"><td colspan="6" style="text-align:right">TOTAUX</td><td></td><td></td></tr>
-    </tbody>
-  </table>
-  <div class="grid3">
-    <div class="case"><label>Km totaux</label><div class="field"></div></div>
-    <div class="case"><label>Coût IK (€)</label><div class="field"></div></div>
-    <div class="case"><label>Coût péages (€)</label><div class="field"></div></div>
-  </div>
-  <div class="case"><label>Justification de l\'ordre choisi (pourquoi cette optimisation ?)</label><div class="field" style="min-height:40px"></div></div>
-  <div class="ref">Référentiel MCV B · C3.2 — Planification et optimisation de l\'activité</div>`;
-}
-
-function genDocKPI(){
-  return`<h1>📊 Analyse KPI — Salon Professionnel</h1>
-  <div class="grid2" style="margin-bottom:12px">
-    <div class="case"><label>Nom du salon</label><div class="field"></div></div>
-    <div class="case"><label>Dates</label><div class="field"></div></div>
-    <div class="case"><label>Commercial</label><div class="field"></div></div>
-    <div class="case"><label>Budget total investi (€)</label><div class="field"></div></div>
-  </div>
-  <h2>Données brutes</h2>
-  <table>
-    <thead><tr><th>Indicateur</th><th>Valeur</th><th>Calcul / Formule</th></tr></thead>
-    <tbody>
-      <tr><td>Contacts qualifiés obtenus</td><td></td><td>—</td></tr>
-      <tr><td>RDV obtenus sur le salon</td><td></td><td>—</td></tr>
-      <tr><td>Devis envoyés post-salon</td><td></td><td>—</td></tr>
-      <tr><td>Commandes signées</td><td></td><td>—</td></tr>
-      <tr><td>CA généré (€)</td><td></td><td>—</td></tr>
-    </tbody>
-  </table>
-  <h2>Calcul des KPI</h2>
-  <table>
-    <thead><tr><th>KPI</th><th>Formule</th><th>Calcul</th><th>Résultat</th><th>Interprétation</th></tr></thead>
-    <tbody>
-      <tr><td>Taux de transformation contacts→RDV</td><td>RDV ÷ contacts × 100</td><td></td><td>%</td><td></td></tr>
-      <tr><td>Taux de transformation RDV→commande</td><td>Cdes ÷ RDV × 100</td><td></td><td>%</td><td></td></tr>
-      <tr><td>Coût par contact</td><td>Budget ÷ contacts</td><td></td><td>€</td><td></td></tr>
-      <tr><td>CA par contact</td><td>CA ÷ contacts</td><td></td><td>€</td><td></td></tr>
-      <tr><td>ROI du salon</td><td>CA ÷ budget × 100</td><td></td><td>%</td><td></td></tr>
-    </tbody>
-  </table>
-  <div class="case" style="min-height:60px"><label>Analyse et recommandations pour la prochaine édition</label><div class="field" style="min-height:50px"></div></div>
-  <div class="ref">Référentiel MCV B · C4.1 — Analyse des performances commerciales</div>`;
-}
-
-function genDocCROC(){
-  return`<h1>📞 Script d\'Appel CROC</h1>
-  <div class="grid2" style="margin-bottom:12px">
-    <div class="case"><label>Commercial</label><div class="field"></div></div>
-    <div class="case"><label>Prospect appelé</label><div class="field"></div></div>
-    <div class="case"><label>Téléphone</label><div class="field"></div></div>
-    <div class="case"><label>Date / Heure</label><div class="field"></div></div>
-  </div>
-  ${['C — CONTACT (Présentation + vérification de l\'interlocuteur)','R — RAISON (Accroche bénéfice client en 2 phrases max)','O — OBJECTIF (Proposition concrète : RDV / envoi doc / démo)','C — CONCLUSION (Reformulation accord + confirmation)'].map((s,i)=>`<div class="case" style="min-height:60px"><label>${s}</label><div class="field" style="min-height:45px"></div></div>`).join('')}
-  <h2>Fiches Réflexe — Traitement des Objections</h2>
-  ${['Objection 1 : "Je n\'ai pas le temps"','Objection 2 : "J\'ai déjà un fournisseur"','Objection 3 : "Envoyez-moi une documentation"'].map(o=>`<div class="case"><label>${o}</label><div><strong>Reformulation :</strong><div class="field"></div><strong>Réponse :</strong><div class="field" style="min-height:30px"></div><strong>Contre-question :</strong><div class="field"></div></div></div>`).join('')}
-  <div class="ref">Référentiel MCV B · C1.2 — Prospection et prise de RDV téléphonique</div>`;
-}
-
-function genDocCAP(){
-  return`<h1>💡 Argumentaire CAP-SONCAS</h1>
-  <div class="grid2" style="margin-bottom:12px">
-    <div class="case"><label>Produit / Service argumenté</label><div class="field"></div></div>
-    <div class="case"><label>Commercial</label><div class="field"></div></div>
-  </div>
-  <table>
-    <thead><tr><th style="width:12%">Profil SONCAS</th><th style="width:30%">Caractéristique (C)</th><th style="width:30%">Avantage-Bénéfice client (A)</th><th style="width:28%">Preuve (P)</th></tr></thead>
-    <tbody>
-      ${[['🔒 SÉCURITÉ','Le client veut être rassuré, éviter les risques'],['👑 ORGUEIL','Le client veut se distinguer, être valorisé'],['✨ NOUVEAUTÉ','Le client est attiré par les innovations'],['😌 CONFORT','Le client cherche la facilité, le bien-être'],['💰 ARGENT','Le client veut faire des économies, avoir un bon ROI'],['🤝 SYMPATHIE','Le client achète à la personne, à l\'image']].map(([s,d])=>`<tr><td><strong>${s}</strong><br><span style="font-size:10px;color:#666">${d}</span></td><td></td><td></td><td></td></tr>`).join('')}
-    </tbody>
-  </table>
-  <div class="ref">Référentiel MCV B · C1.3 — Argumentation commerciale</div>`;
-}
-
-function genDocObjestions(){
-  return`<h1>🛡️ Guide de Traitement des Objections</h1>
-  <div class="grid2" style="margin-bottom:12px">
-    <div class="case"><label>Commercial</label><div class="field"></div></div>
-    <div class="case"><label>Contexte / Produit</label><div class="field"></div></div>
-  </div>
-  ${Array(5).fill(0).map((_,i)=>`
-  <div class="case">
-    <label>Objection ${i+1}</label><div class="field" style="font-weight:bold"></div>
-    <table style="margin:6px 0"><tbody>
-      <tr><td style="width:28%;background:#f0f0f0;font-size:11px;font-weight:bold">1. Écoute active</td><td class="field" style="border:none"></td></tr>
-      <tr><td style="background:#f0f0f0;font-size:11px;font-weight:bold">2. Reformulation positive</td><td class="field" style="border:none"></td></tr>
-      <tr><td style="background:#f0f0f0;font-size:11px;font-weight:bold">3. Argumentation</td><td class="field" style="min-height:30px;border:none"></td></tr>
-      <tr><td style="background:#f0f0f0;font-size:11px;font-weight:bold">4. Contrôle / Question</td><td class="field" style="border:none"></td></tr>
-    </tbody></table>
-  </div>`).join('')}
-  <div class="ref">Référentiel MCV B · C1.4 — Gestion des objections</div>`;
-}
-
-function genDocDecouverte(){
-  return`<h1>🔍 Plan de Découverte Client</h1>
-  <div class="grid2" style="margin-bottom:12px">
-    <div class="case"><label>Commercial</label><div class="field"></div></div>
-    <div class="case"><label>Client / Prospect</label><div class="field"></div></div>
-  </div>
-  <table>
-    <thead><tr><th>Phase</th><th>#</th><th>Question</th><th>Type (O/F/A)</th><th>Objectif</th><th>Écoute attendue</th></tr></thead>
-    <tbody>
-      ${[['Contexte entreprise',5],['Organisation & fonctionnement',4],['Besoins & enjeux SONCAS',5],['Contraintes & décision',4]].flatMap(([phase,n])=>[
-        `<tr style="background:#f0f0f0"><td colspan="6" style="font-weight:bold;font-size:11px;text-transform:uppercase">${phase}</td></tr>`,
-        ...Array(n).fill(0).map((_,i)=>`<tr><td style="font-size:10px;color:#666">${phase.split(' ')[0]}</td><td>${i+1}</td><td></td><td></td><td></td><td></td></tr>`)
-      ]).join('')}
-    </tbody>
-  </table>
-  <div style="font-size:10px;color:#666;margin-top:8px">O = Ouverte · F = Fermée · A = Alternative</div>
-  <div class="ref">Référentiel MCV B · C1.5 — Techniques de découverte des besoins</div>`;
-}
-
-function genDocCRV(){
-  return`<h1>📝 Compte-Rendu de Visite</h1>
-  <div class="grid3" style="margin-bottom:12px">
-    <div class="case"><label>Commercial</label><div class="field"></div></div>
-    <div class="case"><label>Date & Lieu</label><div class="field"></div></div>
-    <div class="case"><label>Durée</label><div class="field"></div></div>
-  </div>
-  <div class="grid2">
-    <div class="case"><label>Client / Entreprise</label><div class="field"></div></div>
-    <div class="case"><label>Interlocuteur(s)</label><div class="field"></div></div>
-  </div>
-  ${[['Contexte et historique client','Rappel des échanges précédents, situation actuelle'],['Besoins SONCAS détectés','Sécurité / Orgueil / Nouveauté / Confort / Argent / Sympathie'],['Proposition formulée','Solution présentée et réaction du client'],['Objections soulevées & réponses apportées',''],['Accord obtenu / Niveau d\'engagement','Chaud ☐  Tiède ☐  Froid ☐'],['Prochaine étape','Action / Responsable / Date limite']].map(([l,hint])=>`<div class="case" style="min-height:55px"><label>${l}</label>${hint?`<span style="font-size:10px;color:#888;display:block;margin-bottom:4px">${hint}</span>`:''}  <div class="field" style="min-height:35px"></div></div>`).join('')}
-  <div class="ref">Référentiel MCV B · C2.3 — Reporting commercial</div>`;
-}
-
-function genDocPropale(){
-  return`<h1>📋 Proposition Commerciale</h1>
-  <div class="grid2" style="margin-bottom:12px">
-    <div class="case"><label>Émetteur</label><div class="field"></div></div>
-    <div class="case"><label>Client destinataire</label><div class="field"></div></div>
-  </div>
-  ${[['1. Synthèse exécutive (1/2 page)','Résumez en 3 points clés pourquoi votre solution est la meilleure réponse aux enjeux du client.'],['2. Analyse de la situation et des enjeux client','Montrez que vous avez compris leur contexte, leurs problèmes et leurs objectifs.'],['3. Solution recommandée','Décrivez votre offre, ses fonctionnalités clés, et son adéquation aux besoins identifiés.'],['4. Bénéfices & Retour sur Investissement','Chiffrez les gains attendus (économies, productivité, temps gagné...).'],['5. Planning de mise en œuvre','Etapes, délais, responsabilités.'],['6. Investissement & Conditions','Tarifs, modalités de paiement, garanties.']].map(([t,h])=>`<div class="case" style="min-height:70px"><label>${t}</label><span style="font-size:10px;color:#888">${h}</span><div class="field" style="min-height:45px"></div></div>`).join('')}
-  <div class="ref">Référentiel MCV B · C2.4 — Élaboration de propositions commerciales</div>`;
-}
-
-function genDocTDB(){
-  return`<h1>📈 Tableau de Bord Commercial</h1>
-  <div class="grid3" style="margin-bottom:12px">
-    <div class="case"><label>Commercial</label><div class="field"></div></div>
-    <div class="case"><label>Semaine N°</label><div class="field"></div></div>
-    <div class="case"><label>Objectif mensuel CA</label><div class="field"></div></div>
-  </div>
-  <h2>Activité de la semaine</h2>
-  <table>
-    <thead><tr><th>Indicateur</th><th>Objectif semaine</th><th>Réalisé</th><th>Écart</th><th>Analyse</th></tr></thead>
-    <tbody>
-      ${['Appels passés','Contacts joints','RDV obtenus','Taux appels→RDV (%)','Devis émis (nb)','Valeur devis (€ HT)','Commandes signées (nb)','CA signé (€ HT)','Nouveaux prospects qualifiés'].map(i=>`<tr><td>${i}</td><td></td><td></td><td></td><td></td></tr>`).join('')}
-    </tbody>
-  </table>
-  <h2>Pipeline commercial (affaires en cours)</h2>
-  <table>
-    <thead><tr><th>Client</th><th>Objet</th><th>Montant HT (€)</th><th>Probabilité (%)</th><th>Échéance</th><th>Prochaine action</th></tr></thead>
-    <tbody>${Array(4).fill('<tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>').join('')}</tbody>
-  </table>
-  <div class="case" style="min-height:50px"><label>Plan d\'action pour la semaine prochaine</label><div class="field" style="min-height:35px"></div></div>
-  <div class="ref">Référentiel MCV B · C4.2 — Pilotage de l\'activité commerciale</div>`;
-}
-
-function genDocFicheProduit(){
-  return`<h1>📦 Fiche Produit</h1>
-  <div class="grid2" style="margin-bottom:12px">
-    <div class="case"><label>Référence produit</label><div class="field"></div></div>
-    <div class="case"><label>Désignation commerciale</label><div class="field"></div></div>
-    <div class="case"><label>Prix de vente HT</label><div class="field"></div></div>
-    <div class="case"><label>Conditions tarifaires</label><div class="field"></div></div>
-  </div>
-  <div class="case" style="min-height:60px"><label>Description technique & caractéristiques principales</label><div class="field" style="min-height:45px"></div></div>
-  <table>
-    <thead><tr><th>Bénéfice client</th><th>Argument de vente</th><th>Preuve</th></tr></thead>
-    <tbody>${Array(3).fill('<tr><td></td><td></td><td></td></tr>').join('')}</tbody>
-  </table>
-  <h2>Comparatif concurrentiel</h2>
-  <table>
-    <thead><tr><th>Critère</th><th>Notre produit</th><th>Concurrent 1</th><th>Concurrent 2</th></tr></thead>
-    <tbody>${Array(3).fill('<tr><td></td><td></td><td></td><td></td></tr>').join('')}</tbody>
-  </table>
-  <div class="grid2">
-    <div class="case"><label>Disponibilité & délais</label><div class="field"></div></div>
-    <div class="case"><label>Conseils de mise en avant</label><div class="field"></div></div>
-  </div>
-  <div class="ref">Référentiel MCV B · C5.1 — Valorisation de l\'offre</div>`;
-}
-
-function genDocVeille(){
-  return`<h1>🔎 Analyse Concurrentielle</h1>
-  <div class="grid2" style="margin-bottom:12px">
-    <div class="case"><label>Notre entreprise</label><div class="field"></div></div>
-    <div class="case"><label>Secteur analysé</label><div class="field"></div></div>
-  </div>
-  ${Array(3).fill(0).map((_,i)=>`
-  <h2>Concurrent ${i+1}</h2>
-  <div class="grid2">
-    <div class="case"><label>Raison sociale</label><div class="field"></div></div>
-    <div class="case"><label>Positionnement marché</label><div class="field"></div></div>
-    <div class="case"><label>Offre principale</label><div class="field"></div></div>
-    <div class="case"><label>Politique tarifaire estimée</label><div class="field"></div></div>
-  </div>
-  <table><thead><tr><th>Points forts</th><th>Points faibles</th></tr></thead><tbody><tr><td style="min-height:50px"></td><td></td></tr></tbody></table>`).join('')}
-  <h2>Notre avantage concurrentiel</h2>
-  <div class="case" style="min-height:60px"><div class="field" style="min-height:50px"></div></div>
-  <div class="ref">Référentiel MCV B · C5.2 — Veille et analyse de l\'environnement</div>`;
-}
-
-function genDocPAC(){
-  return`<h1>📅 Plan d\'Action Commercial — Trimestriel</h1>
-  <div class="grid3" style="margin-bottom:12px">
-    <div class="case"><label>Commercial</label><div class="field"></div></div>
-    <div class="case"><label>Trimestre</label><div class="field"></div></div>
-    <div class="case"><label>Objectif CA (€)</label><div class="field"></div></div>
-  </div>
-  <h2>1. Diagnostic</h2>
-  <div class="grid2">
-    <div class="case" style="min-height:50px"><label>Forces</label><div class="field" style="min-height:35px"></div></div>
-    <div class="case" style="min-height:50px"><label>Faiblesses</label><div class="field" style="min-height:35px"></div></div>
-    <div class="case" style="min-height:50px"><label>Opportunités</label><div class="field" style="min-height:35px"></div></div>
-    <div class="case" style="min-height:50px"><label>Menaces</label><div class="field" style="min-height:35px"></div></div>
-  </div>
-  <h2>2. Segmentation ABC du portefeuille</h2>
-  <table>
-    <thead><tr><th>Segment</th><th>Critères</th><th>Nb clients</th><th>Fréquence contact</th><th>Actions prioritaires</th></tr></thead>
-    <tbody>
-      <tr><td style="background:#2ecc7133;font-weight:bold">A — Stratégiques</td><td></td><td></td><td></td><td></td></tr>
-      <tr><td style="background:#f39c1233;font-weight:bold">B — Développables</td><td></td><td></td><td></td><td></td></tr>
-      <tr><td style="background:#e74c3c33;font-weight:bold">C — À maintenir</td><td></td><td></td><td></td><td></td></tr>
-    </tbody>
-  </table>
-  <h2>3. Planning Gantt simplifié</h2>
-  <table>
-    <thead><tr><th>Action</th><th>Mois 1</th><th>Mois 2</th><th>Mois 3</th><th>KPI</th></tr></thead>
-    <tbody>${Array(6).fill('<tr><td></td><td></td><td></td><td></td><td></td></tr>').join('')}</tbody>
-  </table>
-  <div class="ref">Référentiel MCV B · C3.3 — Plan d\'action commercial</div>`;
-}
-
-// ★ MISSION 17 SIMPLIFIÉE — Lettre de commande + conditions générales
-function genDocContratSimple(){
-  return`<h1>✍️ Lettre de Confirmation de Commande<br><small style="font-size:12px;font-weight:normal">(Mission 17 — Formalisation de la vente)</small></h1>
-  <div class="entete">
-    <div class="bloc"><label>Vendeur / Prestataire</label>
-      Société : <div class="field"></div>
-      Représenté par : <div class="field"></div>
-      Adresse : <div class="field"></div>
-      SIRET : <div class="field"></div>
-    </div>
-    <div class="bloc"><label>Client / Acheteur</label>
-      Société : <div class="field"></div>
-      Représenté par : <div class="field"></div>
-      Adresse : <div class="field"></div>
-      SIRET : <div class="field"></div>
-    </div>
-  </div>
-  <div class="case"><label>Objet de la vente / prestation</label><div class="field"></div></div>
-  <h2>Détail de la commande confirmée</h2>
-  <table>
-    <thead><tr><th>Réf.</th><th>Désignation</th><th>Qté</th><th>PU HT (€)</th><th>Total HT (€)</th></tr></thead>
-    <tbody>
-      ${Array(4).fill('<tr><td></td><td></td><td></td><td></td><td></td></tr>').join('')}
-      <tr class="total-row"><td colspan="4" style="text-align:right">Total HT</td><td></td></tr>
-      <tr class="total-row"><td colspan="4" style="text-align:right">TVA 20%</td><td></td></tr>
-      <tr class="total-row"><td colspan="4" style="text-align:right"><strong>Total TTC</strong></td><td><strong></strong></td></tr>
-    </tbody>
-  </table>
-  <h2>Conditions convenues</h2>
-  <div class="grid2">
-    <div class="case"><label>Date de livraison / exécution</label><div class="field"></div></div>
-    <div class="case"><label>Lieu de livraison</label><div class="field"></div></div>
-    <div class="case"><label>Modalités de paiement</label><div class="field">☐ Virement  ☐ Chèque  ☐ CB  Délai : </div></div>
-    <div class="case"><label>Acompte versé</label><div class="field">%  soit  €</div></div>
-    <div class="case"><label>Garantie</label><div class="field"></div></div>
-    <div class="case"><label>Condition de résiliation</label><div class="field"></div></div>
-  </div>
-  <div class="case"><label>Remarques / Conditions particulières</label><div class="field" style="min-height:35px"></div></div>
-  <div class="signature">
-    <div class="sig-bloc"><strong>Signature Client</strong><br><small>Lu et approuvé — Date :</small></div>
-    <div class="sig-bloc"><strong>Signature Vendeur</strong><br><small>Nom & cachet :</small></div>
-  </div>
-  <div style="font-size:10px;color:#666;margin-top:12px;border:1px solid #ddd;padding:8px;background:#f9f9f9">
-    <strong>⚠️ Note pédagogique :</strong> Ce document est une <em>lettre de confirmation de commande simplifiée</em>, équivalent pratique d\'un contrat commercial pour les ventes courantes. 
-    Pour les contrats complexes (services sur mesure, montants importants), un acte juridique complet avec clause de confidentialité, loi applicable et juridiction compétente serait requis.
-  </div>
-  <div class="ref">Référentiel MCV B · C2.5 — Formalisation de la vente<br>📌 Version adaptée au niveau 1re/Terminale MCV Option B</div>`;
-}
-
-function genDocRapport(){
-  return`<h1>📊 Rapport d\'Activité Mensuel</h1>
-  <div class="grid3" style="margin-bottom:12px">
-    <div class="case"><label>Commercial</label><div class="field"></div></div>
-    <div class="case"><label>Mois / Année</label><div class="field"></div></div>
-    <div class="case"><label>Directeur commercial</label><div class="field"></div></div>
-  </div>
-  <div class="case" style="min-height:60px"><label>Synthèse exécutive (points clés du mois en 3-4 lignes)</label><div class="field" style="min-height:45px"></div></div>
-  <h2>Résultats vs Objectifs</h2>
-  <table>
-    <thead><tr><th>Indicateur</th><th>Objectif</th><th>Réalisé</th><th>%</th><th>vs mois N-1</th></tr></thead>
-    <tbody>
-      ${['CA total (€ HT)','Nb nouvelles commandes','Nb nouveaux clients','Nb visites clients','Nb appels de prospection','Panier moyen (€)'].map(i=>`<tr><td>${i}</td><td></td><td></td><td></td><td></td></tr>`).join('')}
-    </tbody>
-  </table>
-  <div class="grid2">
-    <div class="case" style="min-height:60px"><label>Clients gagnés ce mois</label><div class="field" style="min-height:45px"></div></div>
-    <div class="case" style="min-height:60px"><label>Clients perdus / à risque</label><div class="field" style="min-height:45px"></div></div>
-  </div>
-  <div class="case" style="min-height:60px"><label>Analyse des causes d\'écart (pourquoi les résultats sont-ils différents de l\'objectif ?)</label><div class="field" style="min-height:45px"></div></div>
-  <div class="case" style="min-height:60px"><label>Plan d\'action correctif pour le mois prochain</label><div class="field" style="min-height:45px"></div></div>
-  <div class="ref">Référentiel MCV B · C4.3 — Reporting à la direction</div>`;
-}
-
-
-/* ============================================================
    PDG ACTIONS
 ============================================================ */
 async function saveToDrive(){
@@ -2650,12 +1648,8 @@ setInterval(()=>{
   if(!pdgOK)return;
   if(!el('pPDG')||!el('pPDG').classList.contains('active'))return;
   if(document.activeElement&&document.activeElement.type==='number')return;
-  // Refresh uniquement l'onglet PDG actuellement visible
-  const tabs=['tc1','tc2','tc3','tc4'];
-  const fns=[renderProfCand,renderProfEnt,renderProfTrav,renderProfElev];
-  const activeIdx=tabs.findIndex(id=>el(id)&&el(id).style.display!=='none');
-  if(activeIdx>=0)fns[activeIdx]();
-},8000);
+  renderProfPanel();
+},6000);
 
 /* ============================================================
    INIT
