@@ -328,6 +328,7 @@ hr.dv{border:none;border-top:1px solid var(--gold-b);margin:14px 0}
 
     <!-- ② POSTE -->
     <div class="panel" id="pPoste">
+      <button class="btn btn-s btn-sm" onclick="backToCover()" style="width:auto;margin-bottom:14px;font-size:.75rem">← Retour à l'accueil</button>
       <div class="eyebrow">Étape 2 · Offres d'emploi</div>
       <div class="heading">Choisis<br>Ton Entreprise</div>
       <div class="pbar"><div class="pd done">✓</div><div class="pl done"></div><div class="pd act">2</div><div class="pl"></div><div class="pd">3</div><div class="pl"></div><div class="pd">4</div><div class="pl"></div><div class="pd">5</div></div>
@@ -338,6 +339,7 @@ hr.dv{border:none;border-top:1px solid var(--gold-b);margin:14px 0}
 
     <!-- ③ CV -->
     <div class="panel" id="pCV">
+      <button class="btn btn-s btn-sm" onclick="backToJobs()" style="width:auto;margin-bottom:14px;font-size:.75rem">← Retour aux offres</button>
       <div class="eyebrow">Étape 3 · Candidature</div>
       <div class="heading">Dossier de<br>Candidature</div>
       <div class="pbar"><div class="pd done">✓</div><div class="pl done"></div><div class="pd done">✓</div><div class="pl done"></div><div class="pd act">3</div><div class="pl"></div><div class="pd">4</div><div class="pl"></div><div class="pd">5</div></div>
@@ -404,6 +406,21 @@ hr.dv{border:none;border-top:1px solid var(--gold-b);margin:14px 0}
           <div id="sentOk" class="alert aok" style="display:none;margin-top:9px">✅ Travail envoyé ! En attente de la note du PDG.</div>
         </div>
       </div>
+    </div>
+
+    <!-- FICHE POST-MISSION -->
+    <div class="panel" id="pFiche">
+      <div class="eyebrow">Mission terminée !</div>
+      <div class="heading" id="ficheHeading">Bravo !</div>
+      <div class="card card-hi" id="ficheResume" style="text-align:center;padding:20px"></div>
+      <div class="card" id="ficheStats"></div>
+      <div class="chart-wrap" id="ficheChartWrap"><div class="chart-title">Évolution de tes notes</div><canvas id="chartFiche" height="180"></canvas></div>
+      <div id="ficheHistorique"></div>
+      <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
+        <button class="btn btn-s" style="flex:1" onclick="backToCover()">🏠 Retour à l'accueil</button>
+        <button class="btn btn-p" id="btnNextMission" style="flex:1;opacity:.4;cursor:not-allowed" disabled onclick="nextMission()">🎲 Mission suivante</button>
+      </div>
+      <div id="ficheNoteMsg" class="alert ai" style="margin-top:10px;font-size:.78rem;display:none"></div>
     </div>
 
     <!-- PROFIL -->
@@ -829,6 +846,8 @@ function enterAs(role){
 }
 function backToCover(){
   stopCam();
+  _test=false;selJob=null;
+  if(pollT){clearInterval(pollT);pollT=null;}
   el('cover').style.display='flex';el('app').style.display='none';
   S={uid:null,prenom:'',nom:'',dob:'',selfie:null,poste:null,postesEssayes:[],wallet:0,avert:0,mauvaises:0,licencie:false,travaux:[],cand:{cv:null,cvName:null,lm:null,lmName:null,ok:false},entNote:null,enPoste:false,curTask:null,curFile:null,curFileData:null};
   _test=false;selJob=null;if(pollT){clearInterval(pollT);pollT=null;}
@@ -850,7 +869,12 @@ function checkPdg(){
 }
 async function routeAfterLoad(){
   if(S.licencie){notify('Tu as été licencié(e)','Recommence depuis le début.','ko');showP('pIdent');return;}
-  if(S.enPoste){renderJeuBanner();showP('pJeu');return;}
+  if(S.enPoste){
+    renderJeuBanner();showFichePerso();
+    const trav=S.travaux||[];const last=trav.length>0?trav[trav.length-1]:null;
+    if(last&&last.status==='pending'){startFichePolling();}
+    return;
+  }
   if(S.entNote!==null){showEntResult(S.entNote);showP('pEnt');return;}
   if(S.cand&&S.cand.ok){showP('pEnt');startPolling();return;}
   if(S.poste){renderCVBanner();showP('pCV');return;}
@@ -1071,6 +1095,7 @@ function lancerDe(){
       <div class="ttitle">${task.title}</div>
       <div class="tdesc">${task.desc}</div>
       ${clientHtml}
+      <div style="margin:10px 0"><button class="btn btn-sm" onclick="downloadDoc(${score})" style="width:auto;background:rgba(201,168,76,.2);color:var(--gold);border:1px solid var(--gold-b);font-size:.82rem;padding:9px 18px">⬇️ Télécharger le document vierge</button></div>
       <div class="tref">📚 Référentiel : ${task.ref}</div>`;
     el('taskZone').style.display='block';
     if(!avoidDone)notify('♻️ Cycle complet !','Tous les exercices réalisés, on recommence !','ok');
@@ -1135,6 +1160,118 @@ function renderCatalogueContent(poste,container){
 /* ============================================================
    PROFIL
 ============================================================ */
+function showFichePerso(){
+  el('ficheHeading').textContent='Bravo '+S.prenom+' !';
+  const lastMission=S.travaux.length>0?S.travaux[S.travaux.length-1]:null;
+  el('ficheResume').innerHTML=
+    '<div style="font-size:2rem;margin-bottom:8px">✅</div>'
+    +'<div style="font-weight:700;font-size:1rem;margin-bottom:4px">'+(lastMission?lastMission.taskTitle:'Profil commercial')+'</div>'
+    +'<div class="tm" style="font-size:.8rem;margin-bottom:10px">'+new Date().toLocaleDateString('fr-FR')+'</div>'
+    +'<div style="font-family:Space Mono,monospace;font-size:.75rem;color:var(--gold)">Cagnotte : '+money(S.wallet)+'</div>';
+  const travaux=S.travaux||[];
+  const done=travaux.filter(t=>t.note!=null);
+  const avg=done.length?Math.round(done.reduce((a,t)=>a+(t.note||0),0)/done.length*10)/10:'-';
+  el('ficheStats').innerHTML=
+    '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">'
+    +'<div class="sbox"><div class="sv">'+travaux.length+'</div><div class="sl">Missions</div></div>'
+    +'<div class="sbox"><div class="sv">'+avg+'</div><div class="sl">Moy. /20</div></div>'
+    +'<div class="sbox"><div class="sv">'+money(S.wallet)+'</div><div class="sl">Cagnotte</div></div>'
+    +'</div>';
+  el('ficheHistorique').innerHTML=travaux.length?
+    '<div class="eyebrow" style="margin:14px 0 8px">Toutes mes missions</div>'
+    +travaux.map(t=>
+      '<div class="card" style="padding:10px;margin-bottom:7px;display:flex;justify-content:space-between;align-items:center">'
+      +'<div><div style="font-weight:600;font-size:.82rem">'+t.taskTitle+'</div>'
+      +'<div class="tm" style="font-size:.62rem">Dé '+t.score+' · '+t.date+'</div></div>'
+      +(t.status==='pending'?'<span class="chip cp">En attente</span>':t.status==='ok'?'<span class="chip co">'+t.note+'/20 ✓</span>':'<span class="chip ck">'+t.note+'/20 ✗</span>')
+      +'</div>'
+    ).join(''):'';
+  const btn=el('btnNextMission');
+  const lastPending=travaux.length>0&&travaux[travaux.length-1].status==='pending';
+  if(lastPending){
+    btn.disabled=true;btn.style.opacity='.4';btn.style.cursor='not-allowed';
+    el('ficheNoteMsg').style.display='block';
+    el('ficheNoteMsg').textContent='⏳ Mission suivante disponible dès que le PDG aura noté ton travail.';
+  }else{
+    btn.disabled=false;btn.style.opacity='1';btn.style.cursor='pointer';
+    el('ficheNoteMsg').style.display='none';
+  }
+  setTimeout(()=>{
+    const canvas=el('chartFiche');if(!canvas)return;
+    const noted=travaux.filter(t=>t.note!=null);
+    if(noted.length>0){
+      if(window._liveCharts&&window._liveCharts.fiche)window._liveCharts.fiche.destroy();
+      if(!window._liveCharts)window._liveCharts={};
+      window._liveCharts.fiche=new Chart(canvas,{
+        type:'line',data:{labels:noted.map((_,i)=>'M'+(i+1)),
+        datasets:[{label:'Note /20',data:noted.map(t=>t.note),
+          borderColor:'#C9A84C',backgroundColor:'rgba(201,168,76,.15)',
+          pointBackgroundColor:'#C9A84C',borderWidth:2,tension:.3}]},
+        options:{responsive:true,plugins:{legend:{display:false}},
+          scales:{y:{min:0,max:20,grid:{color:'rgba(201,168,76,.1)'},ticks:{color:'#7A90A8',font:{size:10}}},
+            x:{grid:{display:false},ticks:{color:'#7A90A8',font:{size:10}}}}}
+      });
+      const w=el('ficheChartWrap');if(w)w.style.display='block';
+    }else{const w=el('ficheChartWrap');if(w)w.style.display='none';}
+  },100);
+  showP('pFiche');
+}
+
+function startFichePolling(){
+  if(pollT)clearInterval(pollT);
+  pollT=setInterval(async()=>{
+    let all=lsG('mdc_students')||{};let sd=all[S.uid];
+    try{all=await getStudentsFromServer();sd=all[S.uid];}catch(e){}
+    if(!sd)return;
+    const trav=sd.travaux||[];const last=trav.length>0?trav[trav.length-1]:null;
+    if(last&&last.status!=='pending'){
+      clearInterval(pollT);pollT=null;
+      Object.assign(S,{travaux:trav,wallet:sd.wallet||S.wallet,avert:sd.avert||S.avert,
+        mauvaises:sd.mauvaises||S.mauvaises,licencie:sd.licencie||S.licencie});
+      updateTopbar();
+      const btn=el('btnNextMission');
+      if(btn){btn.disabled=false;btn.style.opacity='1';btn.style.cursor='pointer';}
+      const msg=el('ficheNoteMsg');
+      if(msg){
+        const note=last.note;const salary=S.poste?S.poste.salary:1800;
+        let bonus='';if(note>=18)bonus=' + Prime 100% !';else if(note>15)bonus=' + Prime 20% !';
+        msg.className='alert '+(note>=10?'aok':'ako');msg.style.display='block';
+        msg.textContent=note>=10?'🎉 Note reçue : '+note+'/20 — Salaire versé : '+money(S.wallet)+bonus
+          :'😕 Note reçue : '+note+'/20 — Salaire réduit. Courage !';
+      }
+      showFichePerso();
+      notify(last.note>=10?'Bravo !':'Courage !','Note : '+last.note+'/20',last.note>=10?'ok':'ko');
+    }
+  },4000);
+}
+
+function nextMission(){
+  const btn=el('btnNextMission');if(btn&&btn.disabled)return;
+  if(pollT){clearInterval(pollT);pollT=null;}
+  if(typeof resetDiceUI==='function')resetDiceUI();
+  renderJeuBanner();showP('pJeu');
+}
+
+function backToJobs(){
+  if(!S.cand||!S.cand.ok){
+    S.cand={cv:null,cvName:null,lm:null,lmName:null,ok:false};
+    const cz=el('cvZone');if(cz){cz.textContent='📎 Dépose ton CV ici';cz.classList.remove('got');}
+    const lz=el('lmZone');if(lz){lz.textContent='📝 Dépose ta lettre de motivation';lz.classList.remove('got');}
+    const cs=el('cvSt');if(cs)cs.textContent='';const ls=el('lmSt');if(ls)ls.textContent='';
+  }
+  selJob=S.poste?S.poste.id:null;renderJobs();
+  if(selJob){setTimeout(()=>{
+    const card=document.querySelector('.jcard[data-id="'+selJob+'"]');
+    if(card)card.classList.add('sel');el('btnPoste').style.display='block';
+  },50);}
+  showP('pPoste');
+}
+
+function backFromEnt(){
+  if(!S.cand||!S.cand.ok){renderCVBanner();showP('pCV');}
+  else notify('Candidature déjà soumise','Attends la note du PDG.','ko');
+}
+
 function gotoProfile(){
   if(!S.prenom){showP('pIdent');return;}
   el('pHead').textContent=`${S.prenom} ${S.nom}`;
@@ -1160,7 +1297,7 @@ function gotoProfile(){
 ============================================================ */
 async function renderLdr(){
   el('ldrList').innerHTML='<div class="tm">Chargement…</div>';
-  const all=await getStudents();
+  const all=await getStudentsFromServer();
   const list=Object.entries(all).map(([k,v])=>({uid:k,...v})).filter(s=>s.prenom).sort((a,b)=>(b.wallet||0)-(a.wallet||0));
   const rc=['g1','g2','g3'];
   el('ldrList').innerHTML=list.length?list.map((s,i)=>`
@@ -1189,7 +1326,7 @@ async function renderProfPanel(){
 
 // CANDIDATURES
 async function renderProfCand(){
-  const all=await getCands();
+  const all=await getCandsFromServer();
   const list=Object.values(all).filter(c=>c.uid);
   if(!list.length){el('profCand').innerHTML='<div class="tm">Aucune candidature.</div>';return;}
   el('profCand').innerHTML=list.map(c=>{
@@ -1208,8 +1345,8 @@ async function renderProfCand(){
 
 // ENTRETIENS
 async function renderProfEnt(){
-  const cands=await getCands();
-  const ents=await getEnts();
+  const cands=await getCandsFromServer();
+  const ents=await getEntsFromServer();
   const list=Object.values(cands).filter(c=>c.uid);
   if(!list.length){el('profEnt').innerHTML='<div class="tm">Aucun entretien à noter.</div>';return;}
   el('profEnt').innerHTML=list.map(c=>{
@@ -1248,7 +1385,7 @@ async function noterEnt(uid,prenom,nom,n){
 
 // TRAVAUX
 async function renderProfTrav(){
-  const all=await getCorrs();
+  const all=await getCorrsFromServer();
   const list=Object.values(all).filter(c=>c.uid).sort((a,b)=>(b.at||0)-(a.at||0));
   if(!list.length){el('profTrav').innerHTML='<div class="tm">Aucun travail soumis.</div>';return;}
   el('profTrav').innerHTML=list.map(c=>{
@@ -1264,6 +1401,8 @@ async function renderProfTrav(){
       +'<span class="tm" style="font-size:.68rem">Note /20 :</span>'
       +'<input type="number" min="0" max="20" step="1" placeholder="Ex: 15" style="width:80px;padding:6px 8px">'
       +'<button class="btn btn-p btn-xs" data-key="'+corrKey+'" data-uid="'+c.uid+'" data-idx="'+(c.travailIdx||0)+'" onclick="noterTravBtn(this)">✓ Valider</button>'
+      +'<button class="btn btn-xs" style="background:rgba(155,89,182,.2);border:1px solid rgba(155,89,182,.5);color:#bb8fce;margin-left:5px" onclick="showCorrige('+(c.score||0)+')">📋 Corrigé</button>'
+      +'<button class="btn btn-xs" style="background:rgba(155,89,182,.2);border:1px solid rgba(155,89,182,.5);color:#bb8fce" onclick="showCorrige('+(c.score||0)+')">📋 Corrigé</button>'
       +'</div>':'';
     return '<div class="sc"><div class="sh"><div class="mav">'+av+'</div>'
       +'<div style="flex:1">'
@@ -1286,7 +1425,7 @@ function noterTravBtn(btn){
 }
 async function noterTrav(corrKey,studentUid,travailIdx,n){
   await updateCorr(corrKey,{status:n>=10?'ok':'ko',note:n});
-  const all=await getStudents();const sd=all[studentUid];if(!sd)return;
+  const all=await getStudentsFromServer();const sd=all[studentUid];if(!sd)return;
   const salary=sd.poste?sd.poste.salary:1800;
   const travaux=[...(sd.travaux||[])];
   if(travaux[travailIdx]){travaux[travailIdx].note=n;travaux[travailIdx].status=n>=10?'ok':'ko';}
@@ -1308,7 +1447,7 @@ async function noterTrav(corrKey,studentUid,travailIdx,n){
 
 // ÉLÈVES
 async function renderProfElev(){
-  const all=await getStudents();
+  const all=await getStudentsFromServer();
   const list=Object.entries(all).map(([k,v])=>({uid:k,...v})).filter(s=>s.prenom).sort((a,b)=>(b.wallet||0)-(a.wallet||0));
   if(!list.length){el('profElev').innerHTML='<div class="tm">Aucun élève.</div>';return;}
   el('profElev').innerHTML=list.map((s,i)=>{
@@ -1330,7 +1469,7 @@ async function renderProfElev(){
    FICHE ÉLÈVE avec diagramme
 ============================================================ */
 async function openEleveModal(uid){
-  const all=await getStudents();
+  const all=await getStudentsFromServer();
   const s=all[uid];if(!s)return;
   el('mEleveName').textContent=s.prenom+' '+s.nom;
   const av=s.selfie&&s.selfie.startsWith('data:')?`<img src="${s.selfie}" style="width:60px;height:60px;border-radius:50%;border:2px solid var(--gold);object-fit:cover;margin-right:12px">`
@@ -1375,7 +1514,7 @@ async function openEleveModal(uid){
    RÉCAPITULATIF + DIAGRAMMES
 ============================================================ */
 async function showRecap(){
-  const all=await getStudents();
+  const all=await getStudentsFromServer();
   const list=Object.entries(all).map(([k,v])=>({uid:k,...v})).filter(s=>s.prenom).sort((a,b)=>(b.wallet||0)-(a.wallet||0));
   // Stats
   const total=list.length,enPoste=list.filter(s=>s.enPoste).length,licencies=list.filter(s=>s.licencie).length;
@@ -1592,22 +1731,14 @@ function openDeleteAll(){
   el('delContent').innerHTML='<div class="alert ako" style="font-size:.78rem">⚠️ Supprimer <strong>TOUS</strong> les élèves et toutes les données ?<br>Cette action est irréversible.</div>';
   el('delConfirmBtn').textContent='🗑️ Tout supprimer';
   el('delConfirmBtn').onclick=async()=>{
-    if(sb){
-      try{
-        await sb.from('corrections').delete().neq('id','__none__');
-        await sb.from('entretiens').delete().neq('uid','__none__');
-        await sb.from('candidatures').delete().neq('uid','__none__');
-        await sb.from('students').delete().neq('uid','__none__');
-      }catch(e){console.error(e);}
-    }
-    ['mdc_students','mdc_cands','mdc_ents','mdc_corrs'].forEach(k=>localStorage.removeItem(k));
+    await deleteAllData();
     closeM('mDeleteConfirm');renderProfPanel();
     notify('Données effacées','Tous les élèves supprimés.','ok');
   };
   openM('mDeleteConfirm');
 }
 async function exportCSV(){
-  const all=await getStudents();
+  const all=await getStudentsFromServer();
   const list=Object.entries(all).map(([k,v])=>({uid:k,...v})).filter(s=>s.prenom).sort((a,b)=>(b.wallet||0)-(a.wallet||0));
   const header='Rang;Prénom;Nom;DDN;Poste;Entreprise;Cagnotte (€);Missions;Moy. notes;Avertissements;Statut';
   const rows=list.map((s,i)=>{
