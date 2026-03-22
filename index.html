@@ -263,6 +263,13 @@ hr.dv{border:none;border-top:1px solid var(--gold-b);margin:14px 0}
     <button class="btn btn-s mt12" onclick="closeM('mCatalogue')">Fermer</button>
   </div>
 </div>
+<div class="mbg" id="mCorrige">
+  <div class="modal" style="max-width:620px">
+    <div class="mtitle">📋 Corrigé Type — <span id="corrigeTitre"></span></div>
+    <div id="corigeContent" style="font-size:.82rem;line-height:1.7"></div>
+    <button class="btn btn-s mt12" onclick="closeM('mCorrige')">Fermer</button>
+  </div>
+</div>
 <div class="mbg" id="mDeleteConfirm">
   <div class="modal">
     <div class="mtitle">🗑️ Supprimer</div>
@@ -707,6 +714,230 @@ async function syncFromServer(){
     ]);
     console.log('✅ Sync serveur terminée');
   }catch(e){console.warn('Sync partielle:',e);}
+}
+
+
+/* ============================================================
+   JOBS — 6 postes avec clients et catalogue
+============================================================ */
+const JOBS=[
+  {id:'j1',icon:'🤝',title:'Chargé(e) de Clientèle',
+   company:'NORMANDIE SOLUTIONS PRO',address:'12 rue de la Paix, 76000 Rouen',
+   secteur:'Fournitures de bureau & services B2B',salary:1800,ref:'A1 — Relation client',
+   desc:'Vous gérez un portefeuille de 120 clients PME/PMI en Haute-Normandie.',
+   mise:'Votre manager vous remet 120 clients dont 35 inactifs depuis 6 mois. Relancez-les et proposez une offre personnalisée. Remise max : 8%. Objectif : 45 000 € CA mensuel.',
+   clients:[
+     {nom:'CABINET MARTIN & ASSOCIÉS',contact:'Mme Sophie Martin',tel:'02 35 12 34 56',email:'s.martin@cabinet-martin.fr',adresse:'45 rue Victor Hugo, 76100 Rouen',secteur:'Cabinet d\'avocats',ca_an:'12 500 €',statut:'Actif'},
+     {nom:'GARAGE DUBOIS AUTO',contact:'M. Jean-Pierre Dubois',tel:'02 35 67 89 01',email:'jp.dubois@garageauto.fr',adresse:'ZI, 76230 Bois-Guillaume',secteur:'Automobile',ca_an:'8 200 €',statut:'À risque'},
+     {nom:'ÉCOLE SAINTE-MARIE',contact:'Mme Claire Petit',tel:'02 35 23 45 67',email:'direction@sainte-marie.fr',adresse:'12 av. Gambetta, 76000 Rouen',secteur:'Éducation',ca_an:'15 800 €',statut:'Actif'},
+   ],
+   catalogue:[
+     {ref:'PAP001',designation:'Ramette papier A4 80g (500f)',unite:'Ramette',prix_ht:4.50,remise_max:'15%',stock:'Disponible'},
+     {ref:'STY001',designation:'Stylo bille BIC 4 couleurs',unite:'Unité',prix_ht:1.80,remise_max:'20%',stock:'Disponible'},
+     {ref:'CLA001',designation:'Classeur levier A4 dos 80mm',unite:'Unité',prix_ht:3.90,remise_max:'15%',stock:'Disponible'},
+     {ref:'ENC001',designation:'Cartouche encre HP 301 Noir',unite:'Unité',prix_ht:12.50,remise_max:'5%',stock:'Sur commande'},
+     {ref:'BUR001',designation:'Bureau direction L 160x80cm',unite:'Unité',prix_ht:289.00,remise_max:'12%',stock:'Disponible'},
+     {ref:'CHI001',designation:'Chaise ergonomique',unite:'Unité',prix_ht:185.00,remise_max:'10%',stock:'Disponible'},
+   ]},
+  {id:'j2',icon:'🚗',title:'Commercial(e) Terrain',
+   company:'AGRITECH NORMANDIE',address:'ZI des Hauts Grés, 14200 Hérouville-Saint-Clair',
+   secteur:'Équipements agricoles & matériel de précision',salary:2000,ref:'A2 — Négociation terrain',
+   desc:'Vous couvrez 3 départements (14, 50, 61) pour commercialiser des équipements de précision agricole.',
+   mise:'Secteur inexploité depuis 4 mois. 280 prospects, GPS AgriNav X7 (4 200 € HT, marge 28%), 3 visites/jour. Objectif : 12 nouveaux clients et 85 000 € CA en 3 mois.',
+   clients:[
+     {nom:'GAEC DES TROIS CHÊNES',contact:'M. Paul Leconte',tel:'02 31 45 67 89',email:'gaec3chenes@agriculteur.fr',adresse:'Ferme des Chênes, 14400 Bayeux',secteur:'Polyculture',ca_an:'0 €',statut:'Prospect chaud'},
+     {nom:'EARL BONNEVILLE',contact:'M. et Mme Bonneville',tel:'02 33 12 34 56',email:'earl.bonneville@orange.fr',adresse:'Route de la Forêt, 61000 Alençon',secteur:'Céréales',ca_an:'0 €',statut:'Prospect froid'},
+     {nom:'COOP NORMANDIE GRAIN',contact:'M. Hervé Duplessis',tel:'02 31 78 90 12',email:'h.duplessis@coop-ng.fr',adresse:'Siège, 14000 Caen',secteur:'Coopérative',ca_an:'45 000 €',statut:'Client actif'},
+   ],
+   catalogue:[
+     {ref:'GPS001',designation:'GPS précision AgriNav X7 (±2cm)',unite:'Unité',prix_ht:4200.00,remise_max:'8%',stock:'Disponible'},
+     {ref:'GPS002',designation:'Abonnement correction RTK annuel',unite:'Abonnement/an',prix_ht:890.00,remise_max:'5%',stock:'Disponible'},
+     {ref:'SPR001',designation:'Pulvérisateur trainé 2500L',unite:'Unité',prix_ht:28500.00,remise_max:'6%',stock:'Sur commande'},
+     {ref:'SON001',designation:'Sonde humidité sol connectée',unite:'Unité',prix_ht:340.00,remise_max:'10%',stock:'Disponible'},
+     {ref:'DRO001',designation:'Drone surveillance parcelles',unite:'Jour',prix_ht:450.00,remise_max:'15%',stock:'Disponible'},
+     {ref:'LOG001',designation:'Logiciel AgriMap Pro',unite:'Licence/an',prix_ht:680.00,remise_max:'10%',stock:'Disponible'},
+   ]},
+  {id:'j3',icon:'⚙️',title:'Technico-Commercial(e)',
+   company:'ELECTRO INDUSTRIE CAEN',address:'8 avenue de Cambridge, 14200 Hérouville-Saint-Clair',
+   secteur:'Solutions électriques & automatisation industrielle',salary:2100,ref:'A3 — Développement CA',
+   desc:'EIC distribue des solutions électriques et d\'automatisation pour l\'industrie normande.',
+   mise:'Les Aciéries de Colombelles veulent automatiser une ligne. Projet : 180 000 € HT. Préparez une proposition complète avec audit, solution, planning, SAV et formation.',
+   clients:[
+     {nom:'ACIÉRIES DE COLOMBELLES',contact:'M. Bruno Beaumont',tel:'02 31 56 78 90',email:'b.beaumont@acieries.fr',adresse:'ZI, 14460 Colombelles',secteur:'Métallurgie',ca_an:'95 000 €',statut:'Grand compte'},
+     {nom:'NORMANDIE PACKAGING',contact:'Mme Isabelle Renard',tel:'02 31 23 45 67',email:'i.renard@norpack.fr',adresse:'BP 45, 14800 Deauville',secteur:'Emballage',ca_an:'38 000 €',statut:'Actif'},
+     {nom:'CENTRALE LAITIÈRE CALVADOS',contact:'M. Denis Flour',tel:'02 31 89 01 23',email:'d.flour@clc.fr',adresse:'Route de Paris, 14540 Bourguébus',secteur:'Agroalimentaire',ca_an:'62 000 €',statut:'Actif'},
+   ],
+   catalogue:[
+     {ref:'AUT001',designation:'Automate Siemens S7-1500',unite:'Unité',prix_ht:2850.00,remise_max:'8%',stock:'Disponible'},
+     {ref:'CAP001',designation:'Capteur inductif 12mm',unite:'Unité',prix_ht:45.00,remise_max:'15%',stock:'Disponible'},
+     {ref:'MOT001',designation:'Variateur Schneider 7.5kW',unite:'Unité',prix_ht:680.00,remise_max:'10%',stock:'Disponible'},
+     {ref:'FOR001',designation:'Formation opérateurs (1 jour)',unite:'Jour',prix_ht:890.00,remise_max:'0%',stock:'Sur RDV'},
+     {ref:'MAI001',designation:'Contrat maintenance annuel',unite:'Contrat/an',prix_ht:4500.00,remise_max:'5%',stock:'Disponible'},
+   ]},
+  {id:'j4',icon:'🏪',title:'Responsable Secteur GMS',
+   company:'DISTRIBUTION ATLANTIC OUEST',address:'CC Grand Cap, 76230 Bois-Guillaume',
+   secteur:'Produits alimentaires régionaux & épicerie fine',salary:1900,ref:'A4 — Animation PDV',
+   desc:'DAO référence des produits normands (fromages, cidres) en grande distribution. 15 points de vente.',
+   mise:'Saison des fêtes. 4 hypermarchés à animer. Budget merchandising : 2 500 €. Objectif : +35% CA vs N-1 sur 6 semaines.',
+   clients:[
+     {nom:'CARREFOUR BOIS-GUILLAUME',contact:'M. Alexis Bernard',tel:'02 35 59 12 34',email:'a.bernard@carrefour.fr',adresse:'CC Grand Cap, 76230 Bois-Guillaume',secteur:'GMS',ca_an:'85 000 €',statut:'Partenaire'},
+     {nom:'LECLERC ROUEN NORD',contact:'Mme Karine Morin',tel:'02 35 74 56 78',email:'k.morin@leclerc.fr',adresse:'ZAC de la Mare, 76250 Déville',secteur:'GMS',ca_an:'72 000 €',statut:'Partenaire'},
+     {nom:'INTERMARCHÉ MONTVILLE',contact:'M. Patrick Guillot',tel:'02 35 33 22 11',email:'p.guillot@itm.fr',adresse:'Route de Rouen, 76710 Montville',secteur:'GMS',ca_an:'28 000 €',statut:'Actif'},
+   ],
+   catalogue:[
+     {ref:'FROM001',designation:'Camembert AOP Normandie 250g',unite:'Pièce',prix_ht:3.20,remise_max:'10%',stock:'Disponible'},
+     {ref:'CID001',designation:'Cidre brut bouché 75cl',unite:'Bouteille',prix_ht:3.80,remise_max:'8%',stock:'Disponible'},
+     {ref:'RIL001',designation:'Rillettes de canard 180g',unite:'Bocal',prix_ht:4.50,remise_max:'12%',stock:'Disponible'},
+     {ref:'BOF001',designation:'Beurre demi-sel AOP 500g',unite:'Plaquette',prix_ht:2.90,remise_max:'5%',stock:'Disponible'},
+     {ref:'CAL001',designation:'Calvados XO 70cl',unite:'Bouteille',prix_ht:28.00,remise_max:'6%',stock:'Sur commande'},
+   ]},
+  {id:'j5',icon:'📈',title:'Business Developer',
+   company:'NUMÉRITECH SOLUTIONS',address:'Pôle Innovation Quai, 76600 Le Havre',
+   secteur:'Logiciels de gestion & transformation digitale PME',salary:2200,ref:'A5 — Développement commercial',
+   desc:'Numéritech édite des logiciels pour PME (ERP, CRM). Conquête des marchés BTP et transport normands.',
+   mise:'Cible : BTP Normandie (50-200 salariés, 340 cibles). Mission 6 mois : 15 nouveaux contrats (8 500 €/an moy). Budget : 4 000 €.',
+   clients:[
+     {nom:'BTP GUILLOTEAU',contact:'M. Frédéric Guilloteau',tel:'02 35 41 23 45',email:'f.guilloteau@guilloteau-btp.fr',adresse:'28 rue des Artisans, 76700 Harfleur',secteur:'BTP',ca_an:'0 €',statut:'Prospect chaud'},
+     {nom:'TRANSPORTS RIVIÈRE',contact:'Mme Nathalie Rivière',tel:'02 35 52 34 56',email:'n.riviere@transports.fr',adresse:'ZI Port 2000, 76600 Le Havre',secteur:'Transport',ca_an:'0 €',statut:'Prospect tiède'},
+     {nom:'MENUISERIE DELACOUR',contact:'M. Jacques Delacour',tel:'02 35 63 45 67',email:'j.delacour@menuiserie.fr',adresse:'4 rue des Charpentiers, 76380 Canteleu',secteur:'Menuiserie',ca_an:'8 500 €',statut:'Client actif'},
+   ],
+   catalogue:[
+     {ref:'ERP001',designation:'ERP Standard (jusqu\'à 10 postes)',unite:'Licence/an',prix_ht:3200.00,remise_max:'10%',stock:'Disponible'},
+     {ref:'ERP002',designation:'ERP Pro (postes illimités)',unite:'Licence/an',prix_ht:7800.00,remise_max:'8%',stock:'Disponible'},
+     {ref:'CRM001',designation:'Module CRM + Devis + Facturation',unite:'Module/an',prix_ht:1200.00,remise_max:'15%',stock:'Disponible'},
+     {ref:'FOR001',designation:'Formation sur site (2 jours)',unite:'Forfait',prix_ht:1600.00,remise_max:'0%',stock:'Sur RDV'},
+     {ref:'MAI001',designation:'Maintenance & support annuel',unite:'Contrat/an',prix_ht:890.00,remise_max:'5%',stock:'Disponible'},
+   ]},
+  {id:'j6',icon:'🎯',title:'Account Manager',
+   company:'ASSURANCES NORMANDIE CONSEIL',address:'35 place de la Cathédrale, 76000 Rouen',
+   secteur:'Assurances professionnelles & prévoyance entreprise',salary:2300,ref:'A6 — Gestion grands comptes',
+   desc:'ANC est un cabinet de courtage en assurances pro. 45 grands comptes à gérer.',
+   mise:'Le groupe Côte de Nacre (12 hôtels, 78 000 €/an) est approché par AXA (-15%). Renouvellement dans 6 semaines. Préparez un plan de fidélisation.',
+   clients:[
+     {nom:'HÔTELS CÔTE DE NACRE',contact:'M. Étienne Aubert',tel:'02 31 34 56 78',email:'e.aubert@cote-de-nacre.fr',adresse:'2 Bd Maréchal Foch, 14150 Ouistreham',secteur:'Hôtellerie',ca_an:'78 000 €',statut:'Grand compte'},
+     {nom:'CLINIQUE SAINT-MARTIN',contact:'Mme Véronique Saunier',tel:'02 35 78 90 12',email:'v.saunier@clinique.fr',adresse:'15 av. Flaubert, 76000 Rouen',secteur:'Santé',ca_an:'42 000 €',statut:'Grand compte'},
+     {nom:'RÉSIDENCE LES ACACIAS',contact:'M. Christophe Lamy',tel:'02 35 89 01 23',email:'c.lamy@acacias.fr',adresse:'8 rue des Roses, 76130 Mont-Saint-Aignan',secteur:'Services',ca_an:'31 000 €',statut:'Actif'},
+   ],
+   catalogue:[
+     {ref:'RC001',designation:'RC Professionnelle TPE/PME',unite:'Contrat/an',prix_ht:890.00,remise_max:'12%',stock:'Disponible'},
+     {ref:'MUL001',designation:'Multirisque Professionnelle',unite:'Contrat/an',prix_ht:2400.00,remise_max:'10%',stock:'Disponible'},
+     {ref:'PRE001',designation:'Prévoyance collective (par salarié)',unite:'Contrat/an/salarié',prix_ht:340.00,remise_max:'8%',stock:'Disponible'},
+     {ref:'CYB001',designation:'Assurance Cyber-risques',unite:'Contrat/an',prix_ht:1800.00,remise_max:'5%',stock:'Disponible'},
+     {ref:'AUD001',designation:'Audit garanties existantes',unite:'Forfait',prix_ht:650.00,remise_max:'0%',stock:'Sur RDV'},
+   ]},
+];
+
+/* ============================================================
+   TASKS — 18 missions
+============================================================ */
+function getTask(score,poste){
+  const clients=poste&&poste.clients&&poste.clients.length>0?poste.clients:[];
+  const c=clients.length>0?clients[Math.floor(Math.random()*clients.length)]:null;
+  const cn=c?c.nom:'votre client';
+  const cc=c?c.contact:'votre interlocuteur';
+  const cat=poste&&poste.catalogue&&poste.catalogue.length>0?poste.catalogue:[];
+  const p0=cat.length>0?cat[0]:null;
+  const p1=cat.length>1?cat[1]:p0;
+  const company=poste?poste.company:'votre entreprise';
+  const secteur=poste?poste.secteur:'votre secteur';
+  const kms=[28,15,42,19,31];
+  const tourStr=clients.slice(0,5).map((cl,i)=>
+    'Client '+(i+1)+' : '+cl.nom+' ('+cl.adresse+') — '+kms[i]+' km depuis le point précédent, durée : 35 min'
+  ).join(' | ');
+  const totalKm=kms.slice(0,clients.length).reduce((a,b)=>a+b,0)||135;
+  const tasks={
+    1:{title:'E-mail professionnel de prospection',
+       desc:'Rédige un e-mail de prospection B2B ciblé. Objet percutant (max 60 car.), accroche personnalisée, proposition de valeur chiffrée, appel à action précis (RDV 20 min), signature complète.',
+       client:c?'Client cible : '+cn+' — '+cc+' ('+c.email+')':null,
+       consigne:'Rédige un e-mail de prospection à destination de '+cn+'. Personnalise selon leur secteur : '+(c?c.secteur:secteur)+'.',
+       ref:'C1.1 — Communication écrite professionnelle'},
+    2:{title:'Devis commercial complet',
+       desc:'Devis professionnel : en-tête, tableau (réf/désignation/qté/PU HT/remise/total HT), sous-total HT, TVA 20%, TTC, conditions de règlement, délai validité 30 jours.',
+       client:c?'Client : '+cn+' — '+cc+' — Adresse : '+c.adresse:null,
+       consigne:p0?'Catalogue '+company+' : crée un devis min 3 lignes pour '+cn+'. Produit : "'+p0.designation+'" à '+p0.prix_ht+' € HT. Remise max : '+p0.remise_max+'.':'Établis un devis pour '+cn+'.',
+       ref:'C2.1 — Documents commerciaux'},
+    3:{title:'Bon de commande',
+       desc:'BC suite à devis accepté. N° BC, identité client/fournisseur, tableau produits, conditions livraison (adresse, délai, transporteur), mode paiement, signatures.',
+       client:c?'Client : '+cn+' — Adresse livraison : '+c.adresse:null,
+       consigne:'Suite à l\'acceptation par '+cn+', établis le BC. Délai : 8 jours ouvrés. Paiement : 30% acompte, solde à réception.',
+       ref:'C2.2 — Traitement des commandes'},
+    4:{title:'Note de frais professionnelle',
+       desc:'Note de frais 2 jours. Barème IK 2024 : 0,529 €/km (5CV). Repas midi ≤15,25€, soir ≤20€, repas client ≤60€. Hébergement sur justificatif.',
+       client:c?'Déplacement pour visite chez '+cn:null,
+       consigne:'Jour 1 : aller-retour voiture 120 km, visite chez '+cn+', déjeuner client. Jour 2 : train 45 €, 2 visites, nuit hôtel 85 €. Complète ta note de frais.',
+       ref:'C3.1 — Gestion des frais professionnels'},
+    5:{title:'Tournée commerciale optimisée',
+       desc:'Méthode des pétales. Vitesse moyenne : 70 km/h. Formule temps : km ÷ 70 × 60 = minutes. Départ 8h00, pause repas 12h-13h obligatoire. Calcule coût IK (0,529 €/km).',
+       client:clients.length>0?'Clients : '+tourStr:null,
+       consigne:'Base départ : '+company+'. Distance brute totale : '+totalKm+' km. Vitesse : 70 km/h. Optimise l\'ordre et calcule les horaires et le coût IK.',
+       ref:'C3.2 — Planification de l\'activité'},
+    6:{title:'Analyse KPI Salon professionnel',
+       desc:'Calcule : taux transformation contacts→RDV→devis→commandes, coût/contact, CA/contact, ROI. Synthèse avec recommandations.',
+       client:null,
+       consigne:'Salon de '+secteur+'. Budget : 4 500 €. Contacts : 87. RDV : 23. Devis : 8 (48 500 €). Commandes : 3 (18 500 €). Calcule tous les KPI et propose 3 recommandations.',
+       ref:'C4.1 — Analyse des performances'},
+    7:{title:'Script d\'appel CROC',
+       desc:'Script CROC complet : Contact (présentation), Raison (accroche-bénéfice), Objectif (RDV), Conclusion (confirmation). + 3 fiches réflexe objections.',
+       client:c?'Prospect : '+cn+' — '+cc+' — Tél : '+c.tel:null,
+       consigne:'Script CROC pour prospecter '+cn+' ('+secteur+'). Objectif : RDV 20 min. Objections à anticiper : "Pas le temps", "Déjà fournisseur", "Envoyez une doc".',
+       ref:'C1.2 — Prospection téléphonique'},
+    8:{title:'Argumentaire CAP-SONCAS',
+       desc:'Pour chaque profil SONCAS : 1 Caractéristique produit, 1 Avantage-bénéfice client, 1 Preuve concrète. Format tableau.',
+       client:c?'Produit à argumenter pour '+cn+' ('+c.secteur+')':null,
+       consigne:p0?'CAP-SONCAS pour "'+p0.designation+'" ('+p0.prix_ht+' € HT). Adapte au profil de '+cn+'. Preuves vérifiables.':'Construis ton argumentaire CAP-SONCAS.',
+       ref:'C1.3 — Argumentation commerciale'},
+    9:{title:'Guide traitement des objections',
+       desc:'5 objections terrain. Pour chacune : reformulation positive, réponse 3 temps (écoute, argument, contre-question), formule de clôture.',
+       client:c?'RDV avec '+cn+' — '+cc:null,
+       consigne:'5 objections probables de '+cn+' face à ta proposition. Ex : "Trop cher", "J\'ai déjà un fournisseur", "Délais trop longs", "Je vais réfléchir", "Pas le budget".',
+       ref:'C1.4 — Gestion des objections'},
+    10:{title:'Plan de découverte client',
+        desc:'18 questions en 4 phases : Contexte (5), Organisation (4), Besoins SONCAS (5), Contraintes/décision (4). Pour chaque question : type, objectif, écoute attendue.',
+        client:c?'1er RDV avec : '+cn+' — '+cc:null,
+        consigne:'Plan de découverte pour 1er RDV chez '+cn+' ('+secteur+'). Durée : 45 min. CA potentiel : '+(c?c.ca_an:'5 000 €')+'. Adapte les questions à leur activité.',
+        ref:'C1.5 — Découverte des besoins'},
+    11:{title:'Compte-rendu de visite',
+        desc:'CRV : date/lieu/participants, contexte client, besoins SONCAS, proposition+réaction, objections+réponses, accord, prochaine étape, cotation (chaud/tiède/froid).',
+        client:c?'Visite chez '+cn+' — '+cc:null,
+        consigne:'RDV chez '+cn+'. Le client a montré de l\'intérêt pour '+(p0?p0.designation:'ton offre')+' mais objecte sur le prix. Délai de réflexion 8 jours. Rédige le CRV.',
+        ref:'C2.3 — Reporting commercial'},
+    12:{title:'Proposition commerciale complète',
+        desc:'Propale 4 pages : 1) Page de garde, 2) Synthèse exécutive, 3) Analyse enjeux+solution+ROI, 4) Planning et conditions.',
+        client:c?'Proposition pour : '+cn+' — '+cc:null,
+        consigne:'Propale pour '+cn+'. CA actuel : '+(c?c.ca_an:'à évaluer')+'. Statut : '+(c?c.statut:'prospect')+'.'+(p0?' Produit recommandé : "'+p0.designation+'" à '+p0.prix_ht+' € HT.':''),
+        ref:'C2.4 — Élaboration de propositions'},
+    13:{title:'Tableau de bord commercial',
+        desc:'TDB avec objectifs donnés. Calcule écarts et taux de transformation. Format tableau + analyse.',
+        client:null,
+        consigne:'Objectifs semaine : 80 appels, 40 contacts, 15 RDV, 6 devis (30 000€), 2 cdes (10 000€). Réalisé : 67 appels, 34 contacts, 12 RDV, 8 devis (48 500€), 3 cdes (18 200€). Objectif mensuel CA : 35 000 €. Construis le TDB et analyse.',
+        ref:'C4.2 — Pilotage de l\'activité'},
+    14:{title:'Fiche produit & argumentaire',
+        desc:'Fiche complète : référence, description, 3 bénéfices clients, comparatif 2 concurrents (3 critères), prix+conditions, argumentaire 5 points.',
+        client:c?'Produit pour '+cn:null,
+        consigne:p1?'Fiche produit pour "'+p1.designation+'" (réf. '+p1.ref+', '+p1.prix_ht+' € HT, remise max '+p1.remise_max+'). Client cible : '+cn+'. Compare avec 2 concurrents sur 3 critères.':'Crée ta fiche produit.',
+        ref:'C5.1 — Valorisation de l\'offre'},
+    15:{title:'Veille concurrentielle',
+        desc:'3 concurrents : raison sociale, positionnement, offre, tarifs estimés, forces/faiblesses. Matrice de positionnement. 3 axes de différenciation. Sources : sites web, LinkedIn, presse pro.',
+        client:null,
+        consigne:'Veille concurrentielle pour '+company+' dans "'+secteur+'". Identifie 3 concurrents réels ou réalistes. Compare sur 4 critères. Conclus sur 3 axes de différenciation.',
+        ref:'C5.2 — Veille et environnement'},
+    16:{title:'Plan d\'action commercial trimestriel',
+        desc:'PAC 3 mois avec objectifs fournis. Segmentation ABC, actions par segment, Gantt, budget, KPI.',
+        client:null,
+        consigne:'T2. Portefeuille : '+clients.length+' clients. Objectif CA : '+(poste?Math.round(poste.salary*3*2).toLocaleString('fr-FR'):15000)+' €. CA T1 réalisé : '+(poste?Math.round(poste.salary*3*1.8).toLocaleString('fr-FR'):13500)+' € (-10%). Budget prospection : 800 €. Construis le PAC.',
+        ref:'C3.3 — Plan d\'action commercial'},
+    17:{title:'Lettre de confirmation de commande',
+        desc:'Formalisation de la vente : identité des parties (SIRET), tableau produits HT/TTC, conditions paiement (acompte+solde), délai livraison, garantie, signatures.',
+        client:c?'Vente entre '+company+' et '+cn:null,
+        consigne:'Vente conclue avec '+cn+(p0?' pour le produit '+p0.designation+' ('+p0.prix_ht+' € HT, remise '+p0.remise_max+').':'.')+' Paiement : 30% acompte, solde à 15 jours. Rédige la lettre de confirmation.',
+        ref:'C2.5 — Formalisation de la vente'},
+    18:{title:'Rapport d\'activité mensuel',
+        desc:'Rapport mensuel : synthèse exécutive, résultats vs objectifs, analyse écarts, clients gagnés/perdus, plan correctif.',
+        client:null,
+        consigne:'Mars. Objectif CA : '+(poste?poste.salary.toLocaleString('fr-FR'):1800)+' €. Réalisé : '+(poste?Math.round(poste.salary*1.15).toLocaleString('fr-FR'):2100)+' €. Nouvelles cdes : 4. Client perdu : '+cn+'. Visites : 18/20. Rédige le rapport complet.',
+        ref:'C4.3 — Reporting direction'}
+  };
+  return tasks[score]||tasks[1];
 }
 
 
@@ -1720,7 +1951,7 @@ function showCatalogueAll(){
    PDG ACTIONS
 ============================================================ */
 async function saveToDrive(){
-  const d={exportDate:new Date().toISOString(),students:await getStudents(),candidatures:await getCands(),entretiens:await getEnts(),corrections:await getCorrs()};
+  const d={exportDate:new Date().toISOString(),students:await getStudentsFromServer(),candidatures:await getCandsFromServer(),entretiens:await getEntsFromServer(),corrections:await getCorrsFromServer()};
   const blob=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});
   const url=URL.createObjectURL(blob);const a=document.createElement('a');
   a.href=url;a.download=`MDC_Sauvegarde_${new Date().toLocaleDateString('fr-FR').replace(/\//g,'-')}.json`;
