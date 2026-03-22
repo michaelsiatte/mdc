@@ -232,7 +232,7 @@ hr.dv{border:none;border-top:1px solid var(--gold-b);margin:14px 0}
 <!-- COVER -->
 <div id="cover">
   <div class="clogo">MON DESTIN<br>DE COMMERCIAL</div>
-  <div class="csub">BTS MCV · Option B · Référentiel 2024</div>
+  <div class="csub">1re &amp; Terminale MCV Option B · Référentiel 2024</div>
   <div class="cbtns">
     <button class="cbtn cbtn-c" onclick="enterAs('student')"><span>💼</span> COMMERCIAL</button>
     <button class="cbtn cbtn-p" onclick="openPdgLogin()"><span>👑</span> PDG</button>
@@ -840,11 +840,12 @@ function checkPdg(){
     pdgOK=true;closePdgLogin();
     el('cover').style.display='none';
     const app=el('app');app.style.display='flex';app.style.flexDirection='column';
-    notify('Bienvenue PDG !','Chargement en cours…','ok');
-    syncFromServer().then(()=>{
-      renderProfPanel();showP('pPDG');
-      notify('Bienvenue PDG !','Tableau de bord chargé.','ok');
-    });
+    // Afficher immédiatement pPDG sans attendre Supabase
+    showP('pPDG');
+    notify('Bienvenue PDG !','Tableau de bord chargé.','ok');
+    // Sync Supabase en arrière-plan puis rafraîchir
+    syncFromServer().then(()=>renderProfPanel()).catch(()=>renderProfPanel());
+    renderProfPanel();
   }else{el('pdgErr').style.display='block';el('pdgErr').textContent='Code incorrect.';}
 }
 async function routeAfterLoad(){
