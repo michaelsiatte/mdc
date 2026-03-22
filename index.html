@@ -306,7 +306,7 @@ hr.dv{border:none;border-top:1px solid var(--gold-b);margin:14px 0}
           <div class="fr"><label class="fl">Prénom</label><input type="text" id="iP" placeholder="Marie"></div>
           <div class="fr"><label class="fl">Nom</label><input type="text" id="iN" placeholder="DUPONT"></div>
         </div>
-        <div class="fr"><label class="fl">Date de naissance</label><input type="text" id="iD" placeholder="JJ/MM/AAAA ex: 15/03/2006" maxlength="10" oninput="fmtDate(this)"></div>
+        <div class="fr"><label class="fl">Date de naissance</label><input type="text" id="iD" placeholder="JJ/MM/AAAA ex: 15/03/2006" maxlength="10" inputmode="numeric" autocomplete="bdate" oninput="fmtDate(this)"></div>
         <div class="fr">
           <label class="fl">📷 Photo / Selfie</label>
           <video id="camPrev" style="display:none;width:100%;max-width:240px;border-radius:50%;aspect-ratio:1;object-fit:cover;border:4px solid var(--gold);margin:0 auto 10px;display:none" playsinline autoplay muted></video>
@@ -399,7 +399,7 @@ hr.dv{border:none;border-top:1px solid var(--gold-b);margin:14px 0}
             <input type="file" id="tIn" style="display:none" onchange="hTravail(event)">
             <div id="tSt" class="tm mt8" style="font-size:.68rem"></div>
           </div>
-          <div id="mailInfo" class="alert ai" style="display:none;font-size:.74rem">📧 Sera transmis à <strong>michael.siatte@ac-normandie.fr</strong></div>
+          <div id="mailInfo" class="alert ai" style="display:none;font-size:.74rem">📧 Sera transmis à <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="305d59535851555c1e4359514444557051531d5e5f425d515e5459551e5642">[email&#160;protected]</a></strong></div>
           <button class="btn btn-p mt8" id="btnSend" style="display:none" onclick="envoyerTravail()">Envoyer au PDG →</button>
           <div id="sentOk" class="alert aok" style="display:none;margin-top:9px">✅ Travail envoyé ! En attente de la note du PDG.</div>
         </div>
@@ -437,7 +437,8 @@ hr.dv{border:none;border-top:1px solid var(--gold-b);margin:14px 0}
         <div class="pa pa-del" onclick="openDeleteAll()">🗑️ Supprimer</div>
         <div class="pa pa-recap" onclick="showRecap()">📊 Récapitulatif</div>
         <div class="pa pa-test" onclick="activerModeTest()">🧪 Mode Test</div>
-        <div class="pa pa-cat" onclick="showCatalogueAll()" style="grid-column:1/-1">📋 Voir tous les catalogues</div>
+        <div class="pa pa-cat" onclick="showCatalogueAll()" style="grid-column:1/-1">📋 Catalogues clients &amp; produits</div>
+        <div class="pa" style="background:rgba(52,152,219,.14);border-color:rgba(52,152,219,.4);color:#5dade2;grid-column:1/-1" onclick="showCatalogueExos()">📚 Catalogue des 18 exercices + Corrigés types</div>
       </div>
       <div class="tnav">
         <button class="tbtn act" id="tb1" onclick="profTab('tc1','tb1')">Candidatures</button>
@@ -461,6 +462,14 @@ hr.dv{border:none;border-top:1px solid var(--gold-b);margin:14px 0}
       <div style="overflow-x:auto"><table class="rtable" id="recapTable"><thead><tr><th>#</th><th>Élève</th><th>Poste</th><th>Cagnotte</th><th>Missions</th><th>Moy.</th><th>Avert.</th><th>Statut</th><th>Fiche</th></tr></thead><tbody id="recapBody"></tbody></table></div>
       <button class="btn btn-p mt12" onclick="exportCSV()">⬇️ Exporter CSV</button>
       <button class="btn btn-s mt8" onclick="showP('pPDG')">← Retour PDG</button>
+    </div>
+
+    <!-- CATALOGUE EXERCICES PDG -->
+    <div class="panel" id="pCatExos">
+      <div class="eyebrow">PDG · Référentiel complet</div>
+      <div class="heading">Les 18 Travaux<br>du Commercial</div>
+      <div id="catExosContent"></div>
+      <button class="btn btn-s mt12" onclick="showP('pPDG')">← Retour PDG</button>
     </div>
 
     <!-- CATALOGUE PDG -->
@@ -495,363 +504,194 @@ function initSB(){
 function lsG(k){try{return JSON.parse(localStorage.getItem(k))||null}catch{return null}}
 function lsS(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
 
-// STUDENTS
+/* ============================================================
+   STRATÉGIE VITESSE :
+   - Lecture  → localStorage TOUJOURS (instantané, 0ms)
+   - Écriture → localStorage immédiat + Supabase en arrière-plan
+   - Sync     → Supabase realtime push (pas de polling)
+   - Résultat → Aucun temps d'attente pour l'élève
+============================================================ */
+
+// STUDENTS — lecture localStorage, écriture background
 async function getStudents(){
-  if(sb){
-    try{
-      const {data,error}=await sb.from('students').select('*');
-      if(error)throw error;
-      const obj={};
-      (data||[]).forEach(r=>{obj[r.uid]={
-        prenom:r.prenom,nom:r.nom,dob:r.dob,selfie:r.selfie,
-        poste:r.poste,postesEssayes:r.postes_essayes||[],
-        wallet:r.wallet||0,avert:r.avert||0,mauvaises:r.mauvaises||0,
-        licencie:r.licencie||false,travaux:r.travaux||[],
-        cand:r.cand||{},entNote:r.ent_note,enPoste:r.en_poste||false
-      }});
-      return obj;
-    }catch(e){console.error('getStudents',e);}
-  }
   return lsG('mdc_students')||{};
 }
-
-async function saveStudent(uid,data){
-  const ls_all=lsG('mdc_students')||{};ls_all[uid]=data;lsS('mdc_students',ls_all);
-  if(!sb)return;
+async function getStudentsFromServer(){
+  // Appel Supabase explicite (seulement quand nécessaire, ex: PDG)
+  if(!sb) return lsG('mdc_students')||{};
   try{
-    await sb.from('students').upsert({
-      uid,prenom:data.prenom,nom:data.nom,dob:data.dob,
-      selfie:data.selfie||null,poste:data.poste||null,
-      postes_essayes:data.postesEssayes||[],
-      wallet:data.wallet||0,avert:data.avert||0,mauvaises:data.mauvaises||0,
-      licencie:data.licencie||false,travaux:data.travaux||[],
-      cand:data.cand||{},ent_note:data.entNote??null,en_poste:data.enPoste||false,
-      updated_at:new Date().toISOString()
-    },{onConflict:'uid'});
-  }catch(e){console.error('saveStudent',e);}
+    const {data,error}=await sb.from('students').select('*');
+    if(error||!data) return lsG('mdc_students')||{};
+    const obj={};
+    data.forEach(r=>{obj[r.uid]={
+      prenom:r.prenom,nom:r.nom,dob:r.dob,selfie:r.selfie,
+      poste:r.poste,postesEssayes:r.postes_essayes||[],
+      wallet:r.wallet||0,avert:r.avert||0,mauvaises:r.mauvaises||0,
+      licencie:r.licencie||false,travaux:r.travaux||[],
+      cand:r.cand||{},entNote:r.ent_note,enPoste:r.en_poste||false
+    }});
+    lsS('mdc_students',obj);
+    return obj;
+  }catch(e){return lsG('mdc_students')||{};}
+}
+async function saveStudent(uid,data){
+  // 1. localStorage immédiat
+  const ls=lsG('mdc_students')||{};ls[uid]=data;lsS('mdc_students',ls);
+  // 2. Supabase en arrière-plan (non bloquant)
+  if(!sb) return;
+  sb.from('students').upsert({
+    uid,prenom:data.prenom,nom:data.nom,dob:data.dob,
+    selfie:data.selfie||null,poste:data.poste||null,
+    postes_essayes:data.postesEssayes||[],
+    wallet:data.wallet||0,avert:data.avert||0,mauvaises:data.mauvaises||0,
+    licencie:data.licencie||false,travaux:data.travaux||[],
+    cand:data.cand||{},ent_note:data.entNote??null,en_poste:data.enPoste||false,
+    updated_at:new Date().toISOString()
+  },{onConflict:'uid'}).then(({error})=>{
+    if(error) console.warn('saveStudent bg:',error.message);
+  });
 }
 
 // CANDIDATURES
 async function getCands(){
-  if(sb){
-    try{
-      const {data,error}=await sb.from('candidatures').select('*');
-      if(error)throw error;
-      const obj={};(data||[]).forEach(r=>{obj[r.uid]={
-        uid:r.uid,prenom:r.prenom,nom:r.nom,selfie:r.selfie,
-        posteId:r.poste_id,posteTitle:r.poste_title,company:r.company,
-        cv:r.cv,cvName:r.cv_name,lm:r.lm,lmName:r.lm_name,
-        status:r.status,at:r.submitted_at
-      }});
-      return obj;
-    }catch(e){console.error('getCands',e);}
-  }
   return lsG('mdc_cands')||{};
 }
-
-async function saveCand(uid,data){
-  const all=lsG('mdc_cands')||{};all[uid]=data;lsS('mdc_cands',all);
-  if(!sb)return;
+async function getCandsFromServer(){
+  if(!sb) return lsG('mdc_cands')||{};
   try{
-    await sb.from('candidatures').upsert({
-      uid,prenom:data.prenom,nom:data.nom,selfie:data.selfie||null,
-      poste_id:data.posteId,poste_title:data.posteTitle,company:data.company,
-      cv:data.cv||null,cv_name:data.cvName||null,
-      lm:data.lm||null,lm_name:data.lmName||null,
-      status:data.status||'pending',submitted_at:new Date().toISOString()
-    },{onConflict:'uid'});
-  }catch(e){console.error('saveCand',e);}
+    const {data,error}=await sb.from('candidatures').select('*');
+    if(error||!data) return lsG('mdc_cands')||{};
+    const obj={};data.forEach(r=>{obj[r.uid]={
+      uid:r.uid,prenom:r.prenom,nom:r.nom,selfie:r.selfie,
+      posteId:r.poste_id,posteTitle:r.poste_title,company:r.company,
+      cv:r.cv,cvName:r.cv_name,lm:r.lm,lmName:r.lm_name,
+      status:r.status,at:r.submitted_at
+    }});
+    lsS('mdc_cands',obj);return obj;
+  }catch(e){return lsG('mdc_cands')||{};}
+}
+async function saveCand(uid,data){
+  const ls=lsG('mdc_cands')||{};ls[uid]=data;lsS('mdc_cands',ls);
+  if(!sb) return;
+  sb.from('candidatures').upsert({
+    uid,prenom:data.prenom,nom:data.nom,selfie:data.selfie||null,
+    poste_id:data.posteId,poste_title:data.posteTitle,company:data.company,
+    cv:data.cv||null,cv_name:data.cvName||null,
+    lm:data.lm||null,lm_name:data.lmName||null,
+    status:data.status||'pending',submitted_at:new Date().toISOString()
+  },{onConflict:'uid'}).then(({error})=>{
+    if(error) console.warn('saveCand bg:',error.message);
+  });
 }
 
 // ENTRETIENS
 async function getEnts(){
-  if(sb){
-    try{
-      const {data,error}=await sb.from('entretiens').select('*');
-      if(error)throw error;
-      const obj={};(data||[]).forEach(r=>{obj[r.uid]=r});return obj;
-    }catch(e){console.error('getEnts',e);}
-  }
   return lsG('mdc_ents')||{};
 }
-
-async function saveEnt(uid,note){
-  const all=lsG('mdc_ents')||{};all[uid]={uid,note};lsS('mdc_ents',all);
-  if(!sb)return;
+async function getEntsFromServer(){
+  if(!sb) return lsG('mdc_ents')||{};
   try{
-    await sb.from('entretiens').upsert({uid,note,noted_at:new Date().toISOString()},{onConflict:'uid'});
-  }catch(e){console.error('saveEnt',e);}
+    const {data,error}=await sb.from('entretiens').select('*');
+    if(error||!data) return lsG('mdc_ents')||{};
+    const obj={};data.forEach(r=>{obj[r.uid]=r});
+    lsS('mdc_ents',obj);return obj;
+  }catch(e){return lsG('mdc_ents')||{};}
+}
+async function saveEnt(uid,note){
+  const data={uid,note};
+  const ls=lsG('mdc_ents')||{};ls[uid]=data;lsS('mdc_ents',ls);
+  if(!sb) return;
+  sb.from('entretiens').upsert({uid,note,noted_at:new Date().toISOString()},{onConflict:'uid'})
+    .then(({error})=>{if(error) console.warn('saveEnt bg:',error.message);});
 }
 
 // CORRECTIONS
 async function getCorrs(){
-  if(sb){
-    try{
-      const {data,error}=await sb.from('corrections').select('*');
-      if(error)throw error;
-      const obj={};(data||[]).forEach(r=>{obj[r.id]={
-        key:r.id,uid:r.uid,prenom:r.prenom,nom:r.nom,selfie:r.selfie,
-        posteTitle:r.poste_title,company:r.company,
-        taskTitle:r.task_title,taskRef:r.task_ref,score:r.score,
-        file:r.file_name,fileData:r.file_data||null,
-        status:r.status,note:r.note,date:r.date_str,travailIdx:r.travail_idx||0
-      }});
-      return obj;
-    }catch(e){console.error('getCorrs',e);}
-  }
   return lsG('mdc_corrs')||{};
 }
-
+async function getCorrsFromServer(){
+  if(!sb) return lsG('mdc_corrs')||{};
+  try{
+    const {data,error}=await sb.from('corrections').select('*');
+    if(error||!data) return lsG('mdc_corrs')||{};
+    const obj={};data.forEach(r=>{obj[r.id]={
+      key:r.id,uid:r.uid,prenom:r.prenom,nom:r.nom,selfie:r.selfie,
+      posteTitle:r.poste_title,company:r.company,
+      taskTitle:r.task_title,taskRef:r.task_ref,score:r.score,
+      file:r.file_name,fileData:r.file_data||null,
+      status:r.status,note:r.note,date:r.date_str,travailIdx:r.travail_idx||0
+    }});
+    lsS('mdc_corrs',obj);return obj;
+  }catch(e){return lsG('mdc_corrs')||{};}
+}
 async function saveCorr(key,data){
-  const all=lsG('mdc_corrs')||{};all[key]=data;lsS('mdc_corrs',all);
-  if(!sb)return;
-  try{
-    await sb.from('corrections').upsert({
-      id:key,uid:data.uid,prenom:data.prenom,nom:data.nom,selfie:data.selfie||null,
-      poste_title:data.posteTitle,company:data.company,
-      task_title:data.taskTitle,task_ref:data.taskRef,score:data.score||0,
-      file_name:data.file,file_data:data.fileData||null,
-      status:'pending',note:null,date_str:data.date,travail_idx:data.travailIdx||0,
-      sent_at:new Date().toISOString()
-    },{onConflict:'id'});
-  }catch(e){console.error('saveCorr',e);}
+  const ls=lsG('mdc_corrs')||{};ls[key]=data;lsS('mdc_corrs',ls);
+  if(!sb) return;
+  sb.from('corrections').upsert({
+    id:key,uid:data.uid,prenom:data.prenom,nom:data.nom,selfie:data.selfie||null,
+    poste_title:data.posteTitle,company:data.company,
+    task_title:data.taskTitle,task_ref:data.taskRef,score:data.score||0,
+    file_name:data.file,file_data:data.fileData||null,
+    status:'pending',note:null,date_str:data.date,travail_idx:data.travailIdx||0,
+    sent_at:new Date().toISOString()
+  },{onConflict:'id'}).then(({error})=>{
+    if(error) console.warn('saveCorr bg:',error.message);
+  });
 }
-
 async function updateCorr(key,updates){
-  const all=lsG('mdc_corrs')||{};
-  if(all[key])Object.assign(all[key],updates);lsS('mdc_corrs',all);
-  if(!sb)return;
+  const ls=lsG('mdc_corrs')||{};
+  if(ls[key]) Object.assign(ls[key],updates);lsS('mdc_corrs',ls);
+  if(!sb) return;
+  const row={noted_at:new Date().toISOString()};
+  if(updates.status!==undefined) row.status=updates.status;
+  if(updates.note!==undefined) row.note=updates.note;
+  sb.from('corrections').update(row).eq('id',key)
+    .then(({error})=>{if(error) console.warn('updateCorr bg:',error.message);});
+}
+
+// DELETE
+async function deleteStudentData(uid){
+  const sk=lsG('mdc_students')||{};delete sk[uid];lsS('mdc_students',sk);
+  const ck=lsG('mdc_cands')||{};delete ck[uid];lsS('mdc_cands',ck);
+  const ek=lsG('mdc_ents')||{};delete ek[uid];lsS('mdc_ents',ek);
+  const rk=lsG('mdc_corrs')||{};
+  Object.keys(rk).filter(k=>k.startsWith(uid)).forEach(k=>delete rk[k]);lsS('mdc_corrs',rk);
+  if(!sb) return;
+  Promise.all([
+    sb.from('students').delete().eq('uid',uid),
+    sb.from('candidatures').delete().eq('uid',uid),
+    sb.from('entretiens').delete().eq('uid',uid),
+    sb.from('corrections').delete().eq('uid',uid)
+  ]).catch(e=>console.warn('delete bg:',e));
+}
+async function deleteAllData(){
+  ['mdc_students','mdc_cands','mdc_ents','mdc_corrs'].forEach(k=>localStorage.removeItem(k));
+  if(!sb) return;
+  Promise.all([
+    sb.from('corrections').delete().neq('id','__none__'),
+    sb.from('entretiens').delete().neq('uid','__none__'),
+    sb.from('candidatures').delete().neq('uid','__none__'),
+    sb.from('students').delete().neq('uid','__none__')
+  ]).catch(e=>console.warn('deleteAll bg:',e));
+}
+
+/* ============================================================
+   SYNC INITIALE au démarrage PDG — charge depuis Supabase
+   une seule fois et met à jour le localStorage
+============================================================ */
+async function syncFromServer(){
+  if(!sb) return;
   try{
-    const row={noted_at:new Date().toISOString()};
-    if(updates.status!==undefined)row.status=updates.status;
-    if(updates.note!==undefined)row.note=updates.note;
-    await sb.from('corrections').update(row).eq('id',key);
-  }catch(e){console.error('updateCorr',e);}
+    await Promise.all([
+      getStudentsFromServer(),
+      getCandsFromServer(),
+      getEntsFromServer(),
+      getCorrsFromServer()
+    ]);
+    console.log('✅ Sync serveur terminée');
+  }catch(e){console.warn('Sync partielle:',e);}
 }
 
-/* ============================================================
-   JOBS — 6 postes détaillés avec clients et catalogue
-============================================================ */
-const JOBS=[
-  {id:'j1',icon:'🤝',title:'Chargé(e) de Clientèle',
-   company:'NORMANDIE SOLUTIONS PRO',
-   address:'12 rue de la Paix, 76000 Rouen (Seine-Maritime)',
-   secteur:'Fournitures de bureau & services B2B',salary:1800,ref:'A1 — Relation client',
-   desc:'Vous gérez un portefeuille de 120 clients PME/PMI en Haute-Normandie pour NSP, leader régional en fournitures de bureau B2B.',
-   mise:"Votre manager M. Lecomte vous remet un portefeuille de 120 clients dont 35 sont « à risque » (aucune commande depuis 6 mois). Mission : relancer les clients inactifs et proposer une offre personnalisée. Remise accordée : 8% max. Objectif mensuel : 45 000 € CA.",
-   clients:[
-     {nom:'CABINET MARTIN & ASSOCIÉS',contact:'Mme Sophie Martin',tel:'02 35 12 34 56',email:'s.martin@cabinet-martin.fr',adresse:'45 rue Victor Hugo, 76100 Rouen',secteur:'Cabinet d\'avocats',ca_an:'12 500 €',statut:'Actif'},
-     {nom:'GARAGE DUBOIS AUTO',contact:'M. Jean-Pierre Dubois',tel:'02 35 67 89 01',email:'jp.dubois@garageauto.fr',adresse:'Zone industrielle, 76230 Bois-Guillaume',secteur:'Automobile',ca_an:'8 200 €',statut:'À risque'},
-     {nom:'ÉCOLE PRIVÉE SAINTE-MARIE',contact:'Mme Claire Petit',tel:'02 35 23 45 67',email:'direction@sainte-marie.fr',adresse:'12 avenue Gambetta, 76000 Rouen',secteur:'Éducation',ca_an:'15 800 €',statut:'Actif'},
-     {nom:'BOULANGERIE LEFEVRE',contact:'M. Thomas Lefevre',tel:'02 35 45 67 89',email:'t.lefevre@boulangerie.fr',adresse:'3 place du Marché, 76300 Sotteville',secteur:'Alimentation',ca_an:'3 400 €',statut:'À risque'},
-   ],
-   catalogue:[
-     {ref:'PAP001',designation:'Ramette papier A4 80g (500 feuilles)',unite:'Ramette',prix_ht:4.50,remise_max:'15%',stock:'Disponible'},
-     {ref:'PAP002',designation:'Ramette papier A4 90g Premium (500 feuilles)',unite:'Ramette',prix_ht:6.20,remise_max:'10%',stock:'Disponible'},
-     {ref:'STY001',designation:'Stylo bille BIC 4 couleurs',unite:'Unité',prix_ht:1.80,remise_max:'20%',stock:'Disponible'},
-     {ref:'CLA001',designation:'Classeur levier A4 dos 80mm',unite:'Unité',prix_ht:3.90,remise_max:'15%',stock:'Disponible'},
-     {ref:'ENC001',designation:'Cartouche encre HP 301 Noir',unite:'Unité',prix_ht:12.50,remise_max:'5%',stock:'Sur commande'},
-     {ref:'BUR001',designation:'Bureau direction L 160x80cm chêne',unite:'Unité',prix_ht:289.00,remise_max:'12%',stock:'Disponible'},
-     {ref:'CHI001',designation:'Chaise ergonomique accoudoirs réglables',unite:'Unité',prix_ht:185.00,remise_max:'10%',stock:'Disponible'},
-     {ref:'TIS001',designation:'Distributeur essuie-mains papier 1 rouleau',unite:'Unité',prix_ht:8.90,remise_max:'20%',stock:'Disponible'},
-   ]},
-  {id:'j2',icon:'🚗',title:'Commercial(e) Terrain',
-   company:'AGRITECH NORMANDIE',
-   address:'ZI des Hauts Grés, 14200 Hérouville-Saint-Clair',
-   secteur:'Équipements agricoles & matériel de précision',salary:2000,ref:'A2 — Négociation terrain',
-   desc:'Vous couvrez 3 départements (14, 50, 61) pour commercialiser des équipements de précision agricole avec un véhicule de fonction.',
-   mise:"Vous prenez en charge un secteur inexploité depuis 4 mois. Vous avez 280 prospects, un catalogue produits incluant le GPS AgriNav X7 (4 200 € HT, marge 28%), et 3 visites/jour. Objectif : 12 nouveaux clients et 85 000 € CA en 3 mois.",
-   clients:[
-     {nom:'GAEC DES TROIS CHÊNES',contact:'M. Paul Leconte',tel:'02 31 45 67 89',email:'gaec3chenes@agriculteur.fr',adresse:'Ferme des Chênes, 14400 Bayeux',secteur:'Polyculture élevage',ca_an:'0 € (prospect)',statut:'Prospect chaud'},
-     {nom:'EARL BONNEVILLE',contact:'M. et Mme Bonneville',tel:'02 33 12 34 56',email:'earl.bonneville@orange.fr',adresse:'Route de la Forêt, 61000 Alençon',secteur:'Céréales',ca_an:'0 € (prospect)',statut:'Prospect froid'},
-     {nom:'COOP NORMANDIE GRAIN',contact:'M. Hervé Duplessis',tel:'02 31 78 90 12',email:'h.duplessis@coop-ng.fr',adresse:'Siège social, 14000 Caen',secteur:'Coopérative',ca_an:'45 000 €',statut:'Client actif'},
-   ],
-   catalogue:[
-     {ref:'GPS001',designation:'GPS précision AgriNav X7 (±2cm)',unite:'Unité',prix_ht:4200.00,remise_max:'8%',stock:'Disponible'},
-     {ref:'GPS002',designation:'Abonnement correction RTK annuel',unite:'Abonnement/an',prix_ht:890.00,remise_max:'5%',stock:'Disponible'},
-     {ref:'SPR001',designation:'Pulvérisateur trainé 2500L autoguidé',unite:'Unité',prix_ht:28500.00,remise_max:'6%',stock:'Sur commande'},
-     {ref:'SON001',designation:'Sonde humidité sol connectée',unite:'Unité',prix_ht:340.00,remise_max:'10%',stock:'Disponible'},
-     {ref:'DRO001',designation:'Drone surveillance parcelles (pack 2h)',unite:'Jour',prix_ht:450.00,remise_max:'15%',stock:'Disponible'},
-     {ref:'LOG001',designation:'Logiciel gestion parcelles AgriMap Pro',unite:'Licence/an',prix_ht:680.00,remise_max:'10%',stock:'Disponible'},
-   ]},
-  {id:'j3',icon:'⚙️',title:'Technico-Commercial(e)',
-   company:'ELECTRO INDUSTRIE CAEN',
-   address:'8 avenue de Cambridge, 14200 Hérouville-Saint-Clair',
-   secteur:'Solutions électriques & automatisation industrielle',salary:2100,ref:'A3 — Développement CA',
-   desc:'EIC distribue des solutions électriques et d\'automatisation pour l\'industrie normande. Clients : directeurs techniques d\'usines.',
-   mise:"Les Aciéries de Colombelles (250 salariés) veulent automatiser une ligne de production. M. Beaumont, directeur technique, vous reçoit. Projet estimé : 180 000 € HT. Préparez une proposition technique complète avec audit, solution, planning 6 semaines, SAV et formation.",
-   clients:[
-     {nom:'ACIÉRIES DE COLOMBELLES',contact:'M. Bruno Beaumont',tel:'02 31 56 78 90',email:'b.beaumont@acieries-colombelles.fr',adresse:'Zone industrielle, 14460 Colombelles',secteur:'Métallurgie',ca_an:'95 000 €',statut:'Grands comptes'},
-     {nom:'NORMANDIE PACKAGING',contact:'Mme Isabelle Renard',tel:'02 31 23 45 67',email:'i.renard@norpack.fr',adresse:'BP 45, 14800 Deauville',secteur:'Emballage',ca_an:'38 000 €',statut:'Actif'},
-     {nom:'CENTRALE LAITIÈRE CALVADOS',contact:'M. Denis Flour',tel:'02 31 89 01 23',email:'d.flour@clc.fr',adresse:'Route de Paris, 14540 Bourguébus',secteur:'Agroalimentaire',ca_an:'62 000 €',statut:'Actif'},
-   ],
-   catalogue:[
-     {ref:'AUT001',designation:'Automate programmable Siemens S7-1500',unite:'Unité',prix_ht:2850.00,remise_max:'8%',stock:'Disponible'},
-     {ref:'CAP001',designation:'Capteur de proximité inductif 12mm',unite:'Unité',prix_ht:45.00,remise_max:'15%',stock:'Disponible'},
-     {ref:'MOT001',designation:'Variateur de fréquence Schneider 7.5kW',unite:'Unité',prix_ht:680.00,remise_max:'10%',stock:'Disponible'},
-     {ref:'TAB001',designation:'Armoire électrique IP65 600x400mm',unite:'Unité',prix_ht:320.00,remise_max:'12%',stock:'Disponible'},
-     {ref:'FOR001',designation:'Formation opérateurs automates (1 jour)',unite:'Jour',prix_ht:890.00,remise_max:'0%',stock:'Sur RDV'},
-     {ref:'MAI001',designation:'Contrat maintenance préventive annuel',unite:'Contrat/an',prix_ht:4500.00,remise_max:'5%',stock:'Disponible'},
-   ]},
-  {id:'j4',icon:'🏪',title:'Responsable Secteur GMS',
-   company:'DISTRIBUTION ATLANTIC OUEST',
-   address:'CC Grand Cap, Route de Paris, 76230 Bois-Guillaume',
-   secteur:'Produits alimentaires régionaux & épicerie fine',salary:1900,ref:'A4 — Animation PDV',
-   desc:'DAO référence des produits normands (fromages, cidres, charcuteries) en grande distribution. Vous gérez 15 points de vente.',
-   mise:"La saison des fêtes approche. 4 hypermarchés Carrefour et Leclerc à animer pour « Terroirs de Normandie ». Budget merchandising : 2 500 €. Objectif : +35% de CA vs N-1 sur 6 semaines. Concevez le plan d'animation, négociez les emplacements, formez les animatrices.",
-   clients:[
-     {nom:'CARREFOUR BOIS-GUILLAUME',contact:'M. Alexis Bernard',tel:'02 35 59 12 34',email:'a.bernard@carrefour.fr',adresse:'CC Grand Cap, 76230 Bois-Guillaume',secteur:'GMS',ca_an:'85 000 €',statut:'Partenaire'},
-     {nom:'LECLERC ROUEN NORD',contact:'Mme Karine Morin',tel:'02 35 74 56 78',email:'k.morin@leclerc-rouennord.fr',adresse:'ZAC de la Mare, 76250 Déville',secteur:'GMS',ca_an:'72 000 €',statut:'Partenaire'},
-     {nom:'INTERMARCHÉ MONTVILLE',contact:'M. Patrick Guillot',tel:'02 35 33 22 11',email:'p.guillot@itm-montville.fr',adresse:'Route de Rouen, 76710 Montville',secteur:'GMS',ca_an:'28 000 €',statut:'Actif'},
-   ],
-   catalogue:[
-     {ref:'FROM001',designation:'Camembert AOP Normandie (250g)',unite:'Pièce',prix_ht:3.20,remise_max:'10%',stock:'Disponible'},
-     {ref:'CID001',designation:'Cidre brut bouché 75cl Domaine Dupont',unite:'Bouteille',prix_ht:3.80,remise_max:'8%',stock:'Disponible'},
-     {ref:'RIL001',designation:'Rillettes de canard bocal 180g',unite:'Bocal',prix_ht:4.50,remise_max:'12%',stock:'Disponible'},
-     {ref:'BOF001',designation:'Beurre demi-sel AOP Isigny 500g',unite:'Plaquette',prix_ht:2.90,remise_max:'5%',stock:'Disponible'},
-     {ref:'CAL001',designation:'Calvados XO 70cl',unite:'Bouteille',prix_ht:28.00,remise_max:'6%',stock:'Sur commande'},
-     {ref:'PLV001',designation:'Stop rayon A4 cartonné (lot 10)',unite:'Lot',prix_ht:12.00,remise_max:'0%',stock:'Disponible'},
-   ]},
-  {id:'j5',icon:'📈',title:'Business Developer',
-   company:'NUMÉRITECH SOLUTIONS',
-   address:'Pôle Innovation Quai, 76600 Le Havre',
-   secteur:'Logiciels de gestion & transformation digitale PME',salary:2200,ref:'A5 — Développement commercial',
-   desc:'Numéritech édite des logiciels de gestion pour PME (ERP, CRM, facturation). Vous conquérez de nouveaux marchés dans les secteurs BTP et transport normands.',
-   mise:"La direction cible le secteur BTP en Normandie (50-200 salariés, 340 cibles). Mission 6 mois : stratégie d'approche, partenariat Fédération BTP Normandie, 2 webinaires démo, 15 nouveaux contrats (valeur moy. 8 500 €/an). Budget prospection : 4 000 €.",
-   clients:[
-     {nom:'BTP GUILLOTEAU CONSTRUCTION',contact:'M. Frédéric Guilloteau',tel:'02 35 41 23 45',email:'f.guilloteau@guilloteau-btp.fr',adresse:'28 rue des Artisans, 76700 Harfleur',secteur:'BTP Gros œuvre',ca_an:'0 € (prospect)',statut:'Prospect chaud'},
-     {nom:'TRANSPORTS RIVIÈRE',contact:'Mme Nathalie Rivière',tel:'02 35 52 34 56',email:'n.riviere@transports-riviere.fr',adresse:'ZI Port 2000, 76600 Le Havre',secteur:'Transport routier',ca_an:'0 € (prospect)',statut:'Prospect tiède'},
-     {nom:'MENUISERIE DELACOUR',contact:'M. Jacques Delacour',tel:'02 35 63 45 67',email:'j.delacour@menuiserie-delacour.fr',adresse:'4 rue des Charpentiers, 76380 Canteleu',secteur:'Menuiserie',ca_an:'8 500 €',statut:'Client actif'},
-   ],
-   catalogue:[
-     {ref:'ERP001',designation:'ERP Numéritech Standard (jusqu\'à 10 postes)',unite:'Licence/an',prix_ht:3200.00,remise_max:'10%',stock:'Disponible'},
-     {ref:'ERP002',designation:'ERP Numéritech Pro (postes illimités)',unite:'Licence/an',prix_ht:7800.00,remise_max:'8%',stock:'Disponible'},
-     {ref:'CRM001',designation:'Module CRM + Devis + Facturation',unite:'Module/an',prix_ht:1200.00,remise_max:'15%',stock:'Disponible'},
-     {ref:'FOR001',designation:'Formation initiale sur site (2 jours)',unite:'Forfait',prix_ht:1600.00,remise_max:'0%',stock:'Sur RDV'},
-     {ref:'MAI001',designation:'Maintenance & support prioritaire annuel',unite:'Contrat/an',prix_ht:890.00,remise_max:'5%',stock:'Disponible'},
-     {ref:'MIG001',designation:'Migration données ancien logiciel',unite:'Forfait',prix_ht:2400.00,remise_max:'0%',stock:'Sur devis'},
-   ]},
-  {id:'j6',icon:'🎯',title:'Account Manager',
-   company:'ASSURANCES NORMANDIE CONSEIL',
-   address:'35 place de la Cathédrale, 76000 Rouen',
-   secteur:'Assurances professionnelles & prévoyance entreprise',salary:2300,ref:'A6 — Gestion grands comptes',
-   desc:'ANC est un cabinet de courtage en assurances professionnelles. Vous gérez 45 grands comptes (CA individuel > 20 000 €/an).',
-   mise:"Le groupe hôtelier Côte de Nacre (12 hôtels, 78 000 €/an d'assurances) est approché par AXA (-15% sur les primes). Renouvellement dans 6 semaines. Préparez un plan de fidélisation : audit des garanties, 3 axes d'amélioration, services à VA, contre-proposition tarifaire argumentée.",
-   clients:[
-     {nom:'HÔTELS CÔTE DE NACRE',contact:'M. Étienne Aubert',tel:'02 31 34 56 78',email:'e.aubert@cote-de-nacre.fr',adresse:'2 Boulevard Maréchal Foch, 14150 Ouistreham',secteur:'Hôtellerie',ca_an:'78 000 €',statut:'Grand compte'},
-     {nom:'CLINIQUE SAINT-MARTIN',contact:'Mme Véronique Saunier',tel:'02 35 78 90 12',email:'v.saunier@clinique-stmartin.fr',adresse:'15 avenue Flaubert, 76000 Rouen',secteur:'Santé',ca_an:'42 000 €',statut:'Grand compte'},
-     {nom:'RÉSIDENCE SENIORS LES ACACIAS',contact:'M. Christophe Lamy',tel:'02 35 89 01 23',email:'c.lamy@acacias-seniors.fr',adresse:'8 rue des Roses, 76130 Mont-Saint-Aignan',secteur:'Services à la personne',ca_an:'31 000 €',statut:'Actif'},
-   ],
-   catalogue:[
-     {ref:'RC001',designation:'RC Professionnelle TPE/PME',unite:'Contrat/an',prix_ht:890.00,remise_max:'12%',stock:'Disponible'},
-     {ref:'MUL001',designation:'Multirisque Professionnelle',unite:'Contrat/an',prix_ht:2400.00,remise_max:'10%',stock:'Disponible'},
-     {ref:'PRE001',designation:'Prévoyance collective (par salarié)',unite:'Contrat/an/salarié',prix_ht:340.00,remise_max:'8%',stock:'Disponible'},
-     {ref:'CYB001',designation:'Assurance Cyber-risques',unite:'Contrat/an',prix_ht:1800.00,remise_max:'5%',stock:'Disponible'},
-     {ref:'AUD001',designation:'Audit complet garanties existantes',unite:'Forfait',prix_ht:650.00,remise_max:'0%',stock:'Sur RDV'},
-   ]}
-];
-
-/* ============================================================
-   TASKS — 18 missions enrichies avec contexte client
-============================================================ */
-function getTask(score,poste){
-  const c=poste&&poste.clients&&poste.clients.length>0?poste.clients[Math.floor(Math.random()*poste.clients.length)]:null;
-  const cn=c?c.nom:'votre client';
-  const cc=c?c.contact:'votre interlocuteur';
-  const tasks={
-    1:{title:'E-mail professionnel de prospection',
-       desc:'Rédige un e-mail de prospection B2B ciblé. Objet percutant (max 60 car.), accroche personnalisée, proposition de valeur en 3 lignes, bénéfices chiffrés, appel à l\'action précis (RDV 20 min), signature professionnelle complète.',
-       client:c?`Client cible : ${cn} — ${cc} (${c.email})`:null,
-       consigne:`Rédige un e-mail de prospection à destination de ${cn}. Personnalise le contenu en fonction de leur secteur : ${c?c.secteur:'votre secteur'}.`,
-       ref:'C1.1 — Communication écrite professionnelle B2B'},
-    2:{title:'Devis commercial complet',
-       desc:'Élabore un devis professionnel pour une vente identifiée. En-tête complet, tableau des prestations (réf/désignation/qté/PU HT/remise/total HT), sous-total HT, TVA 20%, TTC, conditions de règlement, délai de validité.',
-       client:c?`Client : ${cn} — Contact : ${cc} — Adresse : ${c.adresse}`:null,
-       consigne:poste&&poste.catalogue?`Utilise le catalogue de ${poste.company} pour créer un devis de minimum 3 lignes pour ${cn}. Applique une remise commerciale cohérente.`:null,
-       ref:'C2.1 — Documents commerciaux'},
-    3:{title:'Bon de commande',
-       desc:'Crée un BC suite à l\'acceptation d\'un devis. Numéro BC, identité client/fournisseur complète, tableau produits (réf, désignation, qté, PU, total), conditions de livraison (adresse, délai, transporteur), mode de paiement, signatures.',
-       client:c?`Client : ${cn} — Adresse de livraison : ${c.adresse}`:null,
-       consigne:`Suite à l\'acceptation de ton devis par ${cn}, établis le bon de commande correspondant.`,
-       ref:'C2.2 — Traitement des commandes'},
-    4:{title:'Note de frais professionnelle',
-       desc:'Fiche de frais pour 2 jours de déplacement. Transport (SNCF ou IK au barème fiscal), hébergement (hôtel 3★, justificatif), repas (midi ≤15,25€, soir ≤20€), repas client (≤60€), péages. Calcul total et transmission comptabilité.',
-       client:c?`Déplacement pour visite chez ${cn} à ${c.adresse?c.adresse.split(',')[1]||'destination':'destination'}`:null,
-       consigne:`Tu as effectué 2 jours de déplacement pour visiter ${cn}. Complète ta note de frais avec tous les justificatifs.`,
-       ref:'C3.1 — Gestion des frais professionnels'},
-    5:{title:'Tournée commerciale optimisée',
-       desc:'Organise une tournée de 5 visites clients. Méthode des pétales pour minimiser les km. Itinéraire avec horaires (départ 8h), durée de chaque visite (30-60 min), pause repas, km totaux, coût (IK + péages), objectif de chaque visite.',
-       client:poste&&poste.clients?`Clients à visiter : ${poste.clients.map(c=>c.nom).join(', ')}`:null,
-       consigne:`Organise une tournée optimisée pour visiter l\'ensemble de tes clients sur ton secteur. Justifie l\'ordre choisi.`,
-       ref:'C3.2 — Planification de l\'activité'},
-    6:{title:'Analyse KPI Salon professionnel',
-       desc:'Suite à un salon : contacts qualifiés, RDV obtenus, taux de transformation (contacts→RDV→devis→commandes), coût par contact (budget ÷ contacts), CA généré, ROI. Note de synthèse avec recommandations pour l\'édition suivante.',
-       client:null,
-       consigne:`Tu as participé au salon professionnel de ton secteur. Budget stand : 4 500 €. Tu as obtenu 87 contacts, 23 RDV, 8 devis envoyés, 3 commandes signées (CA : 18 500 €). Calcule et analyse les KPI.`,
-       ref:'C4.1 — Analyse des performances'},
-    7:{title:'Script d\'appel CROC',
-       desc:'Script complet de prospection téléphonique. Structure CROC : Contact (présentation, vérification interlocuteur), Raison (accroche-bénéfice en 2 phrases), Objectif (proposition RDV/démo), Conclusion (reformulation, confirmation). + 3 fiches-réflexe objections.',
-       client:c?`Prospect à appeler : ${cn} — ${cc} — Tél : ${c.tel}`:null,
-       consigne:`Prépare ton script d\'appel CROC pour prospecter ${cn}. Anticipe les 3 objections les plus probables de ce type de client.`,
-       ref:'C1.2 — Prospection téléphonique'},
-    8:{title:'Argumentaire CAP-SONCAS',
-       desc:'Argumentaire structuré CAP × SONCAS. Pour chaque profil (Sécurité, Orgueil, Nouveauté, Confort, Argent, Sympathie) : 1 Caractéristique, 1 Avantage-bénéfice client, 1 Preuve. Format tableau synthétique prêt RDV.',
-       client:c?`Produit/service à argumenter pour ${cn} (profil : ${c.secteur})`:null,
-       consigne:poste&&poste.catalogue&&poste.catalogue.length>0?`Construis ton argumentaire CAP-SONCAS pour le produit "${poste.catalogue[0].designation}" de ${poste.company}. Adapte-le au profil de ${cn}.`:null,
-       ref:'C1.3 — Argumentation commerciale'},
-    9:{title:'Guide traitement des objections',
-       desc:'Les 5 objections les plus fréquentes dans ton secteur. Pour chacune : reformulation positive, réponse en 3 temps (écoute, argument, contre-question), formule de clôture. Format fiches pratiques terrain.',
-       client:c?`Contexte : RDV avec ${cn} — ${cc}`:null,
-       consigne:`Identifie les 5 objections que pourrait formuler ${cn} face à ta proposition. Prépare tes réponses structurées.`,
-       ref:'C1.4 — Gestion des objections'},
-    10:{title:'Plan de découverte client',
-        desc:'18 questions organisées en 4 phases : Contexte (5 questions), Organisation (4), Besoins SONCAS (5), Contraintes/décision (4). Pour chaque question : type, objectif, écoute attendue.',
-        client:c?`Premier RDV avec : ${cn} — ${cc}`:null,
-        consigne:`Prépare ton plan de découverte pour ton premier entretien avec ${cn} (secteur : ${c?c.secteur:'ton secteur'}). Adapte tes questions à leur activité.`,
-        ref:'C1.5 — Découverte des besoins'},
-    11:{title:'Compte-rendu de visite',
-        desc:'CRV structuré : date/lieu/participants, contexte et historique client, besoins SONCAS détectés, proposition formulée et réaction, objections soulevées + réponses, accord obtenu (ou non), prochaine étape précise avec date, cotation (chaud/tiède/froid).',
-        client:c?`Visite chez ${cn} — Interlocuteur : ${cc}`:null,
-        consigne:`Tu viens de réaliser un RDV chez ${cn}. Rédige ton compte-rendu de visite complet. Le client a montré de l'intérêt pour ${poste&&poste.catalogue&&poste.catalogue.length>0?poste.catalogue[0].designation:'ton offre'} mais a exprimé une objection sur le prix.`,
-        ref:'C2.3 — Reporting commercial'},
-    12:{title:'Proposition commerciale complète',
-        desc:'Propale 4-6 pages : page de garde pro, synthèse exécutive (1 page), analyse enjeux client, solution recommandée avec ROI, planning de mise en œuvre, investissement et conditions, modalités contractuelles.',
-        client:c?`Proposition pour : ${cn} — ${cc}`:null,
-        consigne:`Rédige une proposition commerciale complète pour ${cn}. CA annuel actuel : ${c?c.ca_an:'à définir'}. Ils attendent une solution sur mesure.`,
-        ref:'C2.4 — Élaboration de propositions'},
-    13:{title:'Tableau de bord commercial',
-        desc:'TDB hebdomadaire : appels/contacts, RDV obtenus, taux transformation, devis émis (nb + valeur HT), commandes signées (nb + valeur), CA réalisé vs objectif (%), pipeline commercial (valeur totale affaires en cours), prévision du mois. Tableau + graphique comparatif.',
-        client:null,
-        consigne:`Tu es en S3 de ton trimestre. Appels : 67, contacts joints : 34, RDV obtenus : 12, devis : 8 (valeur : 48 500 €), commandes : 3 (valeur : 18 200 €). Objectif mensuel CA : 35 000 €. Construis ton TDB et analyse les écarts.`,
-        ref:'C4.2 — Pilotage de l\'activité'},
-    14:{title:'Fiche produit & argumentaire',
-        desc:'Fiche produit complète : photo/description, référence et code article, 3 bénéfices clients, comparatif concurrence (3 critères), prix et conditions, disponibilité, argumentaire de vente 5 points, conseils de mise en avant.',
-        client:c?`Produit à mettre en avant pour ${cn}`:null,
-        consigne:poste&&poste.catalogue&&poste.catalogue.length>1?`Crée une fiche produit commerciale pour "${poste.catalogue[1].designation}" (réf. ${poste.catalogue[1].ref}). Prix HT : ${poste.catalogue[1].prix_ht} €.`:null,
-        ref:'C5.1 — Valorisation de l\'offre'},
-    15:{title:'Veille concurrentielle',
-        desc:'Analyse 3 concurrents directs : raison sociale, positionnement, offre clé, politique tarifaire estimée, forces/faiblesses, stratégie commerciale. Matrice de positionnement. Ton avantage concurrentiel en 3 points. Recommandations.',
-        client:null,
-        consigne:`Réalise une veille concurrentielle pour ${poste?poste.company:'ton entreprise'} dans le secteur "${poste?poste.secteur:'ton secteur'}". Identifie 3 concurrents et analyse leur positionnement.`,
-        ref:'C5.2 — Veille et environnement'},
-    16:{title:'Plan d\'action commercial trimestriel',
-        desc:'PAC 3 mois : diagnostic (clients, secteur, concurrence), objectifs SMART, segmentation ABC du portefeuille, actions par segment (prospection/fidélisation/développement), ressources et budget, planning Gantt, indicateurs de suivi et fréquence reporting.',
-        client:null,
-        consigne:`Objectif T2 : ${poste?Math.round(poste.salary*3*2).toLocaleString('fr-FR'):15000} € de CA. Construis ton PAC détaillé pour atteindre cet objectif sur 3 mois.`,
-        ref:'C3.3 — Plan d\'action commercial'},
-    17:{title:'Contrat commercial',
-        desc:'Contrat de vente/prestation complet : identification des parties, objet précis, description des prestations/livrables, prix HT/TTC et conditions de paiement (acompte, échéancier, pénalités), délais et conditions de livraison/exécution, garanties, durée, résiliation, confidentialité, loi applicable.',
-        client:c?`Contrat entre ${poste?poste.company:'votre société'} et ${cn}`:null,
-        consigne:`Tu as conclu une vente avec ${cn} pour ${poste&&poste.catalogue&&poste.catalogue.length>0?poste.catalogue[0].designation:'ton produit phare'} (${poste&&poste.catalogue&&poste.catalogue.length>0?poste.catalogue[0].prix_ht+' € HT':'montant à définir'}). Rédige le contrat commercial.`,
-        ref:'C2.5 — Formalisation de la vente'},
-    18:{title:'Rapport d\'activité mensuel',
-        desc:'Rapport mensuel complet : résumé exécutif (1/2 page), analyse des résultats (CA, visites, nouveaux clients), comparaison N-1 et objectifs, clients gagnés/perdus, analyse des causes d\'écart, plan d\'action correctif pour le mois suivant, annexes (tableaux, graphiques).',
-        client:null,
-        consigne:`Rédige ton rapport d\'activité mensuel pour ${poste?poste.company:'ton entreprise'}. Tu as réalisé ${poste?Math.round(poste.salary*1.15).toLocaleString('fr-FR'):'votre CA'} € de CA ce mois. Analyse tes résultats et propose un plan correctif.`,
-        ref:'C4.3 — Reporting direction'}
-  };
-  return tasks[score]||tasks[1];
-}
 
 /* ============================================================
    STATE
@@ -1000,8 +840,11 @@ function checkPdg(){
     pdgOK=true;closePdgLogin();
     el('cover').style.display='none';
     const app=el('app');app.style.display='flex';app.style.flexDirection='column';
-    renderProfPanel();showP('pPDG');
-    notify('Bienvenue PDG !','Tableau de bord chargé.','ok');
+    notify('Bienvenue PDG !','Chargement en cours…','ok');
+    syncFromServer().then(()=>{
+      renderProfPanel();showP('pPDG');
+      notify('Bienvenue PDG !','Tableau de bord chargé.','ok');
+    });
   }else{el('pdgErr').style.display='block';el('pdgErr').textContent='Code incorrect.';}
 }
 async function routeAfterLoad(){
@@ -1033,13 +876,13 @@ async function valIdent(){
     S.uid=uidKey;S.prenom=prenom;S.nom=nom;S.dob=dobNorm||dob;
     let allStudents={};
     try{
-      const raceResult=await Promise.race([
-        getStudents(true),
+      // getStudentsFromServer avec timeout 5s, fallback localStorage si lent
+      allStudents=await Promise.race([
+        getStudentsFromServer(),
         new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),5000))
       ]);
-      allStudents=raceResult;
     }catch(e){
-      console.warn('Supabase lent, fallback localStorage');
+      // Supabase lent ou hors ligne → données locales
       allStudents=lsG('mdc_students')||{};
     }
     const existing=allStudents[uidKey];
@@ -1146,11 +989,17 @@ function startPolling(){
     }catch(e){}
   }
   pollT=setInterval(async()=>{
-    const ents=await getEnts();
+    // D'abord localStorage (instantané)
+    let ents=lsG('mdc_ents')||{};
     if(ents[S.uid]&&ents[S.uid].note!=null){
-      clearInterval(pollT);S.entNote=ents[S.uid].note;await persistS();showEntResult(S.entNote);
+      clearInterval(pollT);S.entNote=ents[S.uid].note;persistS();showEntResult(S.entNote);return;
     }
-  },4000);
+    // Sinon vérifier Supabase (moins souvent)
+    try{ents=await getEntsFromServer();}catch(e){}
+    if(ents[S.uid]&&ents[S.uid].note!=null){
+      clearInterval(pollT);S.entNote=ents[S.uid].note;persistS();showEntResult(S.entNote);
+    }
+  },3000);
 }
 function showEntResult(note){
   el('entResult').style.display='block';el('entWait').style.display='none';
@@ -1328,6 +1177,10 @@ function profTab(pid,bid){
   ['tc1','tc2','tc3','tc4'].forEach(id=>{const e=el(id);if(e)e.style.display=id===pid?'block':'none';});
   ['tb1','tb2','tb3','tb4'].forEach(id=>el(id)?.classList.remove('act'));
   el(bid)?.classList.add('act');
+  // Sync depuis serveur puis afficher l'onglet actif
+  const map={tc1:[getCandsFromServer,renderProfCand],tc2:[getEntsFromServer,renderProfEnt],
+             tc3:[getCorrsFromServer,renderProfTrav],tc4:[getStudentsFromServer,renderProfElev]};
+  if(map[pid]){map[pid][0]().then(()=>map[pid][1]()).catch(()=>map[pid][1]());}
 }
 async function renderProfPanel(){
   await Promise.all([renderProfCand(),renderProfEnt(),renderProfTrav(),renderProfElev()]);
@@ -1446,7 +1299,7 @@ async function noterTrav(corrKey,studentUid,travailIdx,n){
     wallet=Math.max(0,wallet-Math.round(salary*.5));mauvaises++;msg='Salaire réduit de 50%';
     if(mauvaises%2===0){avert++;msg+=` · Avertissement #${avert}`;if(avert>=2){licencie=true;msg+=' · LICENCIEMENT !';}}
   }
-  await saveStudent(studentUid,{...sd,travaux,wallet,mauvaises,avert,licencie});
+  saveStudent(studentUid,{...sd,travaux,wallet,mauvaises,avert,licencie});
   if(studentUid===S.uid)Object.assign(S,{travaux,wallet,mauvaises,avert,licencie}),updateTopbar(),renderJeuBanner();
   notify(n>=10?'✓ Mission validée':'✗ Mission refusée',msg,n>=10?'ok':'ko');
   renderProfTrav();renderProfElev();
@@ -1571,6 +1424,146 @@ async function showRecap(){
 /* ============================================================
    CATALOGUE PDG (tous les postes)
 ============================================================ */
+/* ============================================================
+   CATALOGUE DES 18 EXERCICES + CORRIGÉS TYPES
+============================================================ */
+function showCatalogueExos(){
+  const colors={1:'#e74c3c',2:'#e67e22',3:'#f39c12',4:'#d4ac0d',5:'#27ae60',
+    6:'#1abc9c',7:'#16a085',8:'#2980b9',9:'#8e44ad',10:'#9b59b6',
+    11:'#c0392b',12:'#e67e22',13:'#27ae60',14:'#2980b9',15:'#8e44ad',
+    16:'#16a085',17:'#e74c3c',18:'#C9A84C'};
+  const proba=Math.round(1/18*100);
+  const demoPoste=S.poste||JOBS[0];
+  const list=el('catExosContent');list.innerHTML='';
+  for(let score=1;score<=18;score++){
+    const t=getTask(score,demoPoste);
+    const col=colors[score]||'var(--gold)';
+    const div=document.createElement('div');
+    div.className='card';div.style.cssText='margin-bottom:11px;border-left:4px solid '+col+';padding:14px 16px';
+    div.innerHTML='<div style="display:flex;align-items:center;gap:12px;margin-bottom:9px">'
+      +'<div style="background:'+col+';color:#fff;font-family:Bebas Neue,sans-serif;font-size:1.35rem;min-width:42px;height:42px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+score+'</div>'
+      +'<div style="flex:1"><div style="font-family:Bebas Neue,sans-serif;font-size:1.05rem;letter-spacing:.04em;color:var(--cream)">'+t.title+'</div>'
+      +'<div style="font-family:Space Mono,monospace;font-size:.55rem;color:var(--muted);margin-top:2px">🎲 Face '+score+'/18 · '+proba+'% · Référentiel : '+t.ref+'</div></div>'
+      +'<div style="display:flex;flex-direction:column;gap:4px">'
+      +'<button class="btn btn-xs" style="background:rgba(201,168,76,.2);color:var(--gold);border:1px solid var(--gold-b);white-space:nowrap" onclick="downloadDoc('+score+')">⬇️ Doc vierge</button>'
+      +'<button class="btn btn-xs" style="background:rgba(155,89,182,.2);border:1px solid rgba(155,89,182,.5);color:#bb8fce;white-space:nowrap" onclick="showCorrige('+score+')">📋 Corrigé type</button>'
+      +'</div></div>'
+      +'<div style="font-size:.78rem;line-height:1.65;color:var(--cream)">'+t.desc+'</div>';
+    list.appendChild(div);
+  }
+  showP('pCatExos');
+}
+
+/* Corrigé type — bouton dans les travaux PDG */
+function showCorrige(score){
+  if(!score||score<1||score>18){notify('Corrigé non disponible','','ko');return;}
+  const t=getTask(score,null);
+  el('corrigeTitre').textContent='Mission '+score+' — '+t.title;
+  el('corigeContent').innerHTML=getCorrigeContent(score);
+  openM('mCorrige');
+}
+
+function getCorrigeContent(score){
+  const c={
+    1:`<h3>✉️ E-mail de prospection</h3><p><strong>Structure attendue :</strong></p><ul><li><strong>Objet</strong> : accrocheur, max 60 car., personnalisé (ex: "Réduisez vos coûts de 15% — RDV 20 min ?")</li><li><strong>Accroche</strong> : fait sur le prospect, contextualisé</li><li><strong>Proposition de valeur</strong> : bénéfice chiffré en 2-3 lignes</li><li><strong>Appel à action</strong> : 2 créneaux proposés (technique de l'alternative)</li><li><strong>Signature</strong> : nom, titre, tel, email, société</li></ul><p><em>✅ Barème : objet percutant (2pts), accroche personnalisée (3pts), valeur chiffrée (3pts), CTA précis (3pts), signature (2pts), orthographe (4pts), ton pro (3pts). /20</em></p>`,
+    2:`<h3>📄 Devis commercial</h3><p><strong>Éléments obligatoires :</strong></p><ul><li>En-tête : logo, coordonnées vendeur + client, N° devis, date, validité 30 jours</li><li>Tableau : Réf | Désignation | Qté | PU HT | Remise | Total HT — min 3 lignes</li><li>Sous-total HT → TVA 20% → Total TTC</li><li>Conditions règlement + délai livraison + signatures</li></ul><p><strong>Erreurs fréquentes :</strong> TVA oubliée, mauvais calcul remise, pas de N° devis.</p><p><em>✅ Barème : en-tête (3pts), tableau+calculs (6pts), totaux HT/TVA/TTC (3pts), conditions (3pts), validité (2pts), présentation (3pts). /20</em></p>`,
+    3:`<h3>📦 Bon de commande</h3><ul><li>N° BC relié au devis accepté</li><li>Identité complète des deux parties (SIRET)</li><li>Tableau produits identique au devis signé</li><li>Adresse livraison (peut différer facturation)</li><li>Délai livraison + mode paiement (ex: 30% acompte, solde réception)</li><li>Signatures des deux parties</li></ul><p><em>✅ Barème : concordance devis (3pts), identités (3pts), tableau (4pts), adresse livraison (2pts), conditions (3pts), délai (2pts), signatures (3pts). /20</em></p>`,
+    4:`<h3>🧾 Note de frais</h3><p><strong>Barème IK 2024 véhicule 5CV : 0,529 €/km</strong></p><p>Exemple : Jour 1 : 120 km × 0,529 = 63,48 € + repas midi 14,50 € + repas client 55 € = <strong>132,98 €</strong></p><p>Jour 2 : train 45 € + hôtel 85 € + repas midi 13,80 € + soir 18,50 € = <strong>162,30 €</strong> → <strong>Total : 295,28 €</strong></p><p>Plafonds : midi ≤15,25€ | soir ≤20€ | repas client ≤60€ | hébergement sur facture</p><p><em>✅ Barème : calcul IK correct (4pts), plafonds respectés (4pts), total exact (4pts), justificatifs mentionnés (4pts), présentation (4pts). /20</em></p>`,
+    5:`<h3>🗺️ Tournée commerciale</h3><p><strong>Formule temps de trajet : Distance ÷ 70 km/h × 60 = minutes</strong></p><p>Exemple : 28 km ÷ 70 × 60 = <strong>24 min</strong></p><p>Méthode des pétales : partir du plus proche, revenir à la base, repartir en spirale.</p><p>Planning attendu : 08h00 départ → calcul heure arrivée, durée visite, heure départ → pause 12h-13h obligatoire → retour base.</p><p>Coût IK = km totaux × 0,529 €</p><p><em>✅ Barème : méthode pétales justifiée (3pts), calculs temps 70km/h corrects (5pts), horaires cohérents (4pts), pause repas (2pts), coût IK (3pts), tableau complet (3pts). /20</em></p>`,
+    6:`<h3>📊 KPI Salon</h3><p><strong>Données :</strong> Budget 4 500 € | Contacts 87 | RDV 23 | Devis 8 (48 500 €) | Commandes 3 (18 500 €)</p><p><strong>Calculs attendus :</strong></p><ul><li>Contacts→RDV : 23÷87×100 = <strong>26,4%</strong></li><li>RDV→devis : 8÷23×100 = <strong>34,8%</strong></li><li>Devis→commandes : 3÷8×100 = <strong>37,5%</strong></li><li>Taux global : 3÷87×100 = <strong>3,4%</strong></li><li>Coût/contact : 4500÷87 = <strong>51,72 €</strong></li><li>ROI : 18500÷4500×100 = <strong>411%</strong></li></ul><p><em>✅ Barème : 6 KPI calculés (10pts), formules indiquées (4pts), interprétation (3pts), recommandations (3pts). /20</em></p>`,
+    7:`<h3>📞 Script CROC</h3><p><strong>C :</strong> "Bonjour, [Prénom NOM], commercial chez [Société]. Ai-je bien M./Mme [NOM], [fonction] ?"</p><p><strong>R :</strong> "Je vous appelle car nous aidons les [secteur] à [bénéfice]. Nos clients économisent en moyenne [X]% dès la 1ère année."</p><p><strong>O :</strong> "Je souhaite vous présenter notre solution en 20 min. Jeudi 14h ou vendredi matin ?"</p><p><strong>C :</strong> "Parfait, je note RDV [date] à [heure]. Confirmation par mail. Bonne journée !"</p><p>Objections : "Pas le temps" → alternative | "Déjà fournisseur" → valeur ajoutée | "Envoyez doc" → 5 min de qualif</p><p><em>✅ Barème : CROC structuré (8pts), accroche (3pts), alternative RDV (2pts), 3 objections (6pts), ton naturel (1pt). /20</em></p>`,
+    8:`<h3>💡 CAP-SONCAS</h3><p>Pour chaque profil : C (caractéristique produit) → A (avantage-bénéfice client) → P (preuve vérifiable)</p><p>Ex. Sécurité : C="Certifié ISO 9001, 3 ans garantie" | A="Protégé contre les pannes coûteuses" | P="97% de renouvellement clients"</p><p><strong>6 profils × 3 colonnes = 18 cases à compléter</strong></p><p>Erreur fréquente : confondre C et A. La C décrit le produit, le A traduit en bénéfice client concret.</p><p><em>✅ Barème : 6 profils traités (6pts), distinction C/A/P claire (6pts), bénéfices traduits (4pts), preuves concrètes (4pts). /20</em></p>`,
+    9:`<h3>🛡️ Guide Objections</h3><p>Méthode 4 temps : 1. Écoute active | 2. Reformulation positive | 3. Argument CAP | 4. Question de contrôle</p><p>Ex. "C'est trop cher" → "Si je comprends bien, vous souhaitez être sûr(e) que l'investissement est rentable." → ROI chiffré → "Ce gain répond-il à votre attente ?"</p><p><em>✅ Barème : 5 objections pertinentes (5pts), reformulation (5pts), argument CAP (5pts), question contrôle (3pts), présentation terrain (2pts). /20</em></p>`,
+    10:`<h3>🔍 Plan de découverte</h3><p>18 questions en 4 phases : Contexte (5) → Organisation (4) → Besoins SONCAS (5) → Contraintes/décision (4)</p><p>Max 2 questions fermées. Privilégier questions ouvertes : Qui/Quoi/Comment/Pourquoi/Combien</p><p>Ex. Contexte : "Pouvez-vous me présenter votre activité ?" | Besoins : "Qu'est-ce qui est le plus important pour vous ?"</p><p><em>✅ Barème : 18 questions en 4 phases (8pts), majorité ouvertes (4pts), adaptation secteur (4pts), objectif explicité (4pts). /20</em></p>`,
+    11:`<h3>📝 Compte-rendu de visite</h3><p>Structure : En-tête | Contexte client | Besoins SONCAS détectés | Proposition+réaction | Objection principale+réponse | Accord/étape suivante | Cotation (chaud/tiède/froid)</p><p>Prochaine action : responsable + date précise</p><p><em>✅ Barème : structure complète (4pts), besoins SONCAS (4pts), objection+réponse (4pts), cotation justifiée (3pts), prochaine action précise (3pts), style pro (2pts). /20</em></p>`,
+    12:`<h3>📋 Proposition commerciale</h3><p>4 parties : 1) Page de garde pro | 2) Synthèse exécutive (3 points clés, 10 lignes max) | 3) Analyse enjeux+solution+ROI | 4) Conditions, planning, garanties</p><p>ROI = économies générées ÷ coût solution × 100. Personnaliser avec "vous" partout.</p><p><em>✅ Barème : page de garde (2pts), synthèse (4pts), analyse enjeux (4pts), ROI calculé (4pts), conditions (3pts), personnalisation (3pts). /20</em></p>`,
+    13:`<h3>📈 Tableau de bord</h3><p><strong>Objectifs semaine :</strong> 80 appels | 40 contacts | 15 RDV | 6 devis (30 000€) | 2 cdes (10 000€)</p><p><strong>Réalisé :</strong> 67 appels | 34 contacts | 12 RDV | 8 devis (48 500€) | 3 cdes (18 200€)</p><p>Calculs : taux transfo appels→contacts = 34÷67×100=50,7% | RDV→devis = 8÷12=66,7% | Écart CA = (18200-10000)÷10000×100=+82%</p><p><em>✅ Barème : calculs corrects (8pts), formules (4pts), graphique (3pts), analyse écarts (3pts), plan action (2pts). /20</em></p>`,
+    14:`<h3>📦 Fiche produit</h3><p>Référence + description technique + 3 bénéfices clients (pas caractéristiques!) + comparatif 2 concurrents sur 3 critères + prix+conditions + argumentaire 5 points SONCAS</p><p>Un bénéfice répond à "et donc pour vous ça signifie que..." (pas "il a 3 fonctions")</p><p><em>✅ Barème : présentation (2pts), description (3pts), 3 bénéfices client (4pts), comparatif (4pts), conditions (3pts), argumentaire (4pts). /20</em></p>`,
+    15:`<h3>🔎 Veille concurrentielle</h3><p>3 concurrents : raison sociale + positionnement + offre + tarif estimé + 2 forces + 2 faiblesses. Matrice de positionnement (axe X=prix, axe Y=qualité). 3 axes de différenciation de notre entreprise.</p><p>Sources : sites web des concurrents, LinkedIn, Google, presse pro du secteur.</p><p><em>✅ Barème : 3 concurrents analysés (6pts), matrice positionnement (4pts), forces/faiblesses (4pts), 3 axes différenciation (4pts), recommandations (2pts). /20</em></p>`,
+    16:`<h3>📅 Plan d'action commercial</h3><p><strong>Données :</strong> Objectif T2 calculé | CA T1=-10% | Budget prospection 800€ | Clients à risque prioritaires</p><p>Segmentation ABC : A=20% clients=80% CA (visites mensuelles) | B=développables | C=petits (contact trimestriel)</p><p>Gantt 3 mois + budget réparti + indicateurs de suivi KPI</p><p><em>✅ Barème : SWOT (4pts), objectifs SMART (3pts), segmentation ABC (4pts), Gantt (4pts), budget (3pts), KPI (2pts). /20</em></p>`,
+    17:`<h3>✍️ Lettre de confirmation de commande</h3><p>Mentions obligatoires : identité des deux parties (SIRET) | désignation exacte + quantité | PU HT + remise + total HT + TVA 20% + TTC | acompte % + solde livraison | délai (jours calendaires) | garantie | "Bon pour accord" + signatures</p><p><em>✅ Barème : identités (2pts), tableau produits (4pts), totaux HT/TVA/TTC (3pts), conditions paiement (4pts), délai (2pts), garantie (2pts), signatures (3pts). /20</em></p>`,
+    18:`<h3>📊 Rapport d'activité mensuel</h3><p><strong>Données mars :</strong> Objectif CA = salaire. CA réalisé = +15%. Commandes = 4. Client perdu = 1. Visites = 18/20.</p><p>4 parties : Synthèse exécutive (3 chiffres clés) | Tableau KPI Objectif/Réalisé/Écart% | Analyse des causes | Plan correctif avril (3 actions + responsable + date)</p><p>Écart CA = (réalisé-objectif)÷objectif×100. Ton factuel, orienté solutions.</p><p><em>✅ Barème : synthèse (3pts), tableau KPI (5pts), calculs écarts (4pts), analyse causes (4pts), plan correctif (4pts). /20</em></p>`
+  };
+  return c[score]||'<p>Corrigé non disponible pour cette mission.</p>';
+}
+
+/* ============================================================
+   DOCUMENTS VIERGES TÉLÉCHARGEABLES
+============================================================ */
+function downloadDoc(score){
+  const titles=['','E-mail prospection','Devis commercial','Bon de commande','Note de frais',
+    'Tournée optimisée','Analyse KPI Salon','Script CROC','Argumentaire CAP-SONCAS',
+    'Guide Objections','Plan de découverte','Compte-rendu visite','Proposition commerciale',
+    'Tableau de bord','Fiche produit','Veille concurrentielle','Plan PAC','Confirmation commande','Rapport activité'];
+  const t=getTask(score,S.poste||JOBS[0]);
+  const css=`<style>body{font-family:Arial,sans-serif;max-width:800px;margin:20px auto;padding:20px;color:#1a1a1a;font-size:13px}
+    h1{font-size:16px;text-align:center;text-transform:uppercase;border-bottom:2px solid #000;padding-bottom:8px;margin-bottom:16px}
+    h2{font-size:13px;text-transform:uppercase;margin:14px 0 6px;background:#f0f0f0;padding:4px 8px}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:12px}
+    .bloc{border:1px solid #ccc;padding:10px;border-radius:4px;min-height:60px}
+    .field{border-bottom:1px solid #999;min-height:20px;margin-bottom:8px;padding:2px 4px}
+    table{width:100%;border-collapse:collapse;margin:10px 0}
+    th{background:#1a1a1a;color:#fff;padding:7px 8px;font-size:11px;text-align:left}
+    td{padding:6px 8px;border:1px solid #ddd;font-size:12px}
+    tr:nth-child(even) td{background:#f9f9f9}
+    .total td{background:#f0f0f0;font-weight:bold}
+    .sig{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:30px}
+    .sig div{border-top:1px solid #000;padding-top:8px;min-height:60px}
+    .ref{font-size:10px;color:#666;font-style:italic;margin-top:16px;border-top:1px dashed #ccc;padding-top:8px}
+    .info{background:#fff3cd;border:1px solid #ffc107;padding:8px;border-radius:4px;margin:8px 0;font-size:11px}
+    @media print{body{margin:0}}</style>`;
+  const clientInfo=t.client?`<div class="info"><strong>👤 Client :</strong> ${t.client}</div>`:'';
+  const consigneInfo=t.consigne?`<div class="info"><strong>📝 Consigne :</strong> ${t.consigne}</div>`:'';
+  let body=`<h1>Mission D18 = ${score} — ${titles[score]||t.title}</h1>
+    ${clientInfo}${consigneInfo}
+    <h2>Référentiel : ${t.ref}</h2>
+    <div class="grid2">
+      <div class="bloc"><label>Nom & Prénom</label><div class="field"></div></div>
+      <div class="bloc"><label>Entreprise / Poste</label><div class="field"></div></div>
+    </div>`;
+  // Add specific content per task type
+  if(score===2||score===3){
+    body+=`<h2>${score===2?'Devis':'Bon de commande'}</h2>
+    <div class="grid2">
+      <div class="bloc"><strong>Émetteur</strong><div class="field"></div><div class="field"></div></div>
+      <div class="bloc"><strong>Client</strong><div class="field"></div><div class="field"></div></div>
+    </div>
+    <table><thead><tr><th>Réf.</th><th>Désignation</th><th>Qté</th><th>PU HT (€)</th><th>Remise</th><th>Total HT (€)</th></tr></thead>
+    <tbody>${Array(5).fill('<tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>').join('')}
+    <tr class="total"><td colspan="5" style="text-align:right">Sous-total HT</td><td></td></tr>
+    <tr class="total"><td colspan="5" style="text-align:right">TVA 20%</td><td></td></tr>
+    <tr class="total"><td colspan="5" style="text-align:right"><strong>Total TTC</strong></td><td></td></tr></tbody></table>
+    <div class="sig"><div>Signature client<br><small>Bon pour accord :</small></div><div>Signature vendeur :</div></div>`;
+  } else if(score===5){
+    body+=`<div class="info">⚡ Vitesse moyenne = 70 km/h | Temps trajet = Distance ÷ 70 × 60 minutes | Coût IK = km × 0,529 €</div>
+    <table><thead><tr><th>Ordre</th><th>Client</th><th>Adresse</th><th>Km</th><th>Temps trajet<br>(km÷70×60)</th><th>Heure arrivée</th><th>Durée visite</th><th>Heure départ</th><th>Objectif</th></tr></thead>
+    <tbody><tr><td>Départ</td><td colspan="2">Base :</td><td>0</td><td>—</td><td>08:00</td><td>—</td><td>08:00</td><td>—</td></tr>
+    ${Array(5).fill(0).map((_,i)=>`<tr><td>${i+1}</td><td></td><td></td><td></td><td>___÷70×60=___</td><td></td><td></td><td></td><td></td></tr>`).join('')}
+    <tr><td>Retour</td><td colspan="8">Km totaux : ___ | Coût IK = ___ × 0,529 € = ___ €</td></tr></tbody></table>`;
+  } else if(score===13){
+    body+=`<div class="info">Objectifs : 80 appels | 40 contacts | 15 RDV | 6 devis 30 000€ | 2 cdes 10 000€<br>Réalisé : 67 appels | 34 contacts | 12 RDV | 8 devis 48 500€ | 3 cdes 18 200€</div>
+    <table><thead><tr><th>Indicateur</th><th>Objectif</th><th>Réalisé</th><th>Écart</th><th>Taux (%)</th><th>Analyse</th></tr></thead>
+    <tbody>${['Appels','Contacts','RDV','Valeur devis (€)','Commandes (nb)','CA signé (€)'].map(i=>`<tr><td>${i}</td><td></td><td></td><td></td><td></td><td></td></tr>`).join('')}</tbody></table>`;
+  } else {
+    // Generic template
+    body+=`<h2>Travail à réaliser</h2>
+    <div class="bloc" style="min-height:120px"><div class="field" style="min-height:100px"></div></div>
+    <h2>Développement</h2>
+    ${Array(3).fill('<div class="bloc" style="min-height:80px"><div class="field" style="min-height:60px"></div></div>').join('')}
+    <h2>Conclusion</h2>
+    <div class="bloc" style="min-height:60px"><div class="field" style="min-height:50px"></div></div>`;
+  }
+  body+=`<div class="ref">📚 Référentiel MCV Option B · ${t.ref} · 1re et Terminale · Créé par Michael SIATTE</div>`;
+  const html=`<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>MDC Mission ${score}</title>${css}</head><body>${body}</body></html>`;
+  const blob=new Blob([html],{type:'text/html'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download='MDC_Mission'+score+'_'+titles[score].replace(/[^a-zA-Z0-9]/g,'_')+'.html';
+  a.click();URL.revokeObjectURL(url);
+  notify('Document téléchargé !','Ouvre-le dans ton navigateur.','ok');
+}
+
+
 function showCatalogueAll(){
   const c=el('catAllContent');c.innerHTML='';
   JOBS.forEach(j=>{
